@@ -1,0 +1,11 @@
+@font-face {
+font-family: "Poppins";
+src:
+    url("/assets/fonts/bbbpoppins/BBBPoppinsTN-TextRegular.woff2") format("woff2"),
+    url("/assets/fonts/bbbpoppins/BBBPoppinsTN-TextRegular.woff") format("woff");
+}
+
+body {
+    font-family: "Poppins";
+    margin: 0;
+}
