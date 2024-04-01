@@ -1,11 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="css/main.css">
-
+    <!-- CDN -->
     <script src="//unpkg.com/3d-force-graph"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" integrity="sha512-jduERlz7En1IUZR54bqzpNI64AbffZWR//KJgF71SJ8D8/liKFZ+s1RxmUmB+bhCnIfzebdZsULwOrbVB5f3nQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/audiokeys.min.js"></script> <!-- keyboard as midi -->
+    <title>Intangible</title>
 </head>
 
 <body>
-    <div id="3d-graph"></div>
+    <main>
+        <img id="logo" src="assets/images/intangible.svg" alt="INTANGIBLE LOGO">
+        
+        <div id="UI-WRAPPER" class="flexr">
+            
+            <div id="login">
+                <form>
+                    <input class="form-item" type="text" placeholder="ID" maxlength="16">
+                    <button class="form-item button" type="submit">LOGIN</button>
+                </form>
+            </div>
+
+
+            <div id="audio">
+                <button id="recbtn" type="button">
+                    <p id="recText">○</p>
+                </button>
+                <button id="cuebtn" type="button">
+                    ▶
+                </button>
+                <form>
+                    <input class="form-item" type="text" placeholder="NAME">
+                    <button class="form-item" type="submit">SUMBIT!</button>
+                </form>
+            </div>
+            
+            <audio id="buffer" controls></audio>
+            
+        </div>
+        <!-- GRAPH GRAPH GRAPH!!!!! IM HERE...! -->
+        <div id="GRAPH-WRAPPER">
+            <div id="GRAPH"></div>
+        </div>
+    </main>
+
+
     <script type="importmap">
         { 
             "imports": { 
@@ -13,5 +55,9 @@
             }
         }
     </script>
+    
+
+    <!-- MY_SCRIPTS -->
+    <script src="js/record.js"></script>
     <script src="js/forcegraph.js" type="module"></script>
 </body>

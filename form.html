@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/form.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" integrity="sha512-jduERlz7En1IUZR54bqzpNI64AbffZWR//KJgF71SJ8D8/liKFZ+s1RxmUmB+bhCnIfzebdZsULwOrbVB5f3nQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.js"></script>
+</head>
+<body>
+
+    <div id="parent-wrapper">
+        <form class="flexr yc" id="form-wrapper">
+            <input class="form-item" type="text" placeholder="ID" maxlength="16">
+            <button class="form-item button" type="submit">LOGIN</button>
+        </form>
+        <div class="flexr yc" id="audio-warpper">
+            <button class="flexc xc yc" id="recbtn" type="button">
+                <!-- <p id="countdown">5</p> -->
+                <!-- RECORD -->
+            </button>
+            <button id="cuebtn" type="button">
+                <!-- PLAY -->
+            </button>
+            <div id="p5js" width="50px"></div>
+            <button type="submit"></button>
+        </div>
+    </div>
+    <audio id="buffer" controls muted></audio>
+    <script src="js/record.js"></script>
+    <script src="js/p5.js"></script>
+</body>
+</html>

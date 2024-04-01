@@ -3,6 +3,5 @@ version 1.73.2
 https://github.com/vasturiano/3d-force-graph/tree/master?tab=readme-ov-file
 
 
-
 JSON push / pull requests: 
 https://github.com/jamezmca/json-db

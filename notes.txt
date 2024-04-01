@@ -42,3 +42,12 @@ https://github.com/vasturiano/d3-force-3d?tab=readme-ov-file#simulation
 // check documentation for the following:
 // const simulation = d3.forceSimulation(nodes)
 // simulation.find(x[, y[, z]][, radius])
+
+
+
+
+- create own live server with node
+then : fetch request from client to server. (blob)
+
+
+server receives user data. (user.name, user.input, user.(blob)) 

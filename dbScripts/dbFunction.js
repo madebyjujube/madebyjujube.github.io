@@ -18,3 +18,4 @@ function writeDb(obj, dbName = 'db.json') {
 }
 
 module.exports = {readDb, writeDb};
+

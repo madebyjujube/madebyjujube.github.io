@@ -1,4 +1,4 @@
-const {readDb} = require('./dbFunctions');
+const {readDb} = require('./dbFunction');
 
 console.log(readDb());
 
