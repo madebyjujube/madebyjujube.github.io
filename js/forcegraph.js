@@ -4,14 +4,12 @@ import {
 import SpriteText from "//unpkg.com/three-spritetext/dist/three-spritetext.mjs";
 // import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 let x, y, z;
-let width = window.innerWidth;
-let height = window.innerHeight;
 
 const Graph = ForceGraph3D();
 
 Graph(document.getElementById('3d-graph'))
     .backgroundColor('#000')
-    .jsonUrl('../datasets/miserables.json')
+    .jsonUrl('../datasets/ono.json')
     .nodeThreeObject(node => {
         const sprite = new SpriteText(node.id);
         sprite.material.depthWrite = false;
