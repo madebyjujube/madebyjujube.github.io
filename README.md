@@ -10,13 +10,15 @@ The graph will allow user interactions that trigger and manipulate the audio (li
 What I currently have: 
 
 - 3D force graph boiler-p
-- Basic script to read and write JSON files.
-- A simple audio recorder
+- Basic script to read and write JSON files + append JSON
+- A simple audio recorder + GUI 
 
 What I need help with: 
 
-- Retrieving the position of each node
+<!-- - Retrieving the position of each node -->
+<!-- - I have difficulty wrapping my head around JS logic when using a library that has more complex nested functions... -->
+<!-- - Grasping the inner workings of the ForceGraph3D() funcrtion in 3D-Force-Graph (https://github.com/vasturiano/d3-force-3d?tab=readme-ov-file) -->
 - Pass node[i].pos.xyz to a var (I will manipulate the audio with)
-  - I have difficulty wrapping my head around JS logic when using a library that has more complex nested functions...
-- Grasping the inner workings of the ForceGraph3D() funcrtion in 3D-Force-Graph (https://github.com/vasturiano/d3-force-3d?tab=readme-ov-file)
+- Setup NodeJs backend server and install Websocket. 
+- 
 
