@@ -20,9 +20,6 @@ src:
 body {
     color: var(--c-pri);
     overflow: hidden;
-    font-family: "Poppins";
-    margin: 0;
-    padding:0;
 }
 main {
     position: absolute;
@@ -36,7 +33,8 @@ main {
     /* width: 50vw;
     height: 50vh; */
 }
-#UI-WRAPPER {
+
+/* #UI-WRAPPER {
     background-color: var(--c-bg);
     position: absolute;
     top: 0;
@@ -45,73 +43,7 @@ main {
     height: 100vh;
     display: flex;
     z-index: -1;
-}
-
-#login {
-    top: 0;
-    left: 0;
-    z-index: 1;
-}
-.button {
-    min-width: 100px;
-}
-.form-item {
-    font-size: 20px;
-    height: 50px;
-}
-
-button {
-    border: none;
-    border-style: none;
-    background-color: #fff;
-}
-button:hover {
-    border: none;
-    border-style: none;
-    background-color: #eee;
-}
-#recbtn {
-    color: red;
-    width: 50px;
-    height: 50px;
-    font-size: 30px;
-    
-}
-#cuebtn {
-    width: 50px;
-    height: 50px;
-}
-#recText {
-    width: 50px;
-    height: 50px;
-    stroke-width: 4;
-
-}
-.play-btn {
-    box-sizing: border-box;
-    position: relative;
-    display: block;
-    transform: scale(var(--ggs,3));
-    width: 25px;
-    height: 25px
-}
-.play-btn::before {
-    content: "";
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    border-left: 7px solid;
-    top: 12px;
-    left: 12px;
-}
-#buffer {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
+} */
 
 #ilogo {
     position: absolute;

@@ -7,8 +7,8 @@ import SpriteText from "//unpkg.com/three-spritetext/dist/three-spritetext.mjs";
 // import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 let ww = window.innerWidth, wh = window.innerHeight;
 let x, y, z, vx, vy, vz;
-let navw = ww * 0.2; // UI elements
-let navh = 300;
+let navw = 200; // UI elements
+let navh = 200;
 
 // Get the root element
 const root = document.documentElement;
@@ -17,6 +17,8 @@ const graphCont = document.getElementById('GRAPH');
 let style = getComputedStyle(root);
 let colorPri = style.getPropertyValue('--c-pri');
 let colorGraph = style.getPropertyValue('--c-graph');
+
+let uiH = style.getPropertyValue('--ui-h');
 // GRAPH STYLING
 
 

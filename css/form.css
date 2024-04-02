@@ -4,36 +4,100 @@
     --c-pri: #90F;
     --c-sec: #90F;
     --c-acc: #0F0;
+    --ui-height: 100px;
+    --ui-el-h: 40px;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "ab-kokikaku", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 body {
-    margin:0;
+    height: 100vh;
+    background-color: var(--c-bg);
+    color: var(--c-pri);
+    overflow: hidden;
 }
-#parent-wrapper {
-    background-color: rgb(226, 212, 180);
-    width: 300px;
-    height: 500px;
+main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* z-index: -1; */
+}
+
+/* ====================== */
+/* ====== ABSOLUTE ====== */
+/* ====================== */
+#buffer {
+    display: none;
+}
+#ilogo {
+    position: absolute;
+    bottom: 0px;
+    left: 100px;
+    height:100px;
+}
+#GRAPH {
+    position: absolute;
+    left: 50px;
+    top: 100px; 
+}
+#GRAPH-WRAPPER {
+    width: 50vw;
+    height: 50vh;
+}
+/* #UI-WRAPPER {
+    background-color: var(--c-bg);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    z-index: -1;
+} */
+
+/* ====================== */
+/* ====== GUI OOA ======= */
+/* ====================== */
+/* WRAPPERS */
+#UI-wrapper {
+    position: absolute;
+    left: var(--ui-height);
+    height: var(--ui-height);
+    margin-left: -10px;
+    width: calc(100vw - (var(--ui-height) * 2) + 20px);
+    justify-content: space-between;
 }
 #form-wrapper {
-    background-color: green;
-    width: 100%;
-    height: 50px;
+    height: var(--ui-height);
     padding: 10px;
     gap:5px;
 }
 #audio-warpper {
-    width: 300px;
-    height: 50px;
+    /* width: 250px; */
+    height: var(--ui-height);
     padding: 10px;
     gap:5px;
 }
-#buffer {
-    display: none;
-}
 
-/* BUTTONS */
+/* ELEMENTS */
+#username {
+
+}
+#loginbtn {
+    
+}
 #recbtn {
-    width: 30px;
-    height: 30px;
+    color: white;
+    font-size: 10px;
+    width: var(--ui-el-h);
+    height: var(--ui-el-h);
     background-image: url('/assets/images/Ellipse.png');
     background-size: contain;
     background-size: 60%;
@@ -51,8 +115,8 @@ body {
     background-color: rgb(0, 0, 0);
 }
 #cuebtn {
-    width: 30px;
-    height: 30px;
+    width: var(--ui-el-h);
+    height: var(--ui-el-h);
     background-image: url('/assets/images/Polygon.png');
     background-size: contain;
     background-size: 50%;
@@ -67,18 +131,19 @@ body {
     background-size: 40% !important;
     background-position: 50% !important;
 }
-canvas {
+
+#p5js canvas {
     display: block;
     border-radius: 10px;
     background-color: black;
     width: 50px;
-    height: 30px;
+    height: var(--ui-el-h);
 }
 input {
+    font-size: 16px;
     border: 1px solid #ccc;
     padding-left:10px;
-    min-width: 30px;
-    height: 26px;
+    height: var(--ui-el-h);
     border-radius: 10px;
 }
 input:hover {
@@ -94,8 +159,9 @@ input:focus {
     outline-offset: -2px;
 }
 button {
-    min-width: 30px;
-    height: 30px;
+    padding: 1px 5px;
+    min-width: var(--ui-el-h);
+    height: var(--ui-el-h);
     background-color: #eee;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -144,16 +210,4 @@ button:active {
 }
 .ys {
     align-items: end;
-}
-
-
-#feedback-parent {
-    background-image: url('/assets/images/Ellipse.png');
-    background-repeat: no-repeat;
-    border: 1px solid #ddd;;
-    position: absolute;
-    top: 300px;
-    left: 300px;
-    width: 500px;
-    height: 500px;
 }

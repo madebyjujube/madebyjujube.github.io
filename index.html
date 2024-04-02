@@ -1,53 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/form.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <!-- CDN -->
-    <script src="//unpkg.com/3d-force-graph"></script>
+    <script src="js/adobefonts.js"></script>
+    <script src="https://unpkg.com/3d-force-graph"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" integrity="sha512-jduERlz7En1IUZR54bqzpNI64AbffZWR//KJgF71SJ8D8/liKFZ+s1RxmUmB+bhCnIfzebdZsULwOrbVB5f3nQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="js/audiokeys.min.js"></script> <!-- keyboard as midi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.js"></script>
     <title>Intangible</title>
 </head>
-
 <body>
     <main>
-        <img id="logo" src="assets/images/intangible.svg" alt="INTANGIBLE LOGO">
-        
-        <div id="UI-WRAPPER" class="flexr">
-            
-            <div id="login">
-                <form>
-                    <input class="form-item" type="text" placeholder="ID" maxlength="16">
-                    <button class="form-item button" type="submit">LOGIN</button>
-                </form>
-            </div>
-
-
-            <div id="audio">
-                <button id="recbtn" type="button">
-                    <p id="recText">○</p>
+        <img id="ilogo" src="assets/images/intangible.svg" alt="INTANGIBLE LOGO">
+        <div id="UI-wrapper" class="flexr yc">
+            <form  class="flexr yc" id="form-wrapper">
+                
+                <input id="username" class="form-item" type="username" placeholder="ID" maxlength="16" required>
+                
+                <button id="loginbtn" class="form-item button flexc xc yc" type="submit">LOGIN</button>
+                
+            </form>
+            <form class="flexr yc" id="audio-warpper">
+                
+                <!-- <p id="countdown">5</p> -->
+                
+                <button class="flexc xc yc" id="recbtn" type="button">
+                    <!-- RECORD -->
                 </button>
                 <button id="cuebtn" type="button">
-                    ▶
+                    <!-- PLAY -->
                 </button>
-                <form>
-                    <input class="form-item" type="text" placeholder="NAME">
-                    <button class="form-item" type="submit">SUMBIT!</button>
-                </form>
-            </div>
-            
-            <audio id="buffer" controls></audio>
-            
+                <div id="p5js" width="50px"></div>
+                <button onsubmit="return false" type="submit">UPLOAD</button>
+            </form>
         </div>
-        <!-- GRAPH GRAPH GRAPH!!!!! IM HERE...! -->
-        <div id="GRAPH-WRAPPER">
-            <div id="GRAPH"></div>
-        </div>
+        <div id="GRAPH"></div>
     </main>
-
-
+    <audio id="buffer" controls muted></audio>
+    
+    
     <script type="importmap">
         { 
             "imports": { 
@@ -56,8 +49,10 @@
         }
     </script>
     
-
     <!-- MY_SCRIPTS -->
+    <script src="js/variables.js"></script>
+    <script src="js/intangibleAudio.js"></script>
     <script src="js/record.js"></script>
     <script src="js/forcegraph.js" type="module"></script>
 </body>
+</html>
