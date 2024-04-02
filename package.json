@@ -1,7 +1,10 @@
 {
-  "name": "intangible_node",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "name": "textnodes",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,10 +12,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.19.2",
-    "install": "^0.13.0",
-    "npm": "^10.5.0",
-    "socket.io": "^4.7.5"
-  }
+  "description": ""
 }
