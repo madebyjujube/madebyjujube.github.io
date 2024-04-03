@@ -1,23 +1,32 @@
 const express = require('express');
-const { createServer } = require('node:http');
-const { join } = require('node:path');
-const { Server } = require('socket.io');
+const {
+  createServer
+} = require('node:http');
+const {
+  Server
+} = require('socket.io');
 
 const app = express();
 const server = createServer(app);
-const io =  new Server(server);
+const io = new Server(server);
 
 app.use(express.static('public_html'));
-// app.get('/', (req, res) => {
-//   res.sendFile(join(__dirname, 'public_html/index.html'));
-// });
 
-
-// io.on('connection', newConnection) // alternatively do callback function
 io.on('connection', (socket) => {
   console.log('a user connected', socket.id);
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
+
+  socket.on('client-event-1', (arg) => {
+    console.log(arg); // 'world'
+  });
 });
 
-server.listen(3000, () => {
+server.listen(process.env.PORT || 3000, () => {
   console.log('listening on port 3000');
 });

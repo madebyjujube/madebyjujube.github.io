@@ -15,9 +15,9 @@ UI
 SERVER
 - DB read/write
 - DB append function (by sabine) ^_^
-- 
 - Nodejs setup
 - Websocket setup
+- 
 
 
 //////
@@ -41,6 +41,5 @@ UI
 - GUI: volume, 
 
 SERVER
-- DB read/write
 - create DB on user login
-- add 
+- 
