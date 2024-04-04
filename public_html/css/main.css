@@ -75,7 +75,10 @@ main {
     padding: 10px;
     gap:5px;
 }
-
+#audio-warpper:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
 /* ELEMENTS */
 #username {
 
@@ -83,12 +86,15 @@ main {
 #loginbtn {
     
 }
+#editbtn {
+    display: none;
+}
 #recbtn {
     color: white;
     font-size: 10px;
     width: var(--ui-el-h);
     height: var(--ui-el-h);
-    background-image: url('/assets/images/Ellipse.png');
+    background-image: url('../assets/images/Ellipse.png');
     background-size: contain;
     background-size: 60%;
     background-position: 50%;
@@ -98,7 +104,7 @@ main {
     outline: 1px solid red;
     outline-offset: -2px;
     background-color: rgb(154, 0, 0);
-    background-image: url('/assets/images/Stop.png') !important;
+    background-image: url('../assets/images/Stop.png') !important;
     background-size: 55% !important;
 }
 .recording:hover {
@@ -107,17 +113,17 @@ main {
 #cuebtn {
     width: var(--ui-el-h);
     height: var(--ui-el-h);
-    background-image: url('/assets/images/Polygon.png');
+    background-image: url('../assets/images/Polygon.png');
     background-size: contain;
     background-size: 50%;
     background-position: 55% 50%;
     background-repeat: no-repeat;
 }
 #cuebtn:disabled {
-    background-image: url('/assets/images/Polygon_disabled.png');
+    background-image: url('../assets/images/Polygon_disabled.png');
 }
 .playing {
-    background-image: url('/assets/images/Pause.png') !important;
+    background-image: url('../assets/images/Pause.png') !important;
     background-size: 40% !important;
     background-position: 50% !important;
 }
@@ -129,6 +135,9 @@ main {
     width: 50px;
     height: var(--ui-el-h);
 }
+#nodename {
+
+}
 input {
     font-size: 16px;
     border: 1px solid #ccc;
@@ -136,14 +145,15 @@ input {
     height: var(--ui-el-h);
     border-radius: 10px;
 }
-input:hover {
+
+input:hover:not([disabled]) {
     background-color: #f0f0f0;
 }
-input:active {
+input:active:not([disabled]) {
     border: 1px solid #ccc;
     outline: 1px solid var(--c-pri);
 }
-input:focus {
+input:focus:not([disabled]) {
     border: 1px solid #ccc;
     outline: 1px solid var(--c-pri);
     outline-offset: -2px;
