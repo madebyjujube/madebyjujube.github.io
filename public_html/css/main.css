@@ -6,6 +6,7 @@
     --c-acc: #0A0;
     --ui-height: 100px;
     --ui-el-h: 40px;
+    --ui-el-w: 60px;
 }
 * {
     margin: 0;
@@ -75,18 +76,36 @@ main {
     padding: 10px;
     gap:5px;
 }
-#audio-warpper:disabled {
-    pointer-events: none;
-    opacity: 0.5;
-}
-/* ELEMENTS */
-#username {
 
+/* ELEMENTS */
+#username:disabled {
+    color: var(--c-pri) !important;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--c-pri) !important;
+  /* transition: background-color 5000s ease-in-out 0s; */
+  background-color: #ccc;
+}
+
+/* input:disabled:-webkit-autofill {
+    -webkit-text-fill-color: var(--c-pri) !important;
+    background-color: var(--c-pri) !important;
+} */
+
 #loginbtn {
-    
+    width: var(--ui-el-w);
 }
 #editbtn {
+    width: var(--ui-el-w);
     display: none;
 }
 #recbtn {
@@ -99,6 +118,9 @@ main {
     background-size: 60%;
     background-position: 50%;
     background-repeat: no-repeat;
+}
+#recbtn:disabled {
+    background-image: url('../assets/images/Ellipse_disabled.png');
 }
 .recording {
     outline: 1px solid red;
@@ -145,7 +167,6 @@ input {
     height: var(--ui-el-h);
     border-radius: 10px;
 }
-
 input:hover:not([disabled]) {
     background-color: #f0f0f0;
 }
@@ -166,10 +187,9 @@ button {
     border: 1px solid #ccc;
     border-radius: 10px;
 }
-button:disabled {
+button:disabled, input:disabled {
     outline: 1px solid #ccc;
     outline-offset: -2px;
-    
     background-color: #ddd;
 }
 button:disabled:active {
@@ -181,7 +201,6 @@ button:hover {
 button:active {
     background-color: #eee;
 }
-
 
 
 /* FLEX CLASSES */
@@ -211,3 +230,6 @@ button:active {
 .ys {
     align-items: end;
 }
+
+
+/* MEDIA QUERIES */

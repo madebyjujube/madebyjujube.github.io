@@ -6,7 +6,7 @@
 // generate a random id for users when they send a request. 
 // UserRequest(); Object will be used to generate the request. 
 const socket = io();
-let randId, userName, fileName, duration;
+let randId, userName, fileName, duration, source, target, nodeData, userData;
 
 // RECORD VARS
 var recTimer, countInt;
@@ -39,17 +39,22 @@ let recording = false;
 let playing = false;
 recBtn.disabled = !Tone.UserMedia.supported;
 cueBtn.disabled = true;
+loginBtn.disabled = true;
 uploadBtn.disabled = true;
 nodeName.disabled = true;
-audioWarpper.disabled = true;
+recBtn.disabled = true;
 
-const userData = {
-    id: 'randId();',
-    name: '',
-    fileName: '',
-    mp3File: '',
-    duration: '',
-};
+
+inputID.addEventListener('input', () => {
+    loginBtn.removeAttribute('disabled');
+});
+
+socket.on('connect', async () => {
+    source = socket.io.engine.id;
+    userData = await {
+        id: source
+    };
+});
 
 loginBtn.addEventListener('click', (e) => {
     let isFormValid = inputID.checkValidity();
@@ -58,27 +63,32 @@ loginBtn.addEventListener('click', (e) => {
     } else {
         e.preventDefault();
         inputID.disabled = true;
+        recBtn.removeAttribute('disabled');
         loginBtn.style.display = 'none';
         editBtn.style.display = 'flex';
         console.log('hi');
         userData.name = inputID.value;
-        console.log(userData);
         fetch('/receive-data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            })
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(error => {
-                console.error(error);
-                // alert('Error:'+ error);
-            })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => {
+            console.error(error);
+        })
     }
+    console.log(userData);
 });
-
+editBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    inputID.removeAttribute('disabled');
+    loginBtn.style.display = 'flex';
+    editBtn.style.display = 'none';
+});
 // RECORDER BELOW :)
 // :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-)
 // :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-)
@@ -252,3 +262,27 @@ function draw() {
         endShape();
     }
 }
+
+
+
+
+
+// ======================================================
+// ===================== SERVER =========================
+// ======================================================
+
+
+
+
+// socket.on('connect', function(){
+//     source = socket.io.engine.id;
+//     nodeData = {
+//         "nodes": [
+//             {"id": "meowwww"}
+//         ],
+//         "links": [
+//             {"source": source, "target": target}
+//         ]
+//     };
+//     console.log(nodeData);
+// })
