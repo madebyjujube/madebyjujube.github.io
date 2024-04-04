@@ -15,14 +15,25 @@ const io = new Server(server);
 
 
 app.use(express.static('public_html'));
-app.use(express.static('node_modules'));
+// app.use(express.static('node_modules'));
 
 app.use(express.json());
 app.post("/receive-data", writeDatatoJSON);
 
+
+
+// RECEIVING THIS WHEN USER SUBMITS AUDIO: 
+// I WANT FILENAME TO BECOME 
+  // NODE: 
+    // "ID": '...',  
+  // LINKS: 
+    // "SOURCE": '...' 
+
+    // "TARGET": ideally should generate random link based on node.id.length. 
+    // If empty, target === source. 
 function writeDatatoJSON(req, res) {
-  writeDb(req.body)
-  res.send('response');
+  writeDb( req.body.filename )
+  res.send('server received and wrote data to JSON file');
 }
 
 io.on('connection', (socket) => {
@@ -33,10 +44,6 @@ io.on('connection', (socket) => {
 
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg);
-  });
-
-  socket.on('client-event-1', (arg) => {
-    console.log(arg); // 'world'
   });
 });
 
@@ -59,6 +66,6 @@ app.post('/upload', upload.single('audio'), postUploadHandler);
 
 function postUploadHandler(req, res) {
   console.log(req.file);
-  writeDb( { filename: req.file.originalname} );
-  res.send('success');
+  // writeDb( { filename: req.file.originalname} );
+  res.send('server received audio, upload successful');
 }

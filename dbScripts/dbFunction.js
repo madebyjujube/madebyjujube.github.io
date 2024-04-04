@@ -6,7 +6,7 @@ function readDb(dbName = 'db.json') {
 }
 
 // Credits to Sabine: wrote this function that appends to the JSON file :-)
-function writeDb(obj, dbName = './public_html/datasets.json') {
+function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
     if (!obj) {
         return console.log('database not found')
     }

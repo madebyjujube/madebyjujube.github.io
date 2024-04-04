@@ -44,6 +44,20 @@ uploadBtn.disabled = true;
 nodeName.disabled = true;
 recBtn.disabled = true;
 
+// var newGraph = {
+//     nodes: [
+//         {
+//             id: ""
+//         }
+
+//     ],
+//     links: [
+//         {
+//             source: "", 
+//             target: ""
+//         }
+//     ]
+// }
 
 inputID.addEventListener('input', () => {
     loginBtn.removeAttribute('disabled');
@@ -66,22 +80,9 @@ loginBtn.addEventListener('click', (e) => {
         recBtn.removeAttribute('disabled');
         loginBtn.style.display = 'none';
         editBtn.style.display = 'flex';
-        console.log('hi');
-        userData.name = inputID.value;
-        fetch('/receive-data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-        })
-        .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => {
-            console.error(error);
-        })
+        userData.username = inputID.value;
+        console.log("USERNAME ADDED", userData);
     }
-    console.log(userData);
 });
 editBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -114,7 +115,7 @@ recBtn.addEventListener("click", async (e) => {
         mic.connect(dest);
         initialized = true;
     }
-
+    
     if (recording == true) {
         recBtn.classList.remove('recording');
         recBtn.style.backgroundImage = 'url(../assets/images/Ellipse.png)'
@@ -126,7 +127,7 @@ recBtn.addEventListener("click", async (e) => {
         clearTimeout(recTimer);
         clearInterval(countInt);
         recBtn.innerHTML = '';
-
+        
     } else {
         recBtn.classList.add('recording');
         cueBtn.setAttribute('disabled', 1);
@@ -187,31 +188,46 @@ recorder.onstop = () => {
         type: 'audio/wav, codecs=opus'
     });
     // add input field and get input.value = filename
-    let filename = 'name me soon';
-    let file = new File([blob], `${filename}.wav`);
-
+    
     audio.src = URL.createObjectURL(blob);
     player = new Tone.Player(audio.src).toDestination();
-
+    
     uploadBtn.addEventListener('click', async (e) => {
-        console.log('hi');
         e.preventDefault();
+        let filename = nodeName.value;
+        let file = new File([blob], `${filename}.wav`);
         const formData = new FormData();
         formData.append('audio', file, `${filename}.wav`);
-        formData.append('test', 'bananas')
-
+        
         const response = await fetch('/upload', {
             method: 'POST',
             cache: 'no-cache',
             body: formData
         })
+        
+        userData.filename = nodeName.value;
+        
+        // pushing userData to server to be written into JSON file. 
+        fetch('/receive-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => {
+            console.error(error);
+        })
         console.log(await response.text());
+        console.log("NODENAME ADDED AND AUDIO SENT", userData);
     });
 };
 
 // PLAY RECORDED AUDIO + UI 
 cueBtn.onclick = () => {
-
+    
     if (playing === false) {
         audio.play();
         player.start();
