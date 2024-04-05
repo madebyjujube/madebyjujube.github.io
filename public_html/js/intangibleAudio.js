@@ -5,6 +5,8 @@
 // RETRIEVE GRAPH CANVAS CENTER OF WINDOW (XYZ: 0)
 // generate a random id for users when they send a request. 
 // UserRequest(); Object will be used to generate the request. 
+
+
 const socket = io();
 let randId, userName, fileName, duration, source, target, nodeData, userData;
 
@@ -44,12 +46,29 @@ uploadBtn.disabled = true;
 nodeName.disabled = true;
 recBtn.disabled = true;
 
-// var newGraph = {
+// var newGraph = 
+// {
+//     "nodes": [
+//         {
+//             "id": ""
+//         }
+        
+//     ],
+//     "links": [
+//         {
+//             "source": "", 
+//             "target": ""
+//         }
+//     ]
+// }
+
+// var newGraph = 
+// {
 //     nodes: [
 //         {
 //             id: ""
 //         }
-
+        
 //     ],
 //     links: [
 //         {
@@ -58,6 +77,15 @@ recBtn.disabled = true;
 //         }
 //     ]
 // }
+let url = '../datasets/ono-2.json';
+
+async function getJSON() {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    console.log(data.nodes[0].id)
+}
+getJSON();
 
 inputID.addEventListener('input', () => {
     loginBtn.removeAttribute('disabled');
@@ -68,6 +96,9 @@ socket.on('connect', async () => {
     userData = await {
         id: source
     };
+    // newGraph.nodes.id = await {
+    //     uniqueid: source
+    // };
 });
 
 loginBtn.addEventListener('click', (e) => {
@@ -204,16 +235,33 @@ recorder.onstop = () => {
             cache: 'no-cache',
             body: formData
         })
-        
-        userData.filename = nodeName.value;
+        let myId = nodeName.value
+        let newGraph = {
+            "nodes": [
+                {
+                    "id": myId
+                }
+                
+            ],
+            "links": [
+                {
+                    "source": myId, 
+                    "target": Math.round(Math.random() * 10)
+                }
+            ]
+        }
+        // THIS IS WHAT I NEED TO WRITE IN JSON FILE
+        // newGraph.nodes.id = myId;
+        // newGraph.links.source = myId;
+        // newGraph.links.target = Math.round(Math.random() * (newGraph.nodes.id-1))
         
         // pushing userData to server to be written into JSON file. 
-        fetch('/receive-data', {
+        fetch('/node-data', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(newGraph)
         })
         .then(response => response.text())
         .then(data => console.log(data))
@@ -221,7 +269,7 @@ recorder.onstop = () => {
             console.error(error);
         })
         console.log(await response.text());
-        console.log("NODENAME ADDED AND AUDIO SENT", userData);
+        console.log("NODENAME ADDED AND AUDIO SENT", JSON.stringify(newGraph));
     });
 };
 

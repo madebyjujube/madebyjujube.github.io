@@ -1,11 +1,11 @@
 const fs = require('fs');
 
-function readDb(dbName = 'db.json') {
+function readDb(dbName = './public_html/datasets/ono-2.json') {
     const data = fs.readFileSync(dbName, 'utf8');
     return JSON.parse(data);
 }
 
-// Credits to Sabine: wrote this function that appends to the JSON file :-)
+// Credits to Sabine: provided this function that appends to the JSON file :-)
 function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
     if (!obj) {
         return console.log('database not found')
@@ -37,6 +37,4 @@ function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
         console.log('save failed, ' + err);
     }
 }
-
 module.exports = {readDb, writeDb};
-
