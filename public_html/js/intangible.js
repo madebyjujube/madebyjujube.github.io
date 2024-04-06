@@ -183,7 +183,7 @@ function stopRecording() {
         recorder.stop();
     }
 }
-
+// ON INPUT => MAKE BTN AVAILABLE
 nodeName.addEventListener('input', () => {
     uploadBtn.removeAttribute('disabled');
 });
@@ -194,6 +194,14 @@ recorder.ondataavailable = (e) => {
     chunks.pop(); // erase previous chunk
     chunks.push(e.data);
 };
+
+// ON STOP RECORDING => 
+// - create new blob + add it to audio. 
+// - listen for uploadBtn click
+// - SERVER: 
+// - upload audio file
+// - send file name to database
+
 recorder.onstop = () => {
     let blob = new Blob(chunks, {
         type: 'audio/wav, codecs=opus'
@@ -215,27 +223,25 @@ recorder.onstop = () => {
             cache: 'no-cache',
             body: formData
         })
-        let myId = nodeName.value
+        
         let newGraph = {
             nodes: [
                 {
-                    id: myId
+                    id: filename
                 }
                 
             ],
             links: [
                 {
-                    source: myId, 
+                    source: filename, 
                     target: Math.round(Math.random() * 10)
                 }
             ]
         }
-        // THIS IS WHAT I NEED TO WRITE IN JSON FILE
-        // newGraph.nodes.id = myId;
-        // newGraph.links.source = myId;
+        // can use socket.io and request the readDb() to look for the following:  
+        // NEED TO LOOK AT JSON FILE FIRST AND DETERMINE const numNodes = node.length, and then run: Math.round(Math.random() * numNodes)
         // newGraph.links.target = Math.round(Math.random() * (newGraph.nodes.id-1))
         
-        // pushing userData to server to be written into JSON file. 
         fetch('/node-data', {
             method: 'POST',
             headers: {
