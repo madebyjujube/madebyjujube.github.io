@@ -1,16 +1,16 @@
-const { writeDb } = require('./dbScripts/dbFunction.js')
 const express = require('express');
-const { createServer } = require('node:http');
-const { Server } = require('socket.io');
-const multer = require('multer'); // read binary
 const app = express();
-const server = createServer(app);
-const io = new Server(server);
 app.use(express.static('public_html'));
 app.use(express.json());
-server.listen(process.env.PORT || 3000, () => {
-  console.log('listening on port 3000');
-});
+
+const { Server } = require('socket.io');
+const { createServer } = require('node:http');
+const { writeDb } = require('./dbScripts/dbFunction.js')
+const { updateJSONFile } = require('./dbScripts/dbFunction.js')
+const multer = require('multer'); // read binary
+const server = createServer(app);
+const io = new Server(server);
+const fs = require('fs');
 
 
 // RECEIVING THIS WHEN USER SUBMITS AUDIO: 
@@ -25,15 +25,16 @@ app.post('/node-data', writeDatatoJSON);
     // "TARGET": ideally should generate random link based on node.id.length. 
     // If empty, target === source. 
 function writeDatatoJSON(req, res) {
-  writeDb( req.body )
+  console.log( req.body.nodes )
+  // writeDb( req.body )
+  updateJSONFile( req.body )
   res.send('server received and wrote data to JSON file');
 }
-// // USER DATA: 
+// // USER DATA (contains username and socket id): 
 // app.post("/user-data", writeDatatoJSON);
 // function writeDatatoJSON(req, res) {
 //   writeDb( req.body, './public_html/datasets/user-data.json' )
 // }
-
 
 // CHATBOX
 io.on('connection', (socket) => {
@@ -60,7 +61,12 @@ const upload = multer({ storage: storage });
 app.post('/upload', upload.single('audio'), postUploadHandler);
 // RESPONSE
 function postUploadHandler(req, res) {
-  console.log(req.file);
+  // console.log(req.file);
   // writeDb( { filename: req.file.originalname} );
-  res.send('server received audio, upload successful');
+  res.send('audio uploaded');
 }
+
+// START SERVER
+server.listen(process.env.PORT || 3000, () => {
+  console.log('listening on port 3000');
+});

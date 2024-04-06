@@ -8,20 +8,23 @@ function readDb(dbName = './public_html/datasets/ono-2.json') {
 // Credits to Sabine: provided this function that appends to the JSON file :-)
 function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
     if (!obj) {
-        return console.log('database not found')
+        return console.log('oops', 'database not found')
     }
     try {
         //check if file is empty ;0
         //if file is empty - make an empty arr and write
         if(fs.readFileSync(dbName, 'utf8').length ===0){
-          let arr = [];
-          arr.push(obj);
-          fs.writeFileSync(dbName,JSON.stringify(arr ));
+            console.log('writing to new');
+            let arr = [];
+            arr.push(obj);
+            //   ***problem reading when pushed as array, i need JSON file to start with {}, not []...***
+            fs.writeFileSync(dbName,JSON.stringify(arr ));
         }
         //have data already in the file
         //read in entire array and then out...
         else
         {
+        console.log('writing to existing');
         // read the data
         let _data = fs.readFileSync(dbName, 'utf8');
         //parse as ab array
@@ -37,4 +40,27 @@ function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
         console.log('save failed, ' + err);
     }
 }
-module.exports = {readDb, writeDb};
+
+function updateJSONFile(userData) {
+    // Read existing JSON data from the file
+    const jsonData = JSON.parse(fs.readFileSync('./public_html/datasets/ono-2.json', 'utf-8'));
+
+    // Extract nodes and links from the user data
+    const { nodes, links } = userData;
+
+    // Append new nodes to the existing nodes array
+    if (nodes && nodes.length > 0) {
+        jsonData.nodes.push(...nodes);
+    }
+
+    // Append new links to the existing links array
+    if (links && links.length > 0) {
+        jsonData.links.push(...links);
+    }
+
+    // Write the updated JSON data back to the file
+    fs.writeFileSync('./public_html/datasets/ono-2.json', JSON.stringify(jsonData));
+}
+
+
+module.exports = {readDb, writeDb, updateJSONFile};

@@ -157,9 +157,9 @@ select:-webkit-autofill:focus {
     width: 50px;
     height: var(--ui-el-h);
 }
-#nodename {
+/* #nodename {
 
-}
+} */
 input {
     font-size: 16px;
     border: 1px solid #ccc;

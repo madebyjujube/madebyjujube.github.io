@@ -1,11 +1,4 @@
-// what I want to do here: 
-// REQUEST: audio fetch(request to UPLOAD audio and user data) to the server dataBase. 
-// Create an environment to manipulate audio 
-// Audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) - 
-// RETRIEVE GRAPH CANVAS CENTER OF WINDOW (XYZ: 0)
-// generate a random id for users when they send a request. 
-// UserRequest(); Object will be used to generate the request. 
-
+// want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) - 
 
 const socket = io();
 let randId, userName, fileName, duration, source, target, nodeData, userData;
@@ -18,7 +11,6 @@ let time = 5;
 let recLimit = time * 1000; // Max time allowed to record in ms 
 
 // CALLBACK FN
-// const countInterval = setInterval(count, 1000);
 const recBtn = document.getElementById('recbtn');
 const recText = document.getElementById('recText');
 const cueBtn = document.getElementById('cuebtn');
@@ -27,6 +19,11 @@ const actx = Tone.context;
 const audio = document.querySelector('#buffer');
 const dest = actx.createMediaStreamDestination();
 const recorder = new MediaRecorder(dest.stream);
+
+// css root styles
+const root = document.documentElement;
+let style = getComputedStyle(root);
+let uiH = style.getPropertyValue('--ui-el-h').slice(0, -2);
 
 // login submission
 const inputID = document.getElementById('username');
@@ -48,22 +45,6 @@ recBtn.disabled = true;
 
 // var newGraph = 
 // {
-//     "nodes": [
-//         {
-//             "id": ""
-//         }
-        
-//     ],
-//     "links": [
-//         {
-//             "source": "", 
-//             "target": ""
-//         }
-//     ]
-// }
-
-// var newGraph = 
-// {
 //     nodes: [
 //         {
 //             id: ""
@@ -77,15 +58,18 @@ recBtn.disabled = true;
 //         }
 //     ]
 // }
-let url = '../datasets/ono-2.json';
 
-async function getJSON() {
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    console.log(data.nodes[0].id)
-}
-getJSON();
+
+// let url = '../datasets/ono-2.json';
+// async function getJSON() {
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     console.log(data);
+//     console.log(data.nodes[0].id)
+//     return data.nodes[0].id;
+// }
+// getJSON();
+
 
 inputID.addEventListener('input', () => {
     loginBtn.removeAttribute('disabled');
@@ -96,9 +80,6 @@ socket.on('connect', async () => {
     userData = await {
         id: source
     };
-    // newGraph.nodes.id = await {
-    //     uniqueid: source
-    // };
 });
 
 loginBtn.addEventListener('click', (e) => {
@@ -167,7 +148,6 @@ recBtn.addEventListener("click", async (e) => {
         recording = true;
         recBtn.innerHTML = '5';
         startTimer();
-        // updateCountdown();
     }
 });
 
@@ -237,16 +217,16 @@ recorder.onstop = () => {
         })
         let myId = nodeName.value
         let newGraph = {
-            "nodes": [
+            nodes: [
                 {
-                    "id": myId
+                    id: myId
                 }
                 
             ],
-            "links": [
+            links: [
                 {
-                    "source": myId, 
-                    "target": Math.round(Math.random() * 10)
+                    source: myId, 
+                    target: Math.round(Math.random() * 10)
                 }
             ]
         }
@@ -329,14 +309,9 @@ function draw() {
 
 
 
-
-
 // ======================================================
 // ===================== SERVER =========================
 // ======================================================
-
-
-
 
 // socket.on('connect', function(){
 //     source = socket.io.engine.id;
