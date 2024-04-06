@@ -1,14 +1,1 @@
-{
-    "nodes": [{
-        "id": "audioname"
-    }, {
-        "id": "aaa"
-    }],
-    "links": [{
-        "source": "audioname",
-        "target": "audioname"
-    }, {
-        "source": "aaa",
-        "target": 8
-    }]
-}
+{"nodes":[{"id":"audioname"},{"id":"aaaaa"},{"id":"butstillGotIt"},{"id":"crhkrxhkdbwa"},{"id":"goblopum"},{"id":"goblopum"},{"id":"goblopum"},{"id":"goblopum"},{"id":"goblain"}],"links":[{"source":"audioname","target":"audioname"},{"source":"aaaaa","target":null},{"source":"butstillGotIt","target":2},{"source":"crhkrxhkdbwa","target":0},{"source":"goblopum","target":0},{"source":"goblopum","target":2},{"source":"goblopum","target":1},{"source":"goblopum","target":2},{"source":"goblain","target":8}]}

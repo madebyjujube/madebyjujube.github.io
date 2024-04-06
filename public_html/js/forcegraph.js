@@ -12,14 +12,6 @@ let style = getComputedStyle(root);
 let colorPri = style.getPropertyValue('--c-pri');
 let colorGraph = style.getPropertyValue('--c-graph');
 
-// const initData = {
-//     nodes: [ {id: 0 } ],
-//     links: []
-//   };
-// initData.nodes.append({id: newId})
-// initData.links.source.append({id: newId})
-// initData.links.target.append({Math.round(Math.random() * initData.nodes.length)})
-
 window.addEventListener('resize', () => {
     ww = window.innerWidth, wh = window.innerHeight;
 });

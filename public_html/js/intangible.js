@@ -43,32 +43,16 @@ uploadBtn.disabled = true;
 nodeName.disabled = true;
 recBtn.disabled = true;
 
-// var newGraph = 
-// {
-//     nodes: [
-//         {
-//             id: ""
-//         }
-        
-//     ],
-//     links: [
-//         {
-//             source: "", 
-//             target: ""
-//         }
-//     ]
-// }
-
-
-// let url = '../datasets/ono-2.json';
-// async function getJSON() {
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     console.log(data);
-//     console.log(data.nodes[0].id)
-//     return data.nodes[0].id;
-// }
-// getJSON();
+// maybe run this inside the onstop recording? 
+var numNodes;
+async function myDatabase() {
+    let url = '../datasets/ono-2.json';
+    console.log('looking inside database for nodes...');
+    const response = await fetch(url);
+    const data = await response.json();
+    numNodes = data.nodes.length;
+}
+myDatabase();
 
 
 inputID.addEventListener('input', () => {
@@ -127,7 +111,7 @@ recBtn.addEventListener("click", async (e) => {
         mic.connect(dest);
         initialized = true;
     }
-    
+
     if (recording == true) {
         recBtn.classList.remove('recording');
         recBtn.style.backgroundImage = 'url(../assets/images/Ellipse.png)'
@@ -139,7 +123,7 @@ recBtn.addEventListener("click", async (e) => {
         clearTimeout(recTimer);
         clearInterval(countInt);
         recBtn.innerHTML = '';
-        
+
     } else {
         recBtn.classList.add('recording');
         cueBtn.setAttribute('disabled', 1);
@@ -207,53 +191,52 @@ recorder.onstop = () => {
         type: 'audio/wav, codecs=opus'
     });
     // add input field and get input.value = filename
-    
+
     audio.src = URL.createObjectURL(blob);
     player = new Tone.Player(audio.src).toDestination();
-    
+
     uploadBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         let filename = nodeName.value;
         let file = new File([blob], `${filename}.wav`);
         const formData = new FormData();
         formData.append('audio', file, `${filename}.wav`);
-        
+
         const response = await fetch('/upload', {
             method: 'POST',
             cache: 'no-cache',
             body: formData
         })
-        
         let newGraph = {
             nodes: [
-                {
-                    id: filename
+                { 
+                    id: filename 
                 }
-                
             ],
             links: [
-                {
-                    source: filename, 
-                    target: Math.round(Math.random() * 10)
+                { 
+                    source: filename,
+                    target: Math.round(Math.random() * numNodes) // async getNumNodes(), need to wait for this before doing newGraph. 
                 }
             ]
         }
+
         // can use socket.io and request the readDb() to look for the following:  
         // NEED TO LOOK AT JSON FILE FIRST AND DETERMINE const numNodes = node.length, and then run: Math.round(Math.random() * numNodes)
         // newGraph.links.target = Math.round(Math.random() * (newGraph.nodes.id-1))
-        
+
         fetch('/node-data', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newGraph)
-        })
-        .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => {
-            console.error(error);
-        })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newGraph)
+            })
+            .then(response => response.text())
+            .then(data => console.log(data))
+            .catch(error => {
+                console.error(error);
+            })
         console.log(await response.text());
         console.log("NODENAME ADDED AND AUDIO SENT", JSON.stringify(newGraph));
     });
@@ -261,7 +244,7 @@ recorder.onstop = () => {
 
 // PLAY RECORDED AUDIO + UI 
 cueBtn.onclick = () => {
-    
+
     if (playing === false) {
         audio.play();
         player.start();
