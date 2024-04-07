@@ -16,7 +16,8 @@
       {"id": "rrwaaaa"},
       {"id": "kukukuku"},
       {"id": "nyaaaa"},
-      {"id": "kêkêkê"}
+      {"id": "kêkêkê"},
+      {"id": "alex"}
     ],
     "links": [
       {"source": "wooooof", "target": "meowwww", "value": 1},
@@ -34,7 +35,9 @@
       {"source": "kukukuku", "target": "èèèèèèe", "value": 1},
       {"source": "nyaaaa", "target": "èèèèèèe", "value": 1},
       {"source": "kêkêkê", "target": "èèèèèèe", "value": 1},
-      {"source": "rrwaaaa", "target": "moo", "value": 1}
+      {"source": "rrwaaaa", "target": "moo", "value": 1},
+      {"source": "alex", "target": "nyaaaa", "value": 1},
+      {"source": "alex", "target": "moo", "value": 1}
     ]
   }
   

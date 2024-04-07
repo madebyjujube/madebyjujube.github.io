@@ -15,7 +15,7 @@ let colorGraph = style.getPropertyValue('--c-graph');
 window.addEventListener('resize', () => {
     ww = window.innerWidth, wh = window.innerHeight;
 });
-
+// .graphData(initData)
 Graph(graphCont)
 .backgroundColor(colorGraph)
 .linkOpacity(1)

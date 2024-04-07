@@ -44,13 +44,16 @@ nodeName.disabled = true;
 recBtn.disabled = true;
 
 // maybe run this inside the onstop recording? 
-var numNodes;
+var nameNode;
 async function myDatabase() {
     let url = '../datasets/ono-2.json';
     console.log('looking inside database for nodes...');
     const response = await fetch(url);
     const data = await response.json();
-    numNodes = data.nodes.length;
+    let numNodes = data.nodes.length;
+    let index = Math.round(Math.random() * numNodes)
+    nameNode = data.nodes[index].id;
+    console.log(nameNode);
 }
 myDatabase();
 
@@ -179,13 +182,14 @@ recorder.ondataavailable = (e) => {
     chunks.push(e.data);
 };
 
+
+
 // ON STOP RECORDING => 
 // - create new blob + add it to audio. 
 // - listen for uploadBtn click
 // - SERVER: 
 // - upload audio file
 // - send file name to database
-
 recorder.onstop = () => {
     let blob = new Blob(chunks, {
         type: 'audio/wav, codecs=opus'
@@ -216,7 +220,7 @@ recorder.onstop = () => {
             links: [
                 { 
                     source: filename,
-                    target: Math.round(Math.random() * numNodes) // async getNumNodes(), need to wait for this before doing newGraph. 
+                    target:  nameNode // async getNumNodes(), need to wait for this before doing newGraph. 
                 }
             ]
         }
