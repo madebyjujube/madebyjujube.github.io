@@ -1,5 +1,4 @@
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) - 
-
 const socket = io();
 let randId, userName, fileName, duration, source, target, nodeData, userData;
 
@@ -46,7 +45,7 @@ recBtn.disabled = true;
 // maybe run this inside the onstop recording? 
 var nameNode;
 async function myDatabase() {
-    let url = '../datasets/ono-2.json';
+    let url = '../datasets/ono.json';
     console.log('looking inside database for nodes...');
     const response = await fetch(url);
     const data = await response.json();
@@ -55,8 +54,6 @@ async function myDatabase() {
     nameNode = data.nodes[index].id;
     console.log(nameNode);
 }
-myDatabase();
-
 
 inputID.addEventListener('input', () => {
     loginBtn.removeAttribute('disabled');
@@ -135,6 +132,7 @@ recBtn.addEventListener("click", async (e) => {
         recording = true;
         recBtn.innerHTML = '5';
         startTimer();
+        myDatabase(); // check current node count :)
     }
 });
 
@@ -143,7 +141,6 @@ function count() {
     if (time > -1) {
         updateCountdown();
     } else {
-        // stopRecording();
         recBtn.innerHTML = '';
         clearInterval(countInt);
         time = 5;
@@ -211,6 +208,8 @@ recorder.onstop = () => {
             cache: 'no-cache',
             body: formData
         })
+        console.log('audio sent to server! thank you :3')
+
         let newGraph = {
             nodes: [
                 { 
@@ -220,14 +219,10 @@ recorder.onstop = () => {
             links: [
                 { 
                     source: filename,
-                    target:  nameNode // async getNumNodes(), need to wait for this before doing newGraph. 
+                    target:  nameNode
                 }
             ]
         }
-
-        // can use socket.io and request the readDb() to look for the following:  
-        // NEED TO LOOK AT JSON FILE FIRST AND DETERMINE const numNodes = node.length, and then run: Math.round(Math.random() * numNodes)
-        // newGraph.links.target = Math.round(Math.random() * (newGraph.nodes.id-1))
 
         fetch('/node-data', {
                 method: 'POST',
@@ -286,14 +281,11 @@ function draw() {
         background('black');
         stroke('white');
         noFill();
-
-        let buffer = waveform.getValue(0); // Get the waveform directly from Tone.Waveform
-        // scale(0.5);
+        let buffer = waveform.getValue(0);
         beginShape();
         for (let i = 0; i < buffer.length; i++) {
             let x = map(i, 0, buffer.length, 0, width);
             let y = map(buffer[i], -0.5, 0.5, 0, height);
-            // point(x, y);
             vertex(x, y);
         }
         endShape();

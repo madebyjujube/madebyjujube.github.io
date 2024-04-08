@@ -2,7 +2,9 @@
   "dependencies": {
     "express": "^4.19.2",
     "multer": "^1.4.5-lts.1",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "three": "^0.163.0",
+    "tone": "^14.7.77"
   },
   "name": "textnodes",
   "version": "1.0.0",

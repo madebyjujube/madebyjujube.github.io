@@ -1,27 +1,39 @@
 import SpriteText from "//unpkg.com/three-spritetext/dist/three-spritetext.mjs";
+
 let ww = window.innerWidth, wh = window.innerHeight;
 // let x, y, z, vx, vy, vz;
 let navw = 200; // UI elements
 let navh = 200;
 
 // Get the root element
-const root = document.documentElement;
 const Graph = ForceGraph3D();
 const graphCont = document.getElementById('GRAPH');
+const databasePath = "../datasets/ono.json";
+const root = document.documentElement;
 let style = getComputedStyle(root);
 let colorPri = style.getPropertyValue('--c-pri');
 let colorGraph = style.getPropertyValue('--c-graph');
-
+var database;
+  
+socket.on('init-database', (data) => {
+    database = data;
+    Graph.graphData(database)
+});
+socket.on('database-changed', (data) => {
+    console.log('change')
+    database = data;
+    Graph.graphData(database)
+});
 window.addEventListener('resize', () => {
     ww = window.innerWidth, wh = window.innerHeight;
 });
-// .graphData(initData)
 Graph(graphCont)
 .backgroundColor(colorGraph)
 .linkOpacity(1)
 .linkWidth(0.1)
 .linkColor('#0F0')
-.jsonUrl('../datasets/ono.json')
+// .graphData(database)
+.jsonUrl(databasePath)
 .nodeThreeObject(node => {
     const sprite = new SpriteText(node.id);
     sprite.material.depthWrite = false;

@@ -1,12 +1,12 @@
 const fs = require('fs');
 
-function readDb(dbName = './public_html/datasets/ono-2.json') {
+function readDb(dbName = './public_html/datasets/ono.json') {
     const data = fs.readFileSync(dbName, 'utf8');
     return JSON.parse(data);
 }
 
 // Credits to Sabine: provided this function that appends to the JSON file :-)
-function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
+function writeDb(obj, dbName = 'user-data.json') {
     if (!obj) {
         return console.log('oops', 'database not found')
     }
@@ -14,7 +14,6 @@ function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
         //check if file is empty ;0
         //if file is empty - make an empty arr and write
         if(fs.readFileSync(dbName, 'utf8').length ===0){
-            console.log('writing to new');
             let arr = [];
             arr.push(obj);
             //   ***problem reading when pushed as array, i need JSON file to start with {}, not []...***
@@ -41,9 +40,9 @@ function writeDb(obj, dbName = './public_html/datasets/ono-2.json') {
     }
 }
 
-function updateJSONFile(userData) {
+function updateJSONFile(userData, url) {
     // Read existing JSON data from the file
-    const jsonData = JSON.parse(fs.readFileSync('./public_html/datasets/ono-2.json', 'utf-8'));
+    const jsonData = JSON.parse(fs.readFileSync(url, 'utf-8'));
 
     // Extract nodes and links from the user data
     const { nodes, links } = userData;
@@ -59,7 +58,7 @@ function updateJSONFile(userData) {
     }
 
     // Write the updated JSON data back to the file
-    fs.writeFileSync('./public_html/datasets/ono-2.json', JSON.stringify(jsonData));
+    fs.writeFileSync(url, JSON.stringify(jsonData));
 }
 
 
