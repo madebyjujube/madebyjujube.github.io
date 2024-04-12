@@ -16,8 +16,6 @@ const fs = require('node:fs');
 const databasePath = "./public_html/datasets/ono.json";
 let database = JSON.parse(fs.readFileSync(databasePath));  
 
-
-
 // client submits audio: 
 app.post('/node-data', writeDatatoJSON);
 // USER DATA (contains username and socket id): 
