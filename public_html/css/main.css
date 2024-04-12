@@ -71,7 +71,6 @@ main {
     gap:5px;
 }
 #audio-warpper {
-    /* width: 250px; */
     height: var(--ui-height);
     padding: 10px;
     gap:5px;
