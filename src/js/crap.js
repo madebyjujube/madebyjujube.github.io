@@ -55,3 +55,44 @@ Graph = changeGraphData(Graph, newData);
 //     resizeGraph()
 //     })
 
+// from intangible.js promise something
+// ox refactor
+//
+// promise maker: check db
+// async function getDatabase() {
+//     // let url = '../assets/datasets/ono.json'
+//     const response = await fetch(url)
+//     console.log(response)
+//     try {
+//         const data = await response.json()
+//     }
+//     catch(e) {
+//        console.log("json parsing error:", e)
+//     }
+
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             resolve(data)
+//             reject('error')
+//         }, 100)
+//     })
+// }
+// // promise receiver: determine target
+
+// function findTarget(data) {
+//     let countNodes = data.nodes.length
+//     let randIndex = Math.round(Math.random() * countNodes)
+//     let newTarget = data.nodes[randIndex].id
+//     return newTarget
+
+// }
+// function onSuccess(data) {
+//     console.log('success:', data)
+// }
+// function onError(error) {
+//     console.log('error:', error)
+// }
+
+// let newTargetName = await getDatabase().then(onSuccess, onError).then(findTarget)
+// console.log(newTargetName)
+

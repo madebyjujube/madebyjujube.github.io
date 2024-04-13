@@ -9,6 +9,7 @@
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) -
 import { io } from "socket.io-client";
 import * as Tone from "tone";
+import { initAudio } from "./audio";
 
 // networking
 //
@@ -82,18 +83,21 @@ export function uiInit() {
   // events
 
   window.addEventListener("click", initAudio, { once: true });
+  window.addEventListener("keydown", initAudio, { once: true });
+
   loginBtn.addEventListener("click", loginBtnClick);
   editBtn.addEventListener("click", editBtnClick);
   inputID.addEventListener("input", inputClick);
   recBtn.addEventListener("click", (e) => {
     initMic();
     startStopRec(e);
-    allowUpload();
+    enableUploadButtonIf();
   });
 
   cueBtn.addEventListener("click", cueBtnClick);
-  nodeName.addEventListener("input", allowUpload);
+  nodeName.addEventListener("input", enableUploadButtonIf);
   recBtn.removeAttribute("disabled");
+  uploadBtn.addEventListener("click", uploadBtnCallback);
 
   // POPULATE BUFFER: chunks[]
   recorder.ondataavailable = recorderOnDataCallback;
@@ -114,6 +118,39 @@ function recorderOnDataCallback() {
   chunks.push(e.data);
 }
 
+async function uploadBtnCallback() {
+  // if (state == false) return
+
+  e.preventDefault();
+  let filename = nodeName.value;
+
+  let buffer = await blob.arrayBuffer();
+  let file = new File([blob], `${filename}.wav`);
+  const formData = new FormData();
+  formData.append("audio", file, `${filename}.wav`);
+
+  socket.emit("upload_audio", { buffer, name: nodeName.value });
+  console.log("audio sent to server! thank you :3", formData);
+
+  let newGraph = {
+    nodes: [
+      {
+        id: filename,
+      },
+    ],
+    links: [
+      {
+        source: filename,
+        target: newTargetName,
+      },
+    ],
+  };
+  socket.emit("newNode", newGraph);
+
+  // console.log(await response.text())
+  // console.log("NODENAME ADDED AND AUDIO SENT", JSON.stringify(newGraph))
+}
+
 /**
  * ON STOP RECORDING =>
  * - create new blob + add it to audio.
@@ -130,93 +167,7 @@ function recorderOnStopCallback() {
 
   audio.src = URL.createObjectURL(blob);
   player = new Tone.Player(audio.src).toDestination();
-
-  uploadBtn.addEventListener("click", async (e) => {
-    // if (state == false) return
-
-    e.preventDefault();
-    let filename = nodeName.value;
-
-    let buffer = await blob.arrayBuffer();
-    let file = new File([blob], `${filename}.wav`);
-    const formData = new FormData();
-    formData.append("audio", file, `${filename}.wav`);
-
-    socket.emit("upload_audio", { buffer, name: nodeName.value });
-    // const response = await fetch('/upload', {
-    //     method: 'POST',
-    //     cace: 'no-cache',
-    //     body: formData
-    // })
-    console.log("audio sent to server! thank you :3", formData);
-    let newGraph = {
-      nodes: [
-        {
-          id: filename,
-        },
-      ],
-      links: [
-        {
-          source: filename,
-          target: newTargetName,
-        },
-      ],
-    };
-    socket.emit("newNode", newGraph);
-    // fetch('/node-data', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(newGraph)
-    //     })
-    //     .then(response => response.text())
-    //     .then(data => console.log(data))
-    //     .catch(error => {
-    //         console.error(error)
-    //     })
-    // console.log(await response.text())
-    // console.log("NODENAME ADDED AND AUDIO SENT", JSON.stringify(newGraph))
-  });
 }
-
-// promise maker: check db
-// async function getDatabase() {
-//     // let url = '../assets/datasets/ono.json'
-//     const response = await fetch(url)
-//     console.log(response)
-//     try {
-//         const data = await response.json()
-//     }
-//     catch(e) {
-//        console.log("json parsing error:", e)
-//     }
-
-//     return new Promise((resolve, reject) => {
-//         setTimeout(() => {
-//             resolve(data)
-//             reject('error')
-//         }, 100)
-//     })
-// }
-// // promise receiver: determine target
-
-// function findTarget(data) {
-//     let countNodes = data.nodes.length
-//     let randIndex = Math.round(Math.random() * countNodes)
-//     let newTarget = data.nodes[randIndex].id
-//     return newTarget
-
-// }
-// function onSuccess(data) {
-//     console.log('success:', data)
-// }
-// function onError(error) {
-//     console.log('error:', error)
-// }
-
-// let newTargetName = await getDatabase().then(onSuccess, onError).then(findTarget)
-// console.log(newTargetName)
 
 function loginBtnClick(e) {
   let isFormValid = inputID.checkValidity();
@@ -244,14 +195,6 @@ function inputClick() {
 // RECORDER BELOW :)
 // :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-)
 // :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-)
-
-// START/STOP RECORDER (first UI event)
-function initAudio() {
-  // if (Tone.context.state !== "running") {
-  Tone.start();
-  initialized = true;
-  // }
-}
 
 function initMic() {
   //   MIC INIT
@@ -324,7 +267,7 @@ function stopTimer() {
 /**
  *
  */
-function allowUpload() {
+function enableUploadButtonIf() {
   const val = nodeName.value;
   if (!val || recording) {
     uploadBtn.disabled = true;
