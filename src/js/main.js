@@ -4,6 +4,8 @@ import { uiInit } from "./intangible.js";
 
 export const audio = new Audio();
 
+export const socket = initSocket();
+
 /**
  * HTMLElement that plays back recordings.
  */

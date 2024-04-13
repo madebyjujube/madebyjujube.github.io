@@ -7,7 +7,6 @@
  *
  */
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) -
-import { io } from "socket.io-client";
 import * as Tone from "tone";
 import {
   audio,
@@ -19,22 +18,8 @@ import {
   nodeName,
   recBtn,
   cueBtn,
-  // recorder,
+  socket,
 } from "./main.js";
-
-// networking
-//
-const EXPRESS_PORT = 5555;
-const ROOT_URL =
-  window.location.hostname === "localhost"
-    ? window.location.protocol +
-      "//" +
-      window.location.hostname +
-      ":" +
-      EXPRESS_PORT
-    : window.location.origin;
-
-const socket = io("http://localhost:" + EXPRESS_PORT);
 
 // state
 //
