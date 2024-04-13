@@ -193,6 +193,8 @@ async function stopRecord() {
   const bufferURL = URL.createObjectURL(recording);
   audioPlayerElement.src = bufferURL;
   audio.setPlayerURL(bufferURL);
+  audio.recordingBuffer = recording;
+  console.log(audio.recordingBuffer);
 
   nodeName.removeAttribute("disabled");
 }
@@ -256,4 +258,3 @@ function cueBtnClick() {
     cueBtn.classList.remove("playing");
   }
 }
-
