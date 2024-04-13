@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-function readDb(dbName = './public_html/datasets/ono.json') {
+function readDb(dbName = './datasets/ono.json') {
     const data = fs.readFileSync(dbName, 'utf8')
     return JSON.parse(data)
 }

@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-app.use(express.static('public_html'))
+app.use(express.static('src'))
 app.use(express.json())
 
 const { Server } = require('socket.io')
@@ -13,7 +13,7 @@ const server = createServer(app)
 const io = new Server(server)
 
 const fs = require('node:fs')
-const databasePath = "./public_html/datasets/ono.json"
+const databasePath = "./datasets/ono.json"
 let database = JSON.parse(fs.readFileSync(databasePath))
 
 
@@ -22,7 +22,7 @@ app.post('/node-data', writeDatatoJSON)
 // USER DATA (contains username and socket id): 
 app.post("/user-data", writeUserData)
 function writeUserData(req, res) {
-  writeDb( req.body, './public_html/datasets/user-data.json' )
+  writeDb( req.body, './src/datasets/user-data.json' )
 }
 
 

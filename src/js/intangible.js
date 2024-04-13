@@ -1,8 +1,15 @@
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) - 
-const socket = io()
-const waveform = new Tone.Waveform()
+import { io } from "socket.io-client"
+import * as Tone from 'tone'
 
-let source, userData
+const EXPRESS_PORT = 5555;
+const ROOT_URL = window.location.hostname === "localhost"
+    ? window.location.protocol + '//' + window.location.hostname + ":" + EXPRESS_PORT
+    : window.location.origin
+
+const socket = io("http://localhost:" + EXPRESS_PORT)
+export const waveform = new Tone.Waveform()
+
 
 // rec-vars
 var recTimer, countInt
@@ -52,48 +59,52 @@ function main() {
     })
     cueBtn.addEventListener('click', cueBtnClick)
     nodeName.addEventListener('input', allowUpload)
+    recBtn.removeAttribute('disabled')
 }
 
 // promise maker: check db 
-async function getDatabase() {
-    let url = '../datasets/ono.json'
-    const response = await fetch(url)
-    const data = await response.json()
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(data)
-            reject('error')
-        }, 100)
-    })
+// async function getDatabase() {
+//     // let url = '../assets/datasets/ono.json'
+//     const response = await fetch(url)
+//     console.log(response)
+//     try {
+//         const data = await response.json()
+//     }
+//     catch(e) {
+//        console.log("json parsing error:", e) 
+//     }
+    
+//     return new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//             resolve(data)
+//             reject('error')
+//         }, 100)
+//     })
+// }
+// // promise receiver: determine target
+
+// function findTarget(data) {
+//     let countNodes = data.nodes.length
+//     let randIndex = Math.round(Math.random() * countNodes)
+//     let newTarget = data.nodes[randIndex].id
+//     return newTarget
+
+// }
+// function onSuccess(data) {
+//     console.log('success:', data)
+// }
+// function onError(error) {
+//     console.log('error:', error)
+// }
+
+
+// let newTargetName = await getDatabase().then(onSuccess, onError).then(findTarget)
+// console.log(newTargetName)
+
+
+let userData = {
+    username: ''
 }
-// promise receiver: determine target
-
-function findTarget(data) {
-    let countNodes = data.nodes.length
-    let randIndex = Math.round(Math.random() * countNodes)
-    let newTarget = data.nodes[randIndex].id
-    return newTarget
-
-}
-function onSuccess(data) {
-    console.log('success:', data)
-}
-function onError(error) {
-    console.log('error:', error)
-}
-
-
-
-let newTargetName = getDatabase().then(onSuccess, onError).then(findTarget)
-console.log(newTargetName)
-
-socket.on('connect', async () => {
-    source = socket.io.engine.id
-    userData = await {
-        id: source
-    }
-})
-
 
 function loginBtnClick(e) {
     let isFormValid = inputID.checkValidity()
@@ -106,7 +117,6 @@ function loginBtnClick(e) {
         loginBtn.style.display = 'none'
         editBtn.style.display = 'flex'
         userData.username = inputID.value
-        console.log("USERNAME ADDED", userData)
     }
 }
 function editBtnClick(e) {
@@ -141,62 +151,64 @@ function initAudio() {
     }
 }
 function startStopRec(e) {
-    if (recording) {
-        clearInterval(countInt)
+    if (!recording) {
         startRecord(e)
     } else {
         stopRecord(e)
     }
 }
+
 function startRecord(e) {
-    uploadBtn.disabled = true
+    // findTarget //
     recordingStyle()
-    mic.disconnect()
-    mic.connect(dest)
-    recorder.stop()
-    recording = false
-    clearTimeout(recTimer)
-    e.innerHTML = ''
-}
-function stopRecord(e) {
-    notRecordingStyle()
-    // getDatabase().then(findTarget, onError) // check current node count :)
     mic.connect(waveform)
     recorder.start()
     recording = true
-    
-    clearInterval(countInt)
     e.innerHTML = '5'
-    setInterval(count, 1000)
     startTimer()
 }
-
-function recordingStyle() {
-    recBtn.classList.remove('recording')
-        recBtn.style.backgroundImage = 'url(../assets/images/Ellipse.png)'
-        cueBtn.removeAttribute('disabled')
+function stopRecord(e) {
+    uploadBtn.disabled = true
+    notRecordingStyle()
+    mic.disconnect()
+    mic.connect(dest)
+    recorder.stop() 
+    recording = false
+    clearTimeout(recTimer)
+    stopTimer()
+    e.innerHTML = ''
 }
+
 function notRecordingStyle() {
+    recBtn.classList.remove('recording')
+    recBtn.style.backgroundImage = 'url(/src/assets/images/Ellipse.png)'
+    cueBtn.removeAttribute('disabled')
+}
+function recordingStyle() {
     recBtn.classList.add('recording')
     cueBtn.setAttribute('disabled', 1)
 }
 
 // COUNTDOWN
 function count() {
-    if (time > -1) {
-        time--
+    if (time > 0) {
         recBtn.innerHTML = `${time}`
+        time--
     } else {
-        recBtn.innerHTML = ''
-        clearInterval(countInt)
-        time = 5
+        stopTimer()
     }
 }
 
 // RECORDING TIMER
 function startTimer() {
-    // countInt = setInterval(count, 1000)
+    count()
+    countInt = setInterval(count, 1000)
     recTimer = window.setTimeout(stopRecord, recLimit)
+}
+function stopTimer() {
+    clearInterval(countInt)
+    recBtn.innerHTML = ''
+    time = 5
 }
 
 // ON INPUT => MAKE uploadBtn AVAILABLE
@@ -241,15 +253,18 @@ recorder.onstop = () => {
 
         e.preventDefault()
         let filename = nodeName.value
+
+        let buffer = await blob.arrayBuffer()
         let file = new File([blob], `${filename}.wav`)
         const formData = new FormData()
         formData.append('audio', file, `${filename}.wav`)
 
-        const response = await fetch('/upload', {
-            method: 'POST',
-            cace: 'no-cache',
-            body: formData
-        })
+        socket.emit('upload_audio', {buffer, name: nodeName.value});
+        // const response = await fetch('/upload', {
+        //     method: 'POST',
+        //     cace: 'no-cache',
+        //     body: formData
+        // })
         console.log('audio sent to server! thank you :3', formData)
         let newGraph = {
             nodes: [
@@ -264,21 +279,21 @@ recorder.onstop = () => {
                 }
             ]
         }
-
-        fetch('/node-data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newGraph)
-            })
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(error => {
-                console.error(error)
-            })
-        console.log(await response.text())
-        console.log("NODENAME ADDED AND AUDIO SENT", JSON.stringify(newGraph))
+        socket.emit('newNode', newGraph)
+        // fetch('/node-data', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify(newGraph)
+        //     })
+        //     .then(response => response.text())
+        //     .then(data => console.log(data))
+        //     .catch(error => {
+        //         console.error(error)
+        //     })
+        // console.log(await response.text())
+        // console.log("NODENAME ADDED AND AUDIO SENT", JSON.stringify(newGraph))
     })
 }
 
@@ -300,42 +315,4 @@ function cueBtnClick() {
 audio.onended = () => {
     cueBtn.classList.remove('playing')
     playing = false
-}
-
-
-
-// ======================================================
-// ======================= DRAW =========================
-// ======================= P5JS =========================
-// ======================================================
-
-function setup() {
-    
-    const root = document.documentElement;
-    const style = getComputedStyle(root);
-    const uiH = style.getPropertyValue('--ui-el-h').slice(0, -2);
-
-    cx = width / 2;
-    cy = height / 2;
-
-    let canvas = createCanvas(95, uiH);
-    canvas.parent('p5js');
-
-    background(0);
-}
-
-function draw() {
-    // if (initialized) {
-        background('black');
-        stroke('white');
-        noFill();
-        let buffer = waveform.getValue(0);
-        beginShape();
-        for (let i = 0; i < buffer.length; i++) {
-            let x = map(i, 0, buffer.length, 0, width);
-            let y = map(buffer[i], -0.5, 0.5, 0, height);
-            vertex(x, y);
-        }
-        endShape();
-    // }
 }

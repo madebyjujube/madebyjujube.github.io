@@ -1,22 +1,22 @@
 // Communication protocol
 // from client
-socket.emit('client-event', (arg) => {
+socket.emit('from-client', (arg) => {
     arg = 'argument';
 });
 // to server
 io.on('connection', (socket) => {
-    socket.on('client-event-1', (arg) => {
+    socket.on('from-client', (arg) => {
         console.log(arg); // 'argument'
     });
 });
 
 // from server
 io.on('connection', (socket) => {
-    socket.emit('server-event', (arg) => {
+    socket.emit('from-server', (arg) => {
         arg = 'argument';
     });
 });
 // to client
-socket.on('server-event', (arg) => {
+socket.on('from-server', (arg) => {
     console.log(arg); // 'argument'
 });

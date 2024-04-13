@@ -1,6 +1,6 @@
 const express = require('express')
 const multer = require('multer')
-const fs = require('node:fs')
+const fs = require('fs/promises')
 const { Server } = require('socket.io')
 const { createServer } = require('node:http')
 
@@ -11,12 +11,14 @@ const { updateJSONFile } = require('./dbScripts/dbFunction.js')
 
 const app = express()
 const server = createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+    cors: { origin: '*' }
+})
 
-const databasePath = "./public_html/datasets/ono.json"
+const databasePath = "./datasets/ono.json"
 let database = readDb()
 
-app.use(express.static('public_html'))
+app.use(express.static('dist'))
 app.use(express.json())
 
 // ===============
@@ -38,6 +40,7 @@ app.use(express.json())
 // CLIENT-EVENTS:
 // ==============
     // SUBMITTED: adds new data to JSON file
+    app.get('/database', sendDb)
     app.post('/node-data', writeDatatoJSON)
     // USER DATA (contains: username + socket.id): 
     // app.post("/user-data", writeUserData)
@@ -51,6 +54,10 @@ app.use(express.json())
 // ================
 // == CALLBACK-DEF:
 // ================
+    function sendDb(req, res) {
+        const data = readDb(databasePath)
+        res.send(data)
+    }
     function writeDatatoJSON(req, res) {
         updateJSONFile( req.body, databasePath )
         res.send('server received and wrote data to JSON file')
@@ -65,6 +72,16 @@ app.use(express.json())
 
 // DATABASE, CHANGES, + CHATBOX
 io.on('connection', (socket) => {
+
+    socket.on('newNode', (arg) => {
+        console.log('newNode',arg);
+    })
+    socket.on('upload_audio', async (data) => {
+        console.log({data, type: typeof data.buffer})
+        fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
+    })
+
+
     readDb(databasePath)
     console.log('a user connected', socket.id)
 
@@ -72,25 +89,25 @@ io.on('connection', (socket) => {
     // console.log(database)
 
     // Watch for changes in the file, and send it to client
-    const watcher = fs.watch(databasePath, (eventType, filename) => {
+    // const watcher = fs.watch(databasePath, (eventType, filename) => {
 
-        console.log(`event type is: ${eventType}`)
-        // If there is a change in the file
-        if (eventType === 'change') {
-            let database = readDb(databasePath)
-            // Emit database to client
-            socket.emit('database-changed', database)
-        } else {
-            console.log('file event: other type')
-        }
-    })
+    //     console.log(`event type is: ${eventType}`)
+    //     // If there is a change in the file
+    //     if (eventType === 'change') {
+    //         let database = readDb(databasePath)
+    //         // Emit database to client
+    //         socket.emit('database-changed', database)
+    //     } else {
+    //         console.log('file event: other type')
+    //     }
+    // })
 
 
 
   
   socket.on('disconnect', () => {
     console.log('user disconnected')
-    watcher.close()
+    // watcher.close()
   })
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg)
