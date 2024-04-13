@@ -42,25 +42,50 @@ function main() {
     loginBtn.addEventListener('click', loginBtnClick)
     editBtn.addEventListener('click', editBtnClick)
     inputID.addEventListener('input', inputClick)
-    recBtn.addEventListener('click', () => {
-        initAudio()
-        startStopRec()
+    recBtn.addEventListener('click', (e) => {
+        if (!initialized) {
+            initAudio()
+        } else {
+            startStopRec(e)
+            allowUpload()
+        }
     })
     cueBtn.addEventListener('click', cueBtnClick)
-    nodeName.addEventListener('input', allowSubmit)
+    nodeName.addEventListener('input', allowUpload)
 }
 
-async function myDatabase() {
+// promise maker: check db 
+async function getDatabase() {
     let url = '../datasets/ono.json'
-
     const response = await fetch(url)
     const data = await response.json()
-    let numNodes = data.nodes.length
-    let index = Math.round(Math.random() * numNodes)
-    let nameNode = data.nodes[index].id
-    return nameNode
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(data)
+            reject('error')
+        }, 100)
+    })
+}
+// promise receiver: determine target
+
+function findTarget(data) {
+    let countNodes = data.nodes.length
+    let randIndex = Math.round(Math.random() * countNodes)
+    let newTarget = data.nodes[randIndex].id
+    return newTarget
+
+}
+function onSuccess(data) {
+    console.log('success:', data)
+}
+function onError(error) {
+    console.log('error:', error)
 }
 
+
+
+let newTargetName = getDatabase().then(onSuccess, onError).then(findTarget)
+console.log(newTargetName)
 
 socket.on('connect', async () => {
     source = socket.io.engine.id
@@ -115,32 +140,33 @@ function initAudio() {
         initialized = true
     }
 }
-function startStopRec() {
-    if (recording == true) {
-        startRecord()
+function startStopRec(e) {
+    if (recording) {
+        clearInterval(countInt)
+        startRecord(e)
     } else {
-        stopRecord()
+        stopRecord(e)
     }
 }
-function startRecord() {
+function startRecord(e) {
+    uploadBtn.disabled = true
     recordingStyle()
     mic.disconnect()
     mic.connect(dest)
     recorder.stop()
     recording = false
     clearTimeout(recTimer)
-    clearInterval(countInt)
-    recBtn.innerHTML = ''
+    e.innerHTML = ''
 }
-function stopRecord() {
+function stopRecord(e) {
     notRecordingStyle()
-    myDatabase() // check current node count :)
-
+    // getDatabase().then(findTarget, onError) // check current node count :)
     mic.connect(waveform)
     recorder.start()
     recording = true
-
-    recBtn.innerHTML = '5'
+    
+    clearInterval(countInt)
+    e.innerHTML = '5'
     setInterval(count, 1000)
     startTimer()
 }
@@ -170,15 +196,21 @@ function count() {
 // RECORDING TIMER
 function startTimer() {
     // countInt = setInterval(count, 1000)
-    recTimer = window.setTimeout(stopRecording, recLimit)
+    recTimer = window.setTimeout(stopRecord, recLimit)
 }
 
-// ON INPUT => MAKE BTN AVAILABLE
-function allowSubmit() {
-    if (nodeName.innerText.length < 1) {
+// ON INPUT => MAKE uploadBtn AVAILABLE
+function allowUpload() {
+    const val = nodeName.value
+    if (!val || recording) {
         uploadBtn.disabled = true
-    } else {
+        return
+    }
+    const trimmed = val.trim()
+    if (trimmed || !recording) {
         uploadBtn.removeAttribute('disabled')
+    } else {
+        uploadBtn.disabled = true
     }
 }
 
@@ -200,10 +232,10 @@ recorder.onstop = () => {
         type: 'audio/wav, codecs=opus'
     })
     // add input field and get input.value = filename
-
+    
     audio.src = URL.createObjectURL(blob)
     player = new Tone.Player(audio.src).toDestination()
-
+    
     uploadBtn.addEventListener('click', async (e) => {
         // if (state == false) return
 
@@ -219,7 +251,6 @@ recorder.onstop = () => {
             body: formData
         })
         console.log('audio sent to server! thank you :3', formData)
-
         let newGraph = {
             nodes: [
                 { 
@@ -229,7 +260,7 @@ recorder.onstop = () => {
             links: [
                 { 
                     source: filename,
-                    target:  myDatabase()
+                    target: newTargetName
                 }
             ]
         }

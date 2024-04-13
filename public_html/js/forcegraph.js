@@ -56,7 +56,8 @@ function initGraph() {
     .linkOpacity(1)
     .linkWidth(0.1)
     .linkColor('#0F0')
-    .graphData(defaultDb)
+    // .graphData(defaultDb)
+    .jsonUrl('./datasets/ono.json')
     .nodeThreeObject(node => {
         const sprite = new SpriteText(node.id)
         sprite.material.depthWrite = false
@@ -79,15 +80,21 @@ function initGraph() {
 
 
 function generateParticles(coord) {
-    Graph.linkDirectionalParticles(coord)
+    Graph.emitParticle(coord)
 }
 
 function trigAudioGraph() {
     Graph.onNodeClick( (node) => {
-        // console.log(node.id)
+        // audio panning:
+        const coord = {
+            id: node.id,
+            x: node.x,
+            y: node.y,
+            z: node.z
+        }
         const links = Graph.graphData().links
         const nodeSiblings = links.filter((link) => link.source.id === node.id || link.target.id === node.id)
-        generateParticles(nodeSiblings)
-        console.log(nodeSiblings)
+        generateParticles(nodeSiblings[0].source, nodeSiblings[0].target)
+        console.log(coord)
     })
 }

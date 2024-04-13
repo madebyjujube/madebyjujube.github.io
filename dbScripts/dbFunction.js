@@ -16,14 +16,11 @@ function writeDb(obj, dbName = 'user-data.json') {
         if(fs.readFileSync(dbName, 'utf8').length ===0){
             let arr = []
             arr.push(obj)
-            //   ***problem reading when pushed as array, i need JSON file to start with {}, not []...***
             fs.writeFileSync(dbName, JSON.stringify(arr ))
         }
         //have data already in the file
         //read in entire array and then out...
-        else
-        {
-        console.log('writing to existing')
+        else {
         // read the data
         let _data = fs.readFileSync(dbName, 'utf8')
         //parse as ab array

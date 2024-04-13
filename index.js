@@ -17,10 +17,6 @@ const databasePath = "./public_html/datasets/ono.json"
 let database = JSON.parse(fs.readFileSync(databasePath))
 
 
-
-
-
-
 // client submits audio: 
 app.post('/node-data', writeDatatoJSON)
 // USER DATA (contains username and socket id): 
@@ -30,20 +26,11 @@ function writeUserData(req, res) {
 }
 
 
-
-
-
-
-
 function writeDatatoJSON(req, res) {
   console.log( req.body.nodes )
   updateJSONFile( req.body, databasePath )
   res.send('server received and wrote data to JSON file')
 }
-
-
-
-
 
 
 // MULTER: AUDIO FILE HANDLING
@@ -57,11 +44,6 @@ const storage = multer.diskStorage({
 })
 
 
-
-
-
-
-
 const upload = multer({ storage: storage })
 // POST-REQ
 app.post('/upload', upload.single('audio'), postUploadHandler)
@@ -70,9 +52,6 @@ function postUploadHandler(req, res) {
   // writeDb( { filename: req.file.originalname} )
   res.send('audio uploaded')
 }
-
-
-
 
 
 
