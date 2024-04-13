@@ -37,5 +37,7 @@ const sketch = (p5) => {
   };
 };
 
-const P5 = new p5(sketch);
+export function initWaveform() {
+  const P5 = new p5(sketch);
+}
 

@@ -34,7 +34,7 @@ let userData = {
   username: "",
 };
 
-export function uiInit() {
+export function initUi() {
   // states
   recBtn.disabled = !Tone.UserMedia.supported;
   cueBtn.disabled = true;

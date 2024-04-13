@@ -1,5 +1,7 @@
 import { Audio } from "./audio.js";
-import { uiInit } from "./intangible.js";
+import { initUi } from "./ui.js";
+import { initSocket } from "./socket.js";
+import { initWaveform } from "./waveform.js";
 // import { graphInit } from "./forcegraph.js";
 
 export const audio = new Audio();
@@ -22,6 +24,7 @@ main();
 
 function main() {
   console.log("main.js");
-  uiInit();
+  initUi();
+  initWaveform();
   // graphInit();
 }
