@@ -9,7 +9,18 @@
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) -
 import { io } from "socket.io-client";
 import * as Tone from "tone";
-import { Audio } from "./audio";
+import {
+  audio,
+  audioPlayerElement,
+  inputID,
+  editBtn,
+  uploadBtn,
+  loginBtn,
+  nodeName,
+  recBtn,
+  cueBtn,
+  // recorder,
+} from "./main.js";
 
 // networking
 //
@@ -25,46 +36,18 @@ const ROOT_URL =
 
 const socket = io("http://localhost:" + EXPRESS_PORT);
 
-// sound
-const audio = new Audio();
-const recorder = new MediaRecorder(audio.dest.stream);
-//
-
 // state
 //
-var recTimer, countInt;
-let time = 5;
-let recLimit = time * 1000; // Max time allowed to record in ms
+const REC_MAX_TIME_SECS = 5;
+const REC_MAX_TIME = REC_MAX_TIME_SECS * 1000; // Max time allowed to record in ms
 
-let initialized = false;
-let recording = false;
-let playing = false;
+let recTimer, countInterval;
+let recTimeCounter = 5;
 
-/**
- * @typedef UserData
- * @prop {string} username
- */
-
-/** @type UserData */
+// actually useless?
 let userData = {
   username: "",
 };
-
-// element refs
-//
-const recBtn = document.getElementById("recbtn");
-const cueBtn = document.getElementById("cuebtn");
-
-/**
- * HTMLElement that plays back recordings.
- */
-const audioPlayerElement = document.querySelector("#buffer");
-
-const inputID = document.getElementById("username");
-const loginBtn = document.getElementById("loginbtn");
-const editBtn = document.getElementById("editbtn");
-const uploadBtn = document.getElementById("uploadBtn");
-const nodeName = document.getElementById("nodename");
 
 export function uiInit() {
   // states
@@ -93,17 +76,18 @@ export function uiInit() {
   recBtn.removeAttribute("disabled");
   uploadBtn.addEventListener("click", uploadBtnCallback);
 
-  // POPULATE BUFFER: chunks[]
-  recorder.ondataavailable = recorderOnDataCallback;
+  // console.log({ recorder });
 
-  recorder.onstop = recorderOnStopCallback;
+  // POPULATE BUFFER: chunks[]
+  // audio.recorder.ondataavailable = recorderOnDataCallback;
+
+  // audio.recorder.onstop = recorderOnStopCallback;
 
   audioPlayerElement.onended = audioPlayerOnEndedCallback;
 }
 
 function audioPlayerOnEndedCallback() {
   cueBtn.classList.remove("playing");
-  playing = false;
 }
 
 function recorderOnDataCallback(e) {
@@ -193,10 +177,12 @@ function inputClick() {
 // :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-) :-)
 
 function startStopRec(e) {
-  if (!recording) {
+  if (audio.recorder.state !== "started") {
     startRecord(e);
+    console.log("recording...");
   } else {
     stopRecord(e);
+    console.log("stopping...");
   }
 }
 
@@ -204,12 +190,13 @@ function startRecord(e) {
   // findTarget //
   setRecordingStyle();
   audio.mic.connect(audio.waveform);
-  recorder.start();
-  recording = true;
+  audio.recorder.start();
+  // recording = true;
   e.innerHTML = "5";
   startTimer();
 }
-function stopRecord() {
+
+async function stopRecord() {
   uploadBtn.disabled = true;
   removeRecordingStyle();
   clearTimeout(recTimer);
@@ -217,8 +204,12 @@ function stopRecord() {
   recBtn.innerHTML = "";
 
   audio.resetMic();
-  recorder.stop();
-  recording = false;
+  const recording = await audio.recorder.stop();
+  const bufferURL = URL.createObjectURL(recording);
+  audioPlayerElement.src = bufferURL;
+  audio.setPlayerURL(bufferURL);
+
+  nodeName.removeAttribute("disabled");
 }
 
 function removeRecordingStyle() {
@@ -233,9 +224,9 @@ function setRecordingStyle() {
 
 // COUNTDOWN
 function count() {
-  if (time > 0) {
-    recBtn.innerHTML = `${time}`;
-    time--;
+  if (recTimeCounter > 0) {
+    recBtn.innerHTML = `${recTimeCounter}`;
+    recTimeCounter--;
   } else {
     stopTimer();
   }
@@ -244,14 +235,14 @@ function count() {
 // RECORDING TIMER
 function startTimer() {
   count();
-  countInt = setInterval(count, 1000);
-  recTimer = window.setTimeout(stopRecord, recLimit);
+  countInterval = setInterval(count, 1000);
+  recTimer = window.setTimeout(stopRecord, REC_MAX_TIME);
 }
 
 function stopTimer() {
-  clearInterval(countInt);
+  clearInterval(countInterval);
   recBtn.innerHTML = "";
-  time = 5;
+  recTimeCounter = REC_MAX_TIME_SECS;
 }
 
 // ON INPUT => MAKE uploadBtn AVAILABLE
@@ -259,31 +250,25 @@ function stopTimer() {
  *
  */
 function enableUploadButtonIf() {
-  const val = nodeName.value;
-  if (!val || recording) {
-    uploadBtn.disabled = true;
+  const val = nodeName.value.trim();
+  if (val && audio.recorder.state !== "started") {
+    uploadBtn.removeAttribute("disabled");
     return;
   }
-  const trimmed = val.trim();
-  if (trimmed || !recording) {
-    uploadBtn.removeAttribute("disabled");
-  } else {
-    uploadBtn.disabled = true;
-  }
+  uploadBtn.disabled = true;
+  return;
 }
 
 // PLAY RECORDED AUDIO + UI
 function cueBtnClick() {
-  if (playing === false) {
+  if (audio.player.state !== "started") {
     audioPlayerElement.play();
     audio.player.start();
     audio.player.connect(audio.waveform);
     cueBtn.classList.add("playing");
-    playing = true;
   } else {
     audio.player.stop();
     cueBtn.classList.remove("playing");
-    playing = false;
   }
 }
 

@@ -3,7 +3,7 @@
 // ======================= P5JS =========================
 // ======================================================
 import p5 from "p5";
-import { waveform } from "./audio.js";
+import { audio } from "./main.js";
 
 const sketch = (p5) => {
   p5.setup = () => {
@@ -25,7 +25,7 @@ const sketch = (p5) => {
     p5.background("black");
     p5.stroke("white");
     p5.noFill();
-    let buffer = waveform.getValue(0);
+    let buffer = audio.waveform.getValue(0);
     p5.beginShape();
     for (let i = 0; i < buffer.length; i++) {
       let x = p5.map(i, 0, buffer.length, 0, p5.width);

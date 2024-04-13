@@ -7,6 +7,7 @@ export class Audio {
   mic;
   player;
   waveform;
+  recorder;
 
   // Create an array to store the audio
   recordingBuffer = [];
@@ -17,11 +18,19 @@ export class Audio {
     this.actx = Tone.context;
     this.dest = this.actx.createMediaStreamDestination();
 
-    this.mic = this.initMic();
+    this.recorder = new Tone.Recorder();
+
+    this.mic = new Tone.UserMedia();
+    this.mic.open();
+    this.mic.connect(this.recorder);
+
     this.waveform = new Tone.Waveform();
 
     this.player = new Tone.Player().toDestination();
     // this.player.onstop = audioPlayerOnEndedCallback;
+    //
+    // this.recorder = new MediaRecorder(this.dest.stream);
+    // this.recorder.ondataavailable = (e) => this.addToBuffer(e.data);
   }
 
   start() {
@@ -41,10 +50,6 @@ export class Audio {
 
   //   MIC INIT
   initMic() {
-    const mic = new Tone.UserMedia();
-    mic.open();
-    mic.connect(this.dest);
-
     return mic;
   }
 
