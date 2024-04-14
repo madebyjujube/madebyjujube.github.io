@@ -27,7 +27,7 @@
 import { io } from "socket.io-client";
 
 export function initSocket() {
-  const EXPRESS_PORT = 5555;
+  const EXPRESS_PORT = 3000;
   const ROOT_URL =
     window.location.hostname === "localhost"
       ? window.location.protocol +

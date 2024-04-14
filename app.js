@@ -69,7 +69,12 @@ app.use(express.json())
     }
 // 
 
-function receivedAudio() {
+// DATABASE, CHANGES, + CHATBOX
+io.on('connection', (socket) => {
+    /** 
+     * AUDIO FILE UPLOADED 
+     * 
+     * */ 
     socket.on('newNode', (arg) => {
         console.log('newNode',arg);
     })
@@ -77,14 +82,6 @@ function receivedAudio() {
         console.log({data, type: typeof data.buffer})
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
-}
-// DATABASE, CHANGES, + CHATBOX
-io.on('connection', (socket) => {
-    /** 
-     * AUDIO FILE UPLOADED 
-     * 
-     * */ 
-    receivedAudio()
 
     socket.emit('init-database', database)
     // readDb(databasePath)

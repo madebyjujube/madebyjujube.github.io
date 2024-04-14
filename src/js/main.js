@@ -17,13 +17,14 @@ export const nodeName = document.getElementById("nodename");
 export const recBtn = document.getElementById("recbtn");
 export const cueBtn = document.getElementById("cuebtn");
 
-export const audio = new Audio(audioPlayerElement);
+export const audio = new Audio();
 export const socket = initSocket();
 
 main();
 
 function main() {
   console.log("main.js");
+  initSocket();
   initUi();
   initWaveform();
   // graphInit();

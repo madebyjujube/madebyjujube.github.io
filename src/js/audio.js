@@ -1,5 +1,7 @@
 import * as Tone from "tone";
-
+import {
+  audioPlayerElement,
+} from "./main.js";
 export class Audio {
   actx;
   dest;
@@ -10,10 +12,9 @@ export class Audio {
   recorder;
   currentObjectURL = null;
 
-  // Create an array to store the audio
   recordingBuffer = [];
 
-  constructor(audioPlayerElement) {
+  constructor() {
     Tone.Master.volume.value = 0;
 
     this.actx = Tone.context;
@@ -54,14 +55,24 @@ export class Audio {
     this.recordingBuffer.pop(); // erase previous chunk
     this.recordingBuffer.push(data);
   }
+
+  /**
+   * function of the Audio class called when recording has stopped
+   * - awaiting recorder stop:
+   * - creates a URL with the recorded data
+   * - populate the HTML audio element (html element has useful onend event for later)
+   * - adds the audio to the recording buffer
+   * 
+   * !! issue: request error when recording stopped more than once.
+   */
   async stopRecord() {
-    if (this.currentObjectURL) {
-      URL.revokeObjectURL(this.currentObjectURL);
-    }
     const recording = await this.recorder.stop();
-
+    
+    if (this.currentObjectURL) {
+      URL.revokeObjectURL(this.bufferURL);
+      bufferURL(recording)
+    }
     const bufferURL = URL.createObjectURL(recording);
-
     this.audioPlayerElement.src = bufferURL;
     this.setPlayerURL(bufferURL);
     this.addToBuffer(recording);
@@ -69,7 +80,7 @@ export class Audio {
     this.resetMic()
     this.currentObjectURL = bufferURL;
   }
-
+  
   setPlayerURL(url) {
     this.player.load(url);
   }
