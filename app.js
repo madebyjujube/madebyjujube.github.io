@@ -16,7 +16,7 @@ const io = new Server(server, {
 })
 
 const databasePath = "./datasets/ono.json"
-let database = readDb()
+let database = readDb(databasePath)
 
 app.use(express.static('dist'))
 app.use(express.json())
@@ -52,7 +52,7 @@ app.use(express.json())
 
 
 // ================
-// == CALLBACK-DEF:
+// == CALLBACKS:
 // ================
     function sendDb(req, res) {
         const data = readDb(databasePath)
@@ -82,10 +82,8 @@ io.on('connection', (socket) => {
         console.log({data, type: typeof data.buffer})
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
-
-    socket.emit('init-database', database)
+    io.emit('send-database', database)
     // readDb(databasePath)
-    
     
     console.log('a user connected', socket.id)
     socket.on('disconnect', () => {

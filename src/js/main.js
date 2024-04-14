@@ -1,9 +1,9 @@
 import { configFont } from "./adobefonts.js"
-import { Audio } from "./audio.js";
 import { initSocket } from "./socket.js";
 import { initUi } from "./ui.js";
 import { initWaveform } from "./waveform.js";
 import { initGraph } from "./forcegraph.js";
+import { Audio } from "./audio.js";
 
 
 /**
@@ -25,9 +25,8 @@ main();
 
 function main() {
   console.log("main.js");
-  configFont(document)
+  configFont(document);
   initUi();
   initWaveform();
   initGraph();
-  
 }

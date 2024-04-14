@@ -43,6 +43,9 @@ export function initSocket() {
   socket.on("chat message", (msg) => {
     console.log(msg);
   });
+  socket.on("init-database", (database) => {
+    console.log(database);
+  })
   // add socket listener to receive database from server, to be used in /src/forcegraph.js to replace the defaultDb object with database stored on server. 
   // and also find the db: node.id.index.length to find new target for ui.js at uploadBtnCallback(). 
 
