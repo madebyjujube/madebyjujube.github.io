@@ -82,6 +82,8 @@ io.on('connection', (socket) => {
         console.log({data, type: typeof data.buffer})
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
+    
+    // lets see if this works:
     io.emit('send-database', database)
     // readDb(databasePath)
     

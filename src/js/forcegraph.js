@@ -1,3 +1,18 @@
+/**
+ * SERVER>CLIENT comms. 
+ * - send initial database from server ONCE.
+ * - Assign it to the model defaultDb.
+ * - on upload, add new node:
+ * - send it to server, 
+ * - and back to client
+ * - update graph with new database. 
+ * 
+ * AUDIO
+ * - 
+ */
+
+
+
 // model view controller
 // init , UI , events
 
