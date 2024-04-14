@@ -62,7 +62,7 @@ const defaultDb = {
 // }
 // Object.assign(defaultDb.nodes, newNode.nodes);
 // console.log(newNode)
-console.log(defaultDb)
+// console.log(defaultDb)
 
 export function initGraph() {
   window.addEventListener("resize", resizeGraph);

@@ -37,14 +37,16 @@ export function initSocket() {
         EXPRESS_PORT
       : window.location.origin;
 
-  const socket = io("http://localhost:" + EXPRESS_PORT);
+  const socket = io("http://localhost:" + 5555);
 
   // put socket listerners here e.g. `socket.on(...)`
   socket.on("chat message", (msg) => {
     console.log(msg);
   });
-  socket.on("init-database", (database) => {
-    console.log(database);
+  socket.on("send-database", (database) => {
+    // send this to initGraph: main.js
+    let newDb = database
+    console.log("@socket.js - newDb:", newDb)
   })
   // add socket listener to receive database from server, to be used in /src/forcegraph.js to replace the defaultDb object with database stored on server. 
   // and also find the db: node.id.index.length to find new target for ui.js at uploadBtnCallback(). 

@@ -83,7 +83,7 @@ io.on('connection', (socket) => {
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
     
-    // lets see if this works:
+    // lets see if this works: sending this to update graph. 
     io.emit('send-database', database)
     // readDb(databasePath)
     
