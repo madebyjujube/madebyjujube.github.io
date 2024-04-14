@@ -1,9 +1,10 @@
 /*
- * -manipulates login
- * - manips UI elements
- *    sets toneejs recorder & player
- *    has node name input
- *
+ * - manipulates form-data: (login, node-name, audio-fetch)
+ * - manipulates UI-elements styles: (login, rec, cue, input, upload)
+ * - creates countdown-timer: recording max duration
+ * - sets Tone.js: recorder & player
+ * 
+ * 
  *
  */
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) -
@@ -44,7 +45,6 @@ export function initUi() {
   recBtn.disabled = true;
 
   // events
-
   window.addEventListener("click", audio.start, { once: true });
   window.addEventListener("keydown", audio.start, { once: true });
 
@@ -55,29 +55,19 @@ export function initUi() {
     startStopRec(e);
     enableUploadButtonIf();
   });
-
+  
   cueBtn.addEventListener("click", cueBtnClick);
   nodeName.addEventListener("input", enableUploadButtonIf);
-  recBtn.removeAttribute("disabled");
-  uploadBtn.addEventListener("click", uploadBtnCallback);
-
-  // console.log({ recorder });
-
-  // POPULATE BUFFER: chunks[]
-  // audio.recorder.ondataavailable = recorderOnDataCallback;
-
-  // audio.recorder.onstop = recorderOnStopCallback;
-
+  uploadBtn.addEventListener("click", (e) => {
+    uploadBtnCallback(e);
+    enableUploadButtonIf();
+    disposeRecBuffer();
+  });
   audioPlayerElement.onended = audioPlayerOnEndedCallback;
 }
 
 function audioPlayerOnEndedCallback() {
   cueBtn.classList.remove("playing");
-}
-
-function recorderOnDataCallback(e) {
-  nodeName.removeAttribute("disabled");
-  audio.addToBuffer(e.data);
 }
 
 /**
@@ -88,30 +78,13 @@ function recorderOnDataCallback(e) {
  * - upload audio file
  * - send file name to database
  */
-function recorderOnStopCallback() {
-  const blob = new Blob(audio.recordingBuffer, {
-    type: "audio/wav, codecs=opus",
-  });
-
-  const bufferURL = URL.createObjectURL(blob);
-  audioPlayerElement.src = bufferURL;
-  audio.setPlayerURL(bufferURL);
-}
-
 async function uploadBtnCallback(e) {
   // if (state == false) return
-
   e.preventDefault();
   let filename = nodeName.value;
-
-  // let buffer = await blob.arrayBuffer();
   let buffer = audio.recordingBuffer;
-  // let file = new File([blob], `${filename}.wav`);
-  // const formData = new FormData();
-  // formData.append("audio", file, `${filename}.wav`);
 
   socket.emit("upload_audio", { buffer, name: nodeName.value });
-  // console.log("audio sent to server! thank you :3", formData);
   console.log("audio sent to server! thank you :3");
 
   let newGraph = {
@@ -129,9 +102,12 @@ async function uploadBtnCallback(e) {
     ],
   };
   socket.emit("newNode", newGraph);
-
-  // console.log(await response.text())
-  // console.log("NODENAME ADDED AND AUDIO SENT", JSON.stringify(newGraph))
+  console.log('input cleared')
+  nodeName.value = '';
+  nodeName.disabled = true;
+}
+function disposeRecBuffer() {
+  audio.recordingBuffer = [];
 }
 
 function loginBtnClick(e) {
@@ -164,10 +140,8 @@ function inputClick() {
 function startStopRec(e) {
   if (audio.recorder.state !== "started") {
     startRecord(e);
-    console.log("recording...");
   } else {
     stopRecord(e);
-    console.log("stopping...");
   }
 }
 
@@ -176,7 +150,6 @@ function startRecord(e) {
   setRecordingStyle();
   audio.mic.connect(audio.waveform);
   audio.recorder.start();
-  // recording = true;
   e.innerHTML = "5";
   startTimer();
 }
@@ -187,16 +160,8 @@ async function stopRecord() {
   clearTimeout(recTimer);
   stopTimer();
   recBtn.innerHTML = "";
-
-  audio.resetMic();
-  const recording = await audio.recorder.stop();
-  const bufferURL = URL.createObjectURL(recording);
-  audioPlayerElement.src = bufferURL;
-  audio.setPlayerURL(bufferURL);
-  audio.recordingBuffer = recording;
-  console.log(audio.recordingBuffer);
-
   nodeName.removeAttribute("disabled");
+  await audio.stopRecord()
 }
 
 function removeRecordingStyle() {

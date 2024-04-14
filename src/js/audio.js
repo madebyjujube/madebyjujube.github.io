@@ -8,29 +8,26 @@ export class Audio {
   player;
   waveform;
   recorder;
+  currentObjectURL = null;
 
   // Create an array to store the audio
   recordingBuffer = [];
 
-  constructor() {
+  constructor(audioPlayerElement) {
     Tone.Master.volume.value = 0;
 
     this.actx = Tone.context;
     this.dest = this.actx.createMediaStreamDestination();
-
+    
+    this.audioPlayerElement = audioPlayerElement;
     this.recorder = new Tone.Recorder();
+    this.waveform = new Tone.Waveform();
+    this.player = new Tone.Player().toDestination();
 
     this.mic = new Tone.UserMedia();
     this.mic.open();
     this.mic.connect(this.recorder);
-
-    this.waveform = new Tone.Waveform();
-
-    this.player = new Tone.Player().toDestination();
-    // this.player.onstop = audioPlayerOnEndedCallback;
-    //
-    // this.recorder = new MediaRecorder(this.dest.stream);
-    // this.recorder.ondataavailable = (e) => this.addToBuffer(e.data);
+    this.rectime = 1;
   }
 
   start() {
@@ -57,9 +54,23 @@ export class Audio {
     this.recordingBuffer.pop(); // erase previous chunk
     this.recordingBuffer.push(data);
   }
+  async stopRecord() {
+    if (this.currentObjectURL) {
+      URL.revokeObjectURL(this.currentObjectURL);
+    }
+    const recording = await this.recorder.stop();
+
+    const bufferURL = URL.createObjectURL(recording);
+
+    this.audioPlayerElement.src = bufferURL;
+    this.setPlayerURL(bufferURL);
+    this.addToBuffer(recording);
+    
+    this.resetMic()
+    this.currentObjectURL = bufferURL;
+  }
 
   setPlayerURL(url) {
-    // async function call
     this.player.load(url);
   }
 

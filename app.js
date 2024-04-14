@@ -69,10 +69,7 @@ app.use(express.json())
     }
 // 
 
-
-// DATABASE, CHANGES, + CHATBOX
-io.on('connection', (socket) => {
-
+function receivedAudio() {
     socket.on('newNode', (arg) => {
         console.log('newNode',arg);
     })
@@ -80,38 +77,27 @@ io.on('connection', (socket) => {
         console.log({data, type: typeof data.buffer})
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
-
-
-    readDb(databasePath)
-    console.log('a user connected', socket.id)
+}
+// DATABASE, CHANGES, + CHATBOX
+io.on('connection', (socket) => {
+    /** 
+     * AUDIO FILE UPLOADED 
+     * 
+     * */ 
+    receivedAudio()
 
     socket.emit('init-database', database)
-    // console.log(database)
-
-    // Watch for changes in the file, and send it to client
-    // const watcher = fs.watch(databasePath, (eventType, filename) => {
-
-    //     console.log(`event type is: ${eventType}`)
-    //     // If there is a change in the file
-    //     if (eventType === 'change') {
-    //         let database = readDb(databasePath)
-    //         // Emit database to client
-    //         socket.emit('database-changed', database)
-    //     } else {
-    //         console.log('file event: other type')
-    //     }
-    // })
-
-
-
-  
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-    // watcher.close()
-  })
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg)
-  })
+    // readDb(databasePath)
+    
+    
+    console.log('a user connected', socket.id)
+    socket.on('disconnect', () => {
+        console.log('user disconnected')
+    })
+    // CHAT APP
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg)
+    })
 })
 
 // START SERVER
