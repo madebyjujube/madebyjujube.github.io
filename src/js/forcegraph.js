@@ -74,6 +74,7 @@ export function initGraph() {
     .y((h) => h.height / 2);
 
   resizeGraph();
+  
 }
 
 // function generateParticles(coord) {

@@ -149,12 +149,14 @@ function startRecord(e) {
   // findTarget //
   setRecordingStyle();
   audio.mic.connect(audio.waveform);
+  audio.mic.mute = false;
   audio.recorder.start();
   e.innerHTML = "5";
   startTimer();
 }
 
 async function stopRecord() {
+  audio.mic.mute = true;
   uploadBtn.disabled = true;
   removeRecordingStyle();
   clearTimeout(recTimer);

@@ -62,8 +62,6 @@ export class Audio {
    * - creates a URL with the recorded data
    * - populate the HTML audio element (html element has useful onend event for later)
    * - adds the audio to the recording buffer
-   * 
-   * !! issue: Uncaught (in promise): when recording stopped more than once.
    */
   async stopRecord() {
     const recording = await this.recorder.stop();
@@ -77,7 +75,6 @@ export class Audio {
     this.currentObjectURL = bufferURL;
   
     this.addToBuffer(recording);
-    this.resetMic();
   }
   
   setPlayerURL(url) {

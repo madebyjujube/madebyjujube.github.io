@@ -40,8 +40,12 @@ export function initSocket() {
   const socket = io("http://localhost:" + EXPRESS_PORT);
 
   // put socket listerners here e.g. `socket.on(...)`
+  socket.on("chat message", (msg) => {
+    console.log(msg);
+  });
   // add socket listener to receive database from server, to be used in /src/forcegraph.js to replace the defaultDb object with database stored on server. 
-  
+  // and also find the db: node.id.index.length to find new target for ui.js at uploadBtnCallback(). 
+
   return socket;
 }
 
