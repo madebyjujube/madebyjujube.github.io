@@ -65,19 +65,33 @@ export class Audio {
    * 
    * !! issue: request error when recording stopped more than once.
    */
+  // async stopRecord() {
+  //   const recording = await this.recorder.stop();
+    
+  //   if (this.currentObjectURL) {
+  //     URL.revokeObjectURL(this.currentObjectURL);
+  //   }
+  //   const bufferURL = URL.createObjectURL(recording);
+  //   this.audioPlayerElement.src = bufferURL;
+  //   this.setPlayerURL(bufferURL);
+  //   this.addToBuffer(recording);
+    
+  //   this.resetMic();
+  //   this.currentObjectURL = bufferURL;
+  // }
   async stopRecord() {
     const recording = await this.recorder.stop();
-    
+  
     if (this.currentObjectURL) {
-      URL.revokeObjectURL(this.bufferURL);
+      URL.revokeObjectURL(this.currentObjectURL);
     }
+  
     const bufferURL = URL.createObjectURL(recording);
-    this.audioPlayerElement.src = bufferURL;
-    this.setPlayerURL(bufferURL);
-    this.addToBuffer(recording);
-    
-    this.resetMic()
+    this.player.load(bufferURL); // Load audio data first
     this.currentObjectURL = bufferURL;
+  
+    this.addToBuffer(recording);
+    this.resetMic();
   }
   
   setPlayerURL(url) {
