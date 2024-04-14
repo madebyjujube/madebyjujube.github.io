@@ -18,7 +18,7 @@ What I need help with:
 <!-- - Retrieving the position of each node -->
 <!-- - I have difficulty wrapping my head around JS logic when using a library that has more complex nested functions... -->
 <!-- - Grasping the inner workings of the ForceGraph3D() funcrtion in 3D-Force-Graph (https://github.com/vasturiano/d3-force-3d?tab=readme-ov-file) -->
-- Pass node[i].pos.xyz to a var (I will manipulate the audio with)
-- Setup NodeJs backend server and install Websocket. 
+- onNodeClick: Pan the audio using Tone.js audio panner with the x position of the current node
+- 
 - 
 

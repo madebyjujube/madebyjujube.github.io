@@ -1,8 +1,11 @@
-// import SpriteText from "//unpkg.com/three-spritetext/dist/three-spritetext.mjs"
-// import { socket } from "./intangible.js"
 // model view controller
 // init , UI , events
-let ww, wh;
+
+import * as THREE from 'three';
+import SpriteText from "//unpkg.com/three-spritetext/dist/three-spritetext.mjs"
+import ForceGraph3D from '3d-force-graph';
+
+// import { socket } from "./main.js"
 
 // Get the root element
 const Graph = ForceGraph3D();
@@ -33,14 +36,14 @@ const defaultDb = {
 function resizeGraph() {
   const navw = 200;
   const navh = 200;
-  (ww = window.innerWidth), (wh = window.innerHeight);
+  const ww = window.innerWidth;
+  const wh = window.innerHeight;
   Graph.width(ww - navw).height(wh - navh);
 }
 
-initGraph();
 trigAudioGraph();
 
-function initGraph() {
+export function initGraph() {
   const graphCont = document.getElementById("GRAPH");
   const root = document.documentElement;
   const style = getComputedStyle(root);
@@ -53,15 +56,13 @@ function initGraph() {
     .linkOpacity(1)
     .linkWidth(0.1)
     .linkColor("#0F0")
-    // .graphData(defaultDb)
-    .jsonUrl("./datasets/ono.json")
+    .graphData(defaultDb)
     .nodeThreeObject((node) => {
       const sprite = new SpriteText(node.id);
       sprite.material.depthWrite = false;
       sprite.color = colorPri;
       sprite.fontFace = "Helvetica";
       sprite.textHeight = 5;
-      // console.log(node)
       return sprite;
     })
     .nodeLabel("id");
@@ -75,9 +76,9 @@ function initGraph() {
   resizeGraph();
 }
 
-function generateParticles(coord) {
-  Graph.emitParticle(coord);
-}
+// function generateParticles(coord) {
+//   Graph.emitParticle(coord);
+// }
 
 function trigAudioGraph() {
   Graph.onNodeClick((node) => {
@@ -92,8 +93,9 @@ function trigAudioGraph() {
     const nodeSiblings = links.filter(
       (link) => link.source.id === node.id || link.target.id === node.id,
     );
-    generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
-    console.log(coord);
+    console.log(nodeSiblings);
+    // generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
+    // console.log(coord);
   });
 }
 

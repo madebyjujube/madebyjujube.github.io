@@ -1,4 +1,4 @@
-(function (d) {
+export function configFont(d) {
     var config = {
             kitId: 'wux3fwz',
             scriptTimeout: 3000,
@@ -25,4 +25,4 @@
         } catch (e) {}
     };
     s.parentNode.insertBefore(tk, s)
-})(document);
+}(document);

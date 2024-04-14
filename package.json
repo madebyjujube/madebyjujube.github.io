@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "3d-force-graph": "^1.73.3",
     "express": "^4.19.2",
     "multer": "^1.4.5-lts.1",
     "p5": "^1.9.2",

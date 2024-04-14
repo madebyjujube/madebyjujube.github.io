@@ -63,25 +63,11 @@ export class Audio {
    * - populate the HTML audio element (html element has useful onend event for later)
    * - adds the audio to the recording buffer
    * 
-   * !! issue: request error when recording stopped more than once.
+   * !! issue: Uncaught (in promise): when recording stopped more than once.
    */
-  // async stopRecord() {
-  //   const recording = await this.recorder.stop();
-    
-  //   if (this.currentObjectURL) {
-  //     URL.revokeObjectURL(this.currentObjectURL);
-  //   }
-  //   const bufferURL = URL.createObjectURL(recording);
-  //   this.audioPlayerElement.src = bufferURL;
-  //   this.setPlayerURL(bufferURL);
-  //   this.addToBuffer(recording);
-    
-  //   this.resetMic();
-  //   this.currentObjectURL = bufferURL;
-  // }
   async stopRecord() {
     const recording = await this.recorder.stop();
-  
+    console.log(recording);
     if (this.currentObjectURL) {
       URL.revokeObjectURL(this.currentObjectURL);
     }

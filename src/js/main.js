@@ -2,7 +2,8 @@ import { Audio } from "./audio.js";
 import { initUi } from "./ui.js";
 import { initSocket } from "./socket.js";
 import { initWaveform } from "./waveform.js";
-// import { graphInit } from "./forcegraph.js";
+// import { initGraph } from "./forcegraph.js";
+import { configFont } from "./adobefonts.js"
 
 
 /**
@@ -24,8 +25,9 @@ main();
 
 function main() {
   console.log("main.js");
-  initSocket();
+  configFont(document)
   initUi();
   initWaveform();
-  // graphInit();
+  // initGraph();
+  
 }
