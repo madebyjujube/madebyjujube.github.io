@@ -1,9 +1,9 @@
-import { Audio } from "./audio.js";
-import { initUi } from "./ui.js";
-import { initSocket } from "./socket.js";
-import { initWaveform } from "./waveform.js";
-// import { initGraph } from "./forcegraph.js";
 import { configFont } from "./adobefonts.js"
+import { Audio } from "./audio.js";
+import { initSocket } from "./socket.js";
+import { initUi } from "./ui.js";
+import { initWaveform } from "./waveform.js";
+import { initGraph } from "./forcegraph.js";
 
 
 /**
@@ -28,6 +28,6 @@ function main() {
   configFont(document)
   initUi();
   initWaveform();
-  // initGraph();
+  initGraph();
   
 }
