@@ -70,7 +70,6 @@ export class Audio {
     
     if (this.currentObjectURL) {
       URL.revokeObjectURL(this.bufferURL);
-      bufferURL(recording)
     }
     const bufferURL = URL.createObjectURL(recording);
     this.audioPlayerElement.src = bufferURL;
