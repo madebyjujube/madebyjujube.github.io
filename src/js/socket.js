@@ -6,16 +6,17 @@ import {
 } from "./forcegraph.js";
 import { graph, database } from "./main.js";
 export function initSocket() {
-  // const EXPRESS_PORT = 3000;
-  // const ROOT_URL =
-  //   window.location.hostname === "localhost"
-  //     ? window.location.protocol +
-  //       "//" +
-  //       window.location.hostname +
-  //       ":" +
-  //       EXPRESS_PORT
-  //     : window.location.origin;
-  const socket = io("http://localhost:" + 5555);
+  const EXPRESS_PORT = 3000;
+  const ROOT_URL =
+    window.location.hostname === "localhost"
+      ? window.location.protocol +
+        "//" +
+        window.location.hostname +
+        ":" +
+        EXPRESS_PORT
+      : window.location.origin;
+    console.log(window.location.hostname)
+  const socket = io(window.location.hostname + ':' + 5555);
   // put socket listerners here e.g. `socket.on(...)`
 
   socket.on("database", (newDatabase) => {
