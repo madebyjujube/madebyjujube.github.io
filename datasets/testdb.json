@@ -1,1 +1,5 @@
-{"nodes":[{"id":"meowwww"},{"id":"wooooof"},{},{},{},{},{}],"links":[{"source":"wooooof","target":"meowwww","value":1},{},{},{},{},{}]}
+{
+  "nodes": [{ "id": "meowwww" }, { "id": "wooooof" }],
+  "links": [{ "source": "wooooof", "target": "meowwww", "value": 1 }]
+}
+
