@@ -129,7 +129,7 @@ function findTargetId(database) {
 }
 
 // START SERVER
-server.listen(process.env.PORT || 3000, () => {
-  console.log(`listening on port 3000`);
+server.listen(process.env.PORT || 5555, () => {
+  console.log(`listening on port 5555`);
 });
 
