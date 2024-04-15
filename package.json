@@ -1,20 +1,30 @@
 {
   "dependencies": {
+    "3d-force-graph": "^1.73.3",
     "express": "^4.19.2",
     "multer": "^1.4.5-lts.1",
+    "p5": "^1.9.2",
     "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
     "three": "^0.163.0",
+    "three-spritetext": "^1.8.2",
     "tone": "^14.7.77"
   },
   "name": "textnodes",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node app.js",
+    "dev": "vite --host",
+    "build": "vite build",
+    "serve": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "vite": "^5.2.8"
+  }
 }

@@ -1,0 +1,234 @@
+:root {
+    --c-graph: #FDF;
+    --c-bg: #FDF;
+    --c-pri: #90F;
+    --c-sec: #FFC;
+    --c-acc: #0A0;
+    --ui-height: 100px;
+    --ui-el-h: 40px;
+    --ui-el-w: 60px;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "ab-kokikaku", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+body {
+    height: 100vh;
+    background-color: var(--c-bg);
+    color: var(--c-pri);
+    overflow: hidden;
+}
+main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* z-index: -1; */
+}
+
+/* ====================== */
+/* ====== ABSOLUTE ====== */
+/* ====================== */
+#buffer {
+    display: none;
+}
+#ilogo {
+    position: absolute;
+    bottom: 0px;
+    left: 100px;
+    height:100px;
+}
+#GRAPH {
+    position: absolute;
+    left: 50px;
+    top: 100px; 
+}
+#GRAPH-WRAPPER {
+    width: 50vw;
+    height: 50vh;
+}
+
+/* ====================== */
+/* ====== GUI OOA ======= */
+/* ====================== */
+/* WRAPPERS */
+#UI-wrapper {
+    position: absolute;
+    left: var(--ui-height);
+    height: var(--ui-height);
+    margin-left: -10px;
+    width: calc(100vw - (var(--ui-height) * 2) + 20px);
+    justify-content: space-between;
+}
+#form-wrapper {
+    height: var(--ui-height);
+    padding: 10px;
+    gap:5px;
+}
+#audio-warpper {
+    height: var(--ui-height);
+    padding: 10px;
+    gap:5px;
+}
+
+/* ELEMENTS */
+#username:disabled {
+    color: var(--c-pri) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--c-pri) !important;
+  /* transition: background-color 5000s ease-in-out 0s; */
+  background-color: #ccc;
+}
+
+/* input:disabled:-webkit-autofill {
+    -webkit-text-fill-color: var(--c-pri) !important;
+    background-color: var(--c-pri) !important;
+} */
+
+#loginbtn {
+    width: var(--ui-el-w);
+}
+#editbtn {
+    width: var(--ui-el-w);
+    display: none;
+}
+#recbtn {
+    color: white;
+    font-size: 10px;
+    width: var(--ui-el-h);
+    height: var(--ui-el-h);
+    background-image: url('../assets/images/Ellipse.png');
+    background-size: contain;
+    background-size: 60%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+}
+#recbtn:disabled {
+    background-image: url('../assets/images/Ellipse_disabled.png');
+}
+.recording {
+    outline: 1px solid red;
+    outline-offset: -2px;
+    background-color: rgb(154, 0, 0);
+    background-image: url('../assets/images/Stop.png') !important;
+    background-size: 55% !important;
+}
+.recording:hover {
+    background-color: rgb(0, 0, 0);
+}
+#cuebtn {
+    width: var(--ui-el-h);
+    height: var(--ui-el-h);
+    background-image: url('../assets/images/Polygon.png');
+    background-size: contain;
+    background-size: 50%;
+    background-position: 55% 50%;
+    background-repeat: no-repeat;
+}
+#cuebtn:disabled {
+    background-image: url('../assets/images/Polygon_disabled.png');
+}
+.playing {
+    background-image: url('../assets/images/Pause.png') !important;
+    background-size: 40% !important;
+    background-position: 50% !important;
+}
+
+#p5js canvas {
+    display: block;
+    border-radius: 10px;
+    background-color: black;
+    width: 50px;
+    height: var(--ui-el-h);
+}
+/* #nodename {
+
+} */
+input {
+    font-size: 16px;
+    border: 1px solid #ccc;
+    padding-left:10px;
+    height: var(--ui-el-h);
+    border-radius: 10px;
+}
+input:hover:not([disabled]) {
+    background-color: #f0f0f0;
+}
+input:active:not([disabled]) {
+    border: 1px solid #ccc;
+    outline: 1px solid var(--c-pri);
+}
+input:focus:not([disabled]) {
+    border: 1px solid #ccc;
+    outline: 1px solid var(--c-pri);
+    outline-offset: -2px;
+}
+button {
+    padding: 1px 5px;
+    min-width: var(--ui-el-h);
+    height: var(--ui-el-h);
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+button:disabled, input:disabled {
+    outline: 1px solid #ccc;
+    outline-offset: -2px;
+    background-color: #ddd;
+}
+button:disabled:active {
+    background-color: #ddd;
+}
+button:hover {
+    background-color: #ddd;
+}
+button:active {
+    background-color: #eee;
+}
+
+
+/* FLEX CLASSES */
+.flexr {
+    display: flex;
+    flex-direction: row;
+}
+.flexc {
+    display: flex;
+    flex-direction: column;
+}
+.xc {
+    justify-content: center;
+}
+.yc {
+    align-items: center;
+}
+.xs {
+    justify-content: start;
+}
+.ys {
+    align-items: start;
+}
+.xs {
+    justify-content: end;
+}
+.ys {
+    align-items: end;
+}
+
+
+/* MEDIA QUERIES */
