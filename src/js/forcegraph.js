@@ -57,7 +57,7 @@ export function initGraph() {
     .nodeLabel("id")
     .onNodeClick((node) => {
       graph.emitParticle(node);
-    })
+    });
 
   graph.d3Force("charge").strength(-30);
   graph.d3Force("link").distance(30);
@@ -88,11 +88,26 @@ export function updateDatabase(database, newDatabase) {
   return database;
 }
 
+/**
+ * Adds a new node to the database.
+ * @param {Database} database - the database to add the node to.
+ * @param {Node} newNode - an object that follows the shape:
+ * ```
+ * {
+ *   id: string,
+ *   source: string,
+ *   target: string
+ * }
+ *```
+ */
 export function addNewNodeToDatabase(database, newNode) {
-  console.log("connection: ", newNode.links);
-  database.nodes.push({ id: newNode.nodes.id });
-  database.links.push({ source: newNode.links.source, target: newNode.links.target });
-  console.log(database)
+  console.log("connection: ", newNode);
+  database.nodes.push({ id: newNode.id });
+  database.links.push({
+    source: newNode.source,
+    target: newNode.target,
+  });
+  console.log(database);
   return database;
 }
 
@@ -114,16 +129,16 @@ function resizeGraph(graph) {
 function trigAudioGraph(graph, node) {
   // audio panning:
   // const coord = {
-    //   id: node.id,
-    //   x: node.x,
-    //   y: node.y,
-    //   z: node.z,
-    // };
-    const links = graph.graphData().links;
-    const nodeSiblings = links.filter(
-      (link) => link.source.id === node.id || link.target.id === node.id,
-    );
+  //   id: node.id,
+  //   x: node.x,
+  //   y: node.y,
+  //   z: node.z,
+  // };
+  const links = graph.graphData().links;
+  const nodeSiblings = links.filter(
+    (link) => link.source.id === node.id || link.target.id === node.id,
+  );
   console.log(nodeSiblings);
   // generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
   // console.log(coord);
-};
+}

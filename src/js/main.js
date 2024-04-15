@@ -15,7 +15,7 @@ export const inputID = document.getElementById("username");
 export const editBtn = document.getElementById("editbtn");
 export const uploadBtn = document.getElementById("uploadBtn");
 export const loginBtn = document.getElementById("loginbtn");
-export const nodeName = document.getElementById("nodename");
+export const nodeNameElement = document.getElementById("nodename");
 export const recBtn = document.getElementById("recbtn");
 export const cueBtn = document.getElementById("cuebtn");
 //

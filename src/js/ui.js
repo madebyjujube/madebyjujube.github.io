@@ -16,7 +16,7 @@ import {
   editBtn,
   uploadBtn,
   loginBtn,
-  nodeName,
+  nodeNameElement,
   recBtn,
   cueBtn,
   socket,
@@ -41,7 +41,7 @@ export function initUi() {
   cueBtn.disabled = true;
   loginBtn.disabled = true;
   uploadBtn.disabled = true;
-  nodeName.disabled = true;
+  nodeNameElement.disabled = true;
   recBtn.disabled = true;
 
   // events
@@ -57,7 +57,7 @@ export function initUi() {
   });
 
   cueBtn.addEventListener("click", cueBtnClick);
-  nodeName.addEventListener("input", enableUploadButtonIf);
+  nodeNameElement.addEventListener("input", enableUploadButtonIf);
   uploadBtn.addEventListener("click", (e) => {
     uploadBtnCallback(e);
     enableUploadButtonIf();
@@ -81,17 +81,19 @@ function audioPlayerOnEndedCallback() {
 async function uploadBtnCallback(e) {
   // if (state == false) return
   e.preventDefault();
-  let filename = nodeName.value;
-  let buffer = audio.recordingBuffer;
 
-  socket.emit("upload_audio", { buffer, name: nodeName.value });
-  socket.emit("uploaded-node", filename);
-  console.log("sending", filename);
-  nodeName.value = "";
+  // NOTE: Renamed the `filename` to `nodeName` and `nodeName` to `nodeNameElement`
+  const nodeName = nodeNameElement.value;
+  const buffer = audio.recordingBuffer;
+
+  socket.emit("upload_audio", { buffer, name: nodeNameElement.value });
+  socket.emit("uploaded-node", nodeName);
+  console.log("sending", nodeName);
+  nodeNameElement.value = "";
 
   console.log("audio sent to server! thank you :3");
   console.log("input cleared");
-  nodeName.disabled = true;
+  nodeNameElement.disabled = true;
 }
 function disposeRecBuffer() {
   audio.recordingBuffer = [];
@@ -149,7 +151,7 @@ async function stopRecord() {
   clearTimeout(recTimer);
   stopTimer();
   recBtn.innerHTML = "";
-  nodeName.removeAttribute("disabled");
+  nodeNameElement.removeAttribute("disabled");
   await audio.stopRecord();
 }
 
@@ -191,7 +193,7 @@ function stopTimer() {
  *
  */
 function enableUploadButtonIf() {
-  const val = nodeName.value.trim();
+  const val = nodeNameElement.value.trim();
   if (val && audio.recorder.state !== "started") {
     uploadBtn.removeAttribute("disabled");
     return;
