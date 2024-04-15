@@ -16,8 +16,8 @@ export function initSocket() {
         EXPRESS_PORT
       : window.location.origin;
   
-  // const socket = io(window.location.hostname + ':' + 5555);
-  const socket = io(ROOT_URL);
+  const socket = io(window.location.hostname + ':' + 5555);
+  // const socket = io(ROOT_URL);
   // put socket listerners here e.g. `socket.on(...)`
 
   socket.on("database", (newDatabase) => {
