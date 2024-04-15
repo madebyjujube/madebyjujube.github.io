@@ -91,6 +91,24 @@ export function updateDatabase(database, newDatabase) {
 
 export function addNewNodeToDatabase(database, newNode) {
   console.log("addNewNode", database);
+
+  // move target finding functionality to server.
+  // that way, server database will have most recent version of the database.
+  // which means that new connections will receive a db with all new nodes.
+  //
+  // on server,
+  // - find target
+  // - make a new node object
+  // - update db with new node
+  // - return the new node with this shape:
+  // newNode = {
+  //   id: string,
+  //   source: string,
+  //   target: string,
+  // }
+  //
+  // in this function, assign necessary properties with newNode.[id | source | target]
+  //
   let target = findTarget(database);
   database.nodes.push({ id: newNode });
   database.links.push({ source: newNode, target: target });
