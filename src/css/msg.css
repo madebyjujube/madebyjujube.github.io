@@ -1,0 +1,61 @@
+body {
+    margin: 0;
+    padding-bottom: 3rem;
+}
+#chatbox { 
+    background-color: white;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
+#msgform {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 0.25rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    backdrop-filter: blur(10px);
+}
+
+#msginput {
+    font-size: 16px;
+    border: none;
+    padding: 0 1rem;
+    flex-grow: 1;
+    border-radius: 2rem;
+    margin: 0.25rem;
+}
+
+#msginput:focus {
+    outline: none;
+}
+
+#msgform>button {
+    background: var(--c-pri);
+    border: none;
+    border-radius: 10px;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    outline: none;
+    color: #fff;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#messages>li {
+    padding: 0.5rem 1rem;
+}
+
+#messages>li:nth-child(even) {
+    background: var(--c-bg);
+}
+#messages>li:nth-child(odd) {
+    background: var(--c-sec);
+}

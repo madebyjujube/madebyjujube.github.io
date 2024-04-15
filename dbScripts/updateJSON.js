@@ -1,3 +1,3 @@
-const {updateJSONFile} = require('./dbFunction');
-const obj = {};
-updateJSONFile(obj, url);
+const {updateJSONFile} = require('./dbFunction')
+const obj = {}
+updateJSONFile(obj, url)

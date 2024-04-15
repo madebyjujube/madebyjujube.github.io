@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="src/css/main.css" />
+  <link rel="icon" type="image/x-icon" href="src/favicon.ico" />
+  <title>Intangible</title>
+  <script src="./src/js/main.js" type="module" defer></script>
+  <!-- <script src="js/msg.js" defer></script> -->
+</head>
+
+<body>
+  <main>
+    <img id="ilogo" src="src/assets/images/intangible.svg" alt="INTANGIBLE LOGO" />
+    <div id="UI-wrapper" class="flexr yc">
+      <form class="flexr yc" id="form-wrapper">
+        <input id="username" type="username" placeholder="ID" maxlength="16" required autocomplete="off" />
+        
+        <button id="loginbtn" class="button flexc xc yc">LOGIN</button>
+        <button id="editbtn" class="button flexc xc yc" type="submit">
+          EDIT
+        </button>
+      </form>
+      <form class="flexr yc" id="audio-warpper">
+        <!-- <p id="countdown">5</p> -->
+
+        <button class="flexc xc yc" id="recbtn" type="button">
+          <!-- RECORD -->
+        </button>
+        <button id="cuebtn" type="button">
+          <!-- PLAY -->
+        </button>
+        <div id="p5js" width="50px"></div>
+        <input id="nodename" type="text" placeholder="node-name" maxlength="16" required />
+        <button id="uploadBtn">UPLOAD</button>
+      </form>
+    </div>
+    <div id="GRAPH"></div>
+  </main>
+  <audio id="buffer" controls muted></audio>
+</body>
+
+</html>

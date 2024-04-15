@@ -1,2 +1,2 @@
-const {readDb} = require('./dbFunction');
-readDb();
+const {readDb} = require('./dbFunction')
+readDb()

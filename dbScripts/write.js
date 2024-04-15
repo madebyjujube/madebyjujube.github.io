@@ -1,3 +1,3 @@
-const {writeDb} = require('./dbFunction');
+const {writeDb} = require('./dbFunction')
 const obj = {}
-writeDb(obj);
+writeDb(obj)
