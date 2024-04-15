@@ -5,8 +5,7 @@ import {
 } from './forcegraph.js'
 import { 
   graph,
-  iDatabase, 
-  newDb
+  database
 } from "./main.js";
 export function initSocket() {
   // const EXPRESS_PORT = 3000;
@@ -22,12 +21,12 @@ export function initSocket() {
   const socket = io("http://localhost:" + 5555);
   // put socket listerners here e.g. `socket.on(...)`
 
-  socket.on("database", (newDatabase) => {
-    populateGraph(graph, newDatabase, iDatabase)
-    console.log(newDatabase)
+  socket.on("database", (database) => {
+    populateGraph(graph, database)
+    console.log(database)
   })
   socket.on("new-node", (node) => {
-    addNewNode(graph, newDb, node);
+    addNewNode(graph, database, node);
   })
   
   socket.on("chat message", (msg) => {

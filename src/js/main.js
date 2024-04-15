@@ -22,20 +22,17 @@ import { Audio } from "./audio.js";
   
 export const audio = new Audio();
 export const socket = initSocket();
-export const iDatabase = initDatabase();
-export const graph = initGraph(iDatabase);
+export const database = initDatabase();
+export const graph = initGraph(database);
 
-// main();
+main();
 
 
-// function main() {
+function main() {
   console.log("main.js");
   configFont(document);
   initUi();
   initWaveform();
   // ready for db
   socket.emit("database-req")
-  export const newDb = populateGraph(graph)
-  console.log(newDb)
-
-// }
+}

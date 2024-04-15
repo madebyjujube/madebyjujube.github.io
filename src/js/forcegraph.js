@@ -68,35 +68,28 @@ export function initGraph() {
     .y((h) => h.height / 2);
 
   resizeGraph(graph);
-
-  //popuplate database ?
-  // const newDb = populateGraph(graph, newDatabase);
   
   return graph
 }
 
 //export populates the graph()
-export function populateGraph(graph, newDatabase, iDatabase) {
-  if(!newDatabase) {
-    graph.graphData(iDatabase)
-  } else {
-    graph.graphData(newDatabase)
-  }
-    return newDatabase
+export function populateGraph(graph, database) {
+  graph.graphData(database)
+  // return database
 }
 
-export function addNewNode(graph, newDatabase, newNode) {
-  console.log(newDatabase)
-  let target = findTarget(newDatabase)
-  newDatabase.nodes.push({ id: newNode });
-  newDatabase.links.push({source: newNode, target: target});
-  graph.graphData(newDatabase)
+export function addNewNode(graph, database, newNode) {
+  console.log('addNewNode',database)
+  let target = findTarget(database)
+  database.nodes.push({ id: newNode });
+  database.links.push({source: newNode, target: target});
+  graph.graphData(database)
 }
-function findTarget(newDatabase) {
-  console.log(newDatabase)
-  let countN = newDatabase.nodes.length-2;
+function findTarget(database) {
+  console.log('findTarget',database)
+  let countN = database.nodes.length-2;
   let index = Math.round(Math.random() * countN)
-  let newTarget = newDatabase.nodes[index].id;
+  let newTarget = database.nodes[index].id;
   return newTarget 
 }
 function resizeGraph(graph) {
