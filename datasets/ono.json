@@ -70,8 +70,8 @@
     { "source": "hehhehehehe", "target": "Ahahaha" },
     { "source": "wtf at casa", "target": {} },
     { "source": "wtf at casa", "target": {} },
-    { "source": "helloo", "target": {} },
-    { "source": "j", "target": {} }
+    { "source": "helloo", "target": "pweeee" },
+    { "source": "j", "target": "pweeee" }
   ]
 }
 

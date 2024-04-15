@@ -15,12 +15,11 @@ const io = new Server(server, {
     cors: { origin: '*' }
 })
 
-const databasePath = "./datasets/ono.json"
+const databasePath = "./datasets/testdb.json"
 /**
  * readDb(databasePath)
  * reads graph database
  */
-let database = readDb(databasePath)
 
 app.use(express.static('dist'))
 app.use(express.json())
@@ -75,21 +74,22 @@ app.use(express.json())
 
 // DATABASE, CHANGES, + CHATBOX
 io.on('connection', (socket) => {
+    
     console.log('a user connected', socket.id)
-    /** 
-     * AUDIO FILE UPLOADED 
-     * 
-     * */ 
-    socket.on('newNode', (arg) => {
-        console.log('newNode',arg);
+    
+    socket.on('database-req', () => {
+        let database = readDb(databasePath)
+        io.emit('database', database)
     })
+
+    socket.on('uploaded-node', (node) => {
+        io.emit('new-node', node)
+    })
+    
     socket.on('upload_audio', async (data) => {
         console.log({data, type: typeof data.buffer})
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
-    
-
-    io.emit('send-database', database)
     
     // CHAT-APP
     socket.on('chat message', (msg) => {

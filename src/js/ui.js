@@ -21,6 +21,9 @@ import {
   cueBtn,
   socket,
 } from "./main.js";
+import {
+  addNewNode
+} from './forcegraph.js'
 
 // state
 //
@@ -85,25 +88,12 @@ async function uploadBtnCallback(e) {
   let buffer = audio.recordingBuffer;
 
   socket.emit("upload_audio", { buffer, name: nodeName.value });
-  console.log("audio sent to server! thank you :3");
-
-  let newGraph = {
-    nodes: [
-      {
-        id: filename,
-      },
-    ],
-    links: [
-      {
-        source: filename,
-        // TODO: find target from existing graph
-        target: "moo",
-      },
-    ],
-  };
-  socket.emit("newNode", newGraph);
-  console.log('input cleared')
+  socket.emit("uploaded-node", filename);
+  console.log('sending',filename)
   nodeName.value = '';
+  
+  console.log("audio sent to server! thank you :3");
+  console.log('input cleared')
   nodeName.disabled = true;
 }
 function disposeRecBuffer() {

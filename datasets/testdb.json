@@ -1,0 +1,9 @@
+{
+    "nodes": [
+      { "id": "meowwww" },
+      { "id": "wooooof" }
+    ],
+    "links": [
+      { "source": "wooooof", "target": "meowwww", "value": 1 }
+    ]
+}
