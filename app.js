@@ -16,6 +16,10 @@ const io = new Server(server, {
 })
 
 const databasePath = "./datasets/ono.json"
+/**
+ * readDb(databasePath)
+ * reads graph database
+ */
 let database = readDb(databasePath)
 
 app.use(express.static('dist'))
@@ -39,14 +43,14 @@ app.use(express.json())
 // ==============
 // CLIENT-EVENTS:
 // ==============
-    // SUBMITTED: adds new data to JSON file
+// SUBMITTED: adds new data to JSON file ():
     app.get('/database', sendDb)
     app.post('/node-data', writeDatatoJSON)
     // USER DATA (contains: username + socket.id): 
     // app.post("/user-data", writeUserData)
     // UPLOAD AUDIO - MULTER
     app.post('/upload', upload.single('audio'), postUploadHandler)
-    // ==============
+// ==============
 
 
 
@@ -71,6 +75,7 @@ app.use(express.json())
 
 // DATABASE, CHANGES, + CHATBOX
 io.on('connection', (socket) => {
+    console.log('a user connected', socket.id)
     /** 
      * AUDIO FILE UPLOADED 
      * 
@@ -83,17 +88,17 @@ io.on('connection', (socket) => {
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
     
-    // lets see if this works: sending this to update graph. 
+
     io.emit('send-database', database)
-    // readDb(databasePath)
     
-    console.log('a user connected', socket.id)
-    socket.on('disconnect', () => {
-        console.log('user disconnected')
-    })
-    // CHAT APP
+    // CHAT-APP
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg)
+    })
+    
+    // DISCONNECTED
+    socket.on('disconnect', () => {
+        console.log('user disconnected')
     })
 })
 

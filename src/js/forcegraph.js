@@ -52,6 +52,32 @@ const defaultDb = {
     }
   ],
 };
+
+// create a function that happens every second and add variable i++. 
+let i = 3;
+setInterval(() => {
+  let target = findTarget()
+  console.log(i);
+  i.toString()
+  console.log(i);
+  defaultDb.nodes.push({ id: i });
+  defaultDb.links.push({source: i, target: target});
+  // console.log(defaultDb)
+  Graph.graphData(defaultDb)
+  console.log(defaultDb)
+  i++
+}, 1000);
+console.log(defaultDb.nodes.length);
+function findTarget() {
+  let countN = defaultDb.nodes.length-2;
+  let index = Math.round(Math.random() * countN)
+  let newTarget = defaultDb.nodes[index].id;
+  newTarget.toString()
+  return newTarget 
+}
+
+
+
 /**
  * want to add new nodes to the initial database
  */

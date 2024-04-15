@@ -38,7 +38,6 @@ export function initSocket() {
       : window.location.origin;
 
   const socket = io("http://localhost:" + 5555);
-
   // put socket listerners here e.g. `socket.on(...)`
   socket.on("chat message", (msg) => {
     console.log(msg);
