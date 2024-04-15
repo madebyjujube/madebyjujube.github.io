@@ -4,7 +4,6 @@ import { initUi } from "./ui.js";
 import { initWaveform } from "./waveform.js";
 import { initGraph } from "./forcegraph.js";
 import { initDatabase } from "./forcegraph.js";
-import { populateGraph } from "./forcegraph.js";
 import { Audio } from "./audio.js";
 /**
  * HTMLElement that plays back recordings.
