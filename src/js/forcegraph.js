@@ -15,6 +15,7 @@
 import SpriteText from "three-spritetext";
 import ForceGraph3D from "3d-force-graph";
 import { graph, socket } from "./main.js";
+import { Audio } from "./audio.js"
 
 export function initDatabase() {
   const defaultDb = {
@@ -57,10 +58,11 @@ export function initGraph() {
     .nodeLabel("id")
     .onNodeClick((node) => {
       graph.emitParticle(node);
+      trigAudioGraph(graph, node);
     });
 
   graph.d3Force("charge").strength(-30);
-  graph.d3Force("link").distance(30);
+  graph.d3Force("link").distance(80);
   graph
     .d3Force("center")
     .x((w) => w.width / 2)
@@ -127,6 +129,7 @@ function resizeGraph(graph) {
 // }
 
 function trigAudioGraph(graph, node) {
+
   // audio panning:
   // const coord = {
   //   id: node.id,
@@ -134,11 +137,11 @@ function trigAudioGraph(graph, node) {
   //   y: node.y,
   //   z: node.z,
   // };
-  const links = graph.graphData().links;
-  const nodeSiblings = links.filter(
-    (link) => link.source.id === node.id || link.target.id === node.id,
-  );
-  console.log(nodeSiblings);
+  // const links = graph.graphData().links;
+  // const nodeSiblings = links.filter(
+  //   (link) => link.source.id === node.id || link.target.id === node.id,
+  // );
+  // console.log(nodeSiblings);
   // generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
   // console.log(coord);
 }

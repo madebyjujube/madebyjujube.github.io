@@ -24,6 +24,7 @@ export class Audio {
     this.recorder = new Tone.Recorder();
     this.waveform = new Tone.Waveform();
     this.player = new Tone.Player().toDestination();
+    this.nodePlayer = new Tone.Players().toDestination();
 
     this.mic = new Tone.UserMedia();
     this.mic.open();
@@ -83,5 +84,9 @@ export class Audio {
   resetMic() {
     this.mic.disconnect();
     this.mic.connect(this.dest);
+  }
+  trigNodeSound(node) {
+    // this.nodePlayer.add(node)
+    // this.nodePlayse.player(node).start()
   }
 }
