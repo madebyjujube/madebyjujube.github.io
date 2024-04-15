@@ -65,7 +65,6 @@ export class Audio {
    */
   async stopRecord() {
     const recording = await this.recorder.stop();
-    console.log(recording);
     if (this.currentObjectURL) {
       URL.revokeObjectURL(this.currentObjectURL);
     }

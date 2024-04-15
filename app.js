@@ -14,8 +14,10 @@ const server = createServer(app)
 const io = new Server(server, {
     cors: { origin: '*' }
 })
+let database
 
 const databasePath = "./datasets/testdb.json"
+
 /**
  * readDb(databasePath)
  * reads graph database
@@ -70,24 +72,46 @@ app.use(express.json())
         writeDb( { label: req.file.originalname}, databasePath )
         res.send('audio uploaded')
     }
-// 
 
+
+// ================
+// function updateDb(node) {
+    // database = readDb(databasePath)
+    // let countN = database.nodes.length - 1;
+    // let index = Math.round(Math.random() * countN);
+    // let target = database.nodes[index].id;
+// }
+
+// 
 // DATABASE, CHANGES, + CHATBOX
 io.on('connection', (socket) => {
     
     console.log('a user connected', socket.id)
     
     socket.on('database-req', () => {
-        let database = readDb(databasePath)
+        database = readDb(databasePath)
         io.emit('database', database)
     })
-
+    
     socket.on('uploaded-node', (node) => {
-        io.emit('new-node', node)
+        database = readDb(databasePath)
+        let countN = database.nodes.length - 1;
+        let index = Math.round(Math.random() * countN);
+        let target = database.nodes[index].id;
+        const nodeObj = { 
+            nodes: [
+                {id: node},
+            ],
+            links: [
+                { source: node, 
+                target: target }
+            ]
+        }
+        io.emit('new-node', nodeObj)
+        writeDb(nodeObj)
     })
     
     socket.on('upload_audio', async (data) => {
-        console.log({data, type: typeof data.buffer})
         fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer)
     })
     

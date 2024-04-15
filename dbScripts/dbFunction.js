@@ -6,7 +6,7 @@ function readDb(dbName = './datasets/ono.json') {
 }
 
 // Credits to Sabine: provided this function that appends to the JSON file :-)
-function writeDb(obj, dbName = 'user-data.json') {
+function writeDb(obj, dbName = './datasets/testdb.json') {
     if (!obj) {
         return console.log('oops', 'database not found')
     }
@@ -26,7 +26,9 @@ function writeDb(obj, dbName = 'user-data.json') {
         //parse as ab array
         let asArray = JSON.parse(_data)
         // add the new data
-        asArray.push(obj)
+        console.log(_data)
+        asArray.nodes.push({id: obj.id})
+        asArray.links.push({source: obj.source, target: obj.target})
         //write out
         fs.writeFileSync(dbName,JSON.stringify(asArray))
         }

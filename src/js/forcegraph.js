@@ -56,8 +56,8 @@ export function initGraph() {
     })
     .nodeLabel("id")
     .onNodeClick((node) => {
-      // trigAudioGraph(node)
-    });
+      graph.emitParticle(node);
+    })
 
   graph.d3Force("charge").strength(-30);
   graph.d3Force("link").distance(30);
@@ -83,44 +83,17 @@ export function populateGraph(graph, database) {
  * Updates the global database object with the nodes and links of the new database.
  */
 export function updateDatabase(database, newDatabase) {
-  console.log("updateDatabase", database);
   database.nodes = newDatabase.nodes;
   database.links = newDatabase.links;
   return database;
 }
 
 export function addNewNodeToDatabase(database, newNode) {
-  console.log("addNewNode", database);
-
-  // move target finding functionality to server.
-  // that way, server database will have most recent version of the database.
-  // which means that new connections will receive a db with all new nodes.
-  //
-  // on server,
-  // - find target
-  // - make a new node object
-  // - update db with new node
-  // - return the new node with this shape:
-  // newNode = {
-  //   id: string,
-  //   source: string,
-  //   target: string,
-  // }
-  //
-  // in this function, assign necessary properties with newNode.[id | source | target]
-  //
-  let target = findTarget(database);
-  database.nodes.push({ id: newNode });
-  database.links.push({ source: newNode, target: target });
+  console.log("connection: ", newNode.links);
+  database.nodes.push({ id: newNode.nodes.id });
+  database.links.push({ source: newNode.links.source, target: newNode.links.target });
+  console.log(database)
   return database;
-}
-
-function findTarget(database) {
-  console.log("findTarget", database);
-  let countN = database.nodes.length - 2;
-  let index = Math.round(Math.random() * countN);
-  let newTarget = database.nodes[index].id;
-  return newTarget;
 }
 
 function resizeGraph(graph) {
@@ -131,23 +104,26 @@ function resizeGraph(graph) {
   graph.width(ww - navw).height(wh - navh);
 }
 
-// function generateParticles(coord) {
-//   Graph.emitParticle(coord);
+// function generateParticles(graph, node) {
+//   Graph.onNodeClick((node) => {
+//     // trigAudioGraph(node)
+//     graph.emitParticle(node);
+//   });
 // }
 
-// function trigAudioGraph(graph, node) {
-//     // audio panning:
-//   const coord = {
-//     id: node.id,
-//     x: node.x,
-//     y: node.y,
-//     z: node.z,
-//   };
-//   const links = graph.graphData().links;
-//   const nodeSiblings = links.filter(
-//     (link) => link.source.id === node.id || link.target.id === node.id,
-//   );
-//   console.log(nodeSiblings);
-//   // generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
-//   // console.log(coord);
-// };
+function trigAudioGraph(graph, node) {
+  // audio panning:
+  // const coord = {
+    //   id: node.id,
+    //   x: node.x,
+    //   y: node.y,
+    //   z: node.z,
+    // };
+    const links = graph.graphData().links;
+    const nodeSiblings = links.filter(
+      (link) => link.source.id === node.id || link.target.id === node.id,
+    );
+  console.log(nodeSiblings);
+  // generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
+  // console.log(coord);
+};
