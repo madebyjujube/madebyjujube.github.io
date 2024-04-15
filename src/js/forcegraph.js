@@ -1,32 +1,30 @@
 /**
- * SERVER>CLIENT comms. 
+ * SERVER>CLIENT comms.
  * - send initial database from server ONCE.
  * - Assign it to the model defaultDb.
  * - on upload, add new node:
- * - send it to server, 
+ * - send it to server,
  * - and back to client
- * - update graph with new database. 
- * 
+ * - update graph with new database.
+ *
  * AUDIO
- * - 
+ * -
  */
 // model view controller
 // init , UI , events
-import SpriteText from 'three-spritetext';
-import ForceGraph3D from '3d-force-graph';
-import { graph, socket } from "./main.js"
+import SpriteText from "three-spritetext";
+import ForceGraph3D from "3d-force-graph";
+import { graph, socket } from "./main.js";
 
 export function initDatabase() {
   const defaultDb = {
-    nodes: [
-      { id: "1" }, 
-      { id: "2" }],
+    nodes: [{ id: "1" }, { id: "2" }],
     links: [
       {
         source: "1",
         target: "2",
         value: 10,
-      }
+      },
     ],
   };
   return defaultDb;
@@ -41,64 +39,72 @@ export function initGraph() {
   const colorGraph = style.getPropertyValue("--c-graph");
 
   window.addEventListener("resize", resizeGraph);
-  
+
   const graphCont = document.getElementById("GRAPH");
-  
+
   graphCont.style.left = 100 + "px";
   graph(graphCont)
-  .backgroundColor(colorGraph)
-  .linkWidth(0.4)
-  .nodeThreeObject((node) => {
-    const sprite = new SpriteText(node.id);
-    sprite.material.depthWrite = false;
-    sprite.color = colorPri;
-    sprite.fontFace = "Helvetica";
-    sprite.textHeight = 12;
-    return sprite;
-  })
-  .nodeLabel("id")
-  .onNodeClick((node) => {
-    // trigAudioGraph(node)
-  })
+    .backgroundColor(colorGraph)
+    .linkWidth(0.4)
+    .nodeThreeObject((node) => {
+      const sprite = new SpriteText(node.id);
+      sprite.material.depthWrite = false;
+      sprite.color = colorPri;
+      sprite.fontFace = "Helvetica";
+      sprite.textHeight = 12;
+      return sprite;
+    })
+    .nodeLabel("id")
+    .onNodeClick((node) => {
+      // trigAudioGraph(node)
+    });
 
   graph.d3Force("charge").strength(-30);
   graph.d3Force("link").distance(30);
-  graph.d3Force("center")
+  graph
+    .d3Force("center")
     .x((w) => w.width / 2)
     .y((h) => h.height / 2);
 
   resizeGraph(graph);
-  
-  return graph
+
+  return graph;
 }
 
-//export populates the graph()
+/**
+ * Replaces the graph data with the database data.
+ */
 export function populateGraph(graph, database) {
-  graph.graphData(database)
-  // return database
+  graph.graphData(database);
+  return graph;
 }
-export function updateDatabase(database) {
-  console.log(database);
-  let newdb;
-  database.nodes = newdb.nodes
-  database.links = newdb.links
-  // console.log("updateDatabase", newdb);
-  return newdb
+
+/**
+ * Updates the global database object with the nodes and links of the new database.
+ */
+export function updateDatabase(database, newDatabase) {
+  console.log("updateDatabase", database);
+  database.nodes = newDatabase.nodes;
+  database.links = newDatabase.links;
+  return database;
 }
-export function addNewNode(graph, database, newNode) {
-  console.log('addNewNode',database)
-  let target = findTarget(database)
+
+export function addNewNodeToDatabase(database, newNode) {
+  console.log("addNewNode", database);
+  let target = findTarget(database);
   database.nodes.push({ id: newNode });
-  database.links.push({source: newNode, target: target});
-  graph.graphData(database)
+  database.links.push({ source: newNode, target: target });
+  return database;
 }
+
 function findTarget(database) {
-  console.log('findTarget',database)
-  let countN = database.nodes.length-2;
-  let index = Math.round(Math.random() * countN)
+  console.log("findTarget", database);
+  let countN = database.nodes.length - 2;
+  let index = Math.round(Math.random() * countN);
   let newTarget = database.nodes[index].id;
-  return newTarget 
+  return newTarget;
 }
+
 function resizeGraph(graph) {
   const navw = 200;
   const navh = 200;
@@ -127,4 +133,3 @@ function resizeGraph(graph) {
 //   // generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
 //   // console.log(coord);
 // };
-

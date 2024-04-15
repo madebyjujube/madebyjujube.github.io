@@ -3,8 +3,8 @@
  * - manipulates UI-elements styles: (login, rec, cue, input, upload)
  * - creates countdown-timer: recording max duration
  * - sets Tone.js: recorder & player
- * 
- * 
+ *
+ *
  *
  */
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) -
@@ -21,9 +21,6 @@ import {
   cueBtn,
   socket,
 } from "./main.js";
-import {
-  addNewNode
-} from './forcegraph.js'
 
 // state
 //
@@ -58,7 +55,7 @@ export function initUi() {
     startStopRec(e);
     enableUploadButtonIf();
   });
-  
+
   cueBtn.addEventListener("click", cueBtnClick);
   nodeName.addEventListener("input", enableUploadButtonIf);
   uploadBtn.addEventListener("click", (e) => {
@@ -89,11 +86,11 @@ async function uploadBtnCallback(e) {
 
   socket.emit("upload_audio", { buffer, name: nodeName.value });
   socket.emit("uploaded-node", filename);
-  console.log('sending',filename)
-  nodeName.value = '';
-  
+  console.log("sending", filename);
+  nodeName.value = "";
+
   console.log("audio sent to server! thank you :3");
-  console.log('input cleared')
+  console.log("input cleared");
   nodeName.disabled = true;
 }
 function disposeRecBuffer() {
@@ -153,7 +150,7 @@ async function stopRecord() {
   stopTimer();
   recBtn.innerHTML = "";
   nodeName.removeAttribute("disabled");
-  await audio.stopRecord()
+  await audio.stopRecord();
 }
 
 function removeRecordingStyle() {

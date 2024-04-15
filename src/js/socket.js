@@ -1,15 +1,11 @@
 import { io } from "socket.io-client";
 import {
-  addNewNode, 
+  addNewNodeToDatabase,
   populateGraph,
-  updateDatabase
-} from './forcegraph.js'
-import { 
-  graph,
-  database
-} from "./main.js";
+  updateDatabase,
+} from "./forcegraph.js";
+import { graph, database } from "./main.js";
 export function initSocket() {
-
   // const EXPRESS_PORT = 3000;
   // const ROOT_URL =
   //   window.location.hostname === "localhost"
@@ -22,19 +18,19 @@ export function initSocket() {
   const socket = io("http://localhost:" + 5555);
   // put socket listerners here e.g. `socket.on(...)`
 
-  socket.on("database", (database) => {
-    populateGraph(graph, database)
-    updateDatabase(database)
-  })
+  socket.on("database", (newDatabase) => {
+    updateDatabase(database, newDatabase);
+    populateGraph(graph, database);
+  });
+
   socket.on("new-node", (node) => {
-    let newdb = updateDatabase();
-    addNewNode(graph, newdb, node);
-  })
-  
+    addNewNodeToDatabase(database, node);
+    populateGraph(graph, database);
+  });
+
   socket.on("chat message", (msg) => {
     console.log(msg);
   });
 
   return socket;
 }
-
