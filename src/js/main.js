@@ -22,7 +22,7 @@ import { Audio } from "./audio.js";
   
 export const audio = new Audio();
 export const socket = initSocket();
-export const database = initDatabase();
+export let database = initDatabase();
 export const graph = initGraph(database);
 
 main();

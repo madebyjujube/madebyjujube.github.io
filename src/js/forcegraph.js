@@ -77,7 +77,14 @@ export function populateGraph(graph, database) {
   graph.graphData(database)
   // return database
 }
-
+export function updateDatabase(database) {
+  console.log(database);
+  let newdb;
+  database.nodes = newdb.nodes
+  database.links = newdb.links
+  // console.log("updateDatabase", newdb);
+  return newdb
+}
 export function addNewNode(graph, database, newNode) {
   console.log('addNewNode',database)
   let target = findTarget(database)
