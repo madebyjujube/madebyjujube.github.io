@@ -109,7 +109,6 @@ export function addNewNodeToDatabase(database, newNode) {
     source: newNode.source,
     target: newNode.target,
   });
-  console.log(database);
   return database;
 }
 

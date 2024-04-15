@@ -15,7 +15,7 @@ export function initSocket() {
         ":" +
         EXPRESS_PORT
       : window.location.origin;
-    console.log(window.location.hostname)
+  
   const socket = io(window.location.hostname + ':' + 5555);
   // put socket listerners here e.g. `socket.on(...)`
 

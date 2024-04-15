@@ -26,7 +26,6 @@ function writeDb(obj, dbName = './datasets/testdb.json') {
         //parse as ab array
         let asArray = JSON.parse(_data)
         // add the new data
-        console.log(_data)
         asArray.nodes.push({id: obj.id})
         asArray.links.push({source: obj.source, target: obj.target})
         //write out

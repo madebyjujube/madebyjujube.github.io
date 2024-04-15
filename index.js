@@ -121,8 +121,6 @@ io.on("connection", (socket) => {
 });
 
 function findTargetId(database) {
-  console.log("findTarget", database);
-
   // NOTE: Renamed variables to something more specific.
   let maxAvailableIndices = database.nodes.length - 2;
   let newTargetIndex = Math.round(Math.random() * maxAvailableIndices);
