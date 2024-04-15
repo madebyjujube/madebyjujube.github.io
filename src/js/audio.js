@@ -11,6 +11,7 @@ export class Audio {
   waveform;
   recorder;
   currentObjectURL = null;
+  
 
   recordingBuffer = [];
 
@@ -24,7 +25,7 @@ export class Audio {
     this.recorder = new Tone.Recorder();
     this.waveform = new Tone.Waveform();
     this.player = new Tone.Player().toDestination();
-    this.nodePlayer = new Tone.Players().toDestination();
+    this.nodePlayer = new Tone.Player().toDestination();
 
     this.mic = new Tone.UserMedia();
     this.mic.open();
@@ -85,8 +86,13 @@ export class Audio {
     this.mic.disconnect();
     this.mic.connect(this.dest);
   }
+  // getAudioFile(node) {
+  //   console.log('getting audio')
+  // }
   trigNodeSound(node) {
-    // this.nodePlayer.add(node)
-    // this.nodePlayse.player(node).start()
+    this.nodePlayer.load(`/src/assets/audio/${node.id}.wav`)
+    console.log(this.nodePlayer)
+    // console.log(`/src/assets/audio/${node.id}.wav`)
+    this.nodePlayer.start()
   }
 }

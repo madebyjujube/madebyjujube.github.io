@@ -14,8 +14,8 @@
 // init , UI , events
 import SpriteText from "three-spritetext";
 import ForceGraph3D from "3d-force-graph";
-import { graph, socket } from "./main.js";
-import { Audio } from "./audio.js"
+import { graph, socket, audio } from "./main.js";
+// import { Audio } from "./audio.js"
 
 export function initDatabase() {
   const defaultDb = {
@@ -57,8 +57,9 @@ export function initGraph() {
     })
     .nodeLabel("id")
     .onNodeClick((node) => {
-      graph.emitParticle(node);
-      trigAudioGraph(graph, node);
+      audio.trigNodeSound(node)
+      // graph.emitParticle(node);
+      // trigAudioGraph(graph, node);
     });
 
   graph.d3Force("charge").strength(-30);
