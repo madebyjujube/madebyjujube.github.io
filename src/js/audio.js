@@ -12,7 +12,6 @@ export class Audio {
   recorder;
   currentObjectURL = null;
   
-
   recordingBuffer = [];
 
   constructor() {
@@ -72,7 +71,7 @@ export class Audio {
     }
   
     const bufferURL = URL.createObjectURL(recording);
-    this.player.load(bufferURL); // Load audio data first
+    this.setPlayerURL(bufferURL);
     this.currentObjectURL = bufferURL;
   
     this.addToBuffer(recording);
@@ -82,17 +81,18 @@ export class Audio {
     this.player.load(url);
   }
 
-  resetMic() {
-    this.mic.disconnect();
-    this.mic.connect(this.dest);
+  async fetchAudioFile(node) {
+    console.log('getting audio')
+    const reslut = await fetch(`../assets/audio/${node.id}.wav`)
+    const blob = await reslut.blob()
+    const bufferURL = URL.createObjectURL(blob);
+    return bufferURL
   }
-  // getAudioFile(node) {
-  //   console.log('getting audio')
-  // }
-  trigNodeSound(node) {
-    this.nodePlayer.load(`/src/assets/audio/${node.id}.wav`)
+  async trigNodeSound(node) {
+    let bufferURL = await this.fetchAudioFile(node)
+    console.log(bufferURL);
+    this.nodePlayer.load(bufferURL)
     console.log(this.nodePlayer)
-    // console.log(`/src/assets/audio/${node.id}.wav`)
     this.nodePlayer.start()
   }
 }

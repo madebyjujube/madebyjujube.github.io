@@ -34,4 +34,5 @@ function main() {
   
   // ready for db
   socket.emit("database-req");
+  // socket.emit("audio-req");
 }

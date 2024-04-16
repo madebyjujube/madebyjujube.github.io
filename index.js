@@ -87,6 +87,10 @@ io.on("connection", (socket) => {
     database = readDb(databasePath);
     io.emit("database", database);
   });
+  // socket.on("audio-req", () => {
+  //   data = readAudio();
+  //   io.emit("database", database);
+  // });
 
   // NOTE: Renamed incoming variable to match the type of data the client sends.
   socket.on("uploaded-node", (nodeName) => {
