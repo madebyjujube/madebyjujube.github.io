@@ -56,8 +56,8 @@ export function initGraph() {
       return sprite;
     })
     .nodeLabel("id")
-    .onNodeClick((node) => {
-      audio.trigNodeSound(node)
+    .onNodeClick(async (node) => {
+      await audio.trigNodeSound(node)
       // graph.emitParticle(node);
       // trigAudioGraph(graph, node);
     });

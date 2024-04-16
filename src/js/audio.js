@@ -91,7 +91,7 @@ export class Audio {
   async trigNodeSound(node) {
     let bufferURL = await this.fetchAudioFile(node)
     console.log(bufferURL);
-    this.nodePlayer.load(bufferURL)
+    await this.nodePlayer.load(bufferURL)
     console.log(this.nodePlayer)
     this.nodePlayer.start()
   }
