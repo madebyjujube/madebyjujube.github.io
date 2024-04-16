@@ -24,6 +24,7 @@ let database = readDb(databasePath);
  */
 
 app.use(express.static("dist"));
+app.use('/uploaded-audio', express.static('uploaded_audio'))
 app.use(express.json());
 
 // ===============

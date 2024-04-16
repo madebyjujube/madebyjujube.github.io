@@ -11,7 +11,7 @@ export class Audio {
   waveform;
   recorder;
   currentObjectURL = null;
-  
+
   recordingBuffer = [];
 
   constructor() {
@@ -19,7 +19,7 @@ export class Audio {
 
     this.actx = Tone.context;
     this.dest = this.actx.createMediaStreamDestination();
-    
+
     this.audioPlayerElement = audioPlayerElement;
     this.recorder = new Tone.Recorder();
     this.waveform = new Tone.Waveform();
@@ -69,21 +69,21 @@ export class Audio {
     if (this.currentObjectURL) {
       URL.revokeObjectURL(this.currentObjectURL);
     }
-  
+
     const bufferURL = URL.createObjectURL(recording);
     this.setPlayerURL(bufferURL);
     this.currentObjectURL = bufferURL;
-  
+
     this.addToBuffer(recording);
   }
-  
+
   setPlayerURL(url) {
     this.player.load(url);
   }
 
   async fetchAudioFile(node) {
     console.log('getting audio')
-    const reslut = await fetch(`../assets/audio/${node.id}.wav`)
+    const reslut = await fetch(`/uploaded-audio/${node.id}.wav`)
     const blob = await reslut.blob()
     const bufferURL = URL.createObjectURL(blob);
     return bufferURL
