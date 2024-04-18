@@ -1,7 +1,4 @@
 import * as Tone from "tone";
-import {
-  audioPlayerElement,
-} from "./main.js";
 export class Audio {
   actx;
   dest;
@@ -20,7 +17,6 @@ export class Audio {
     this.actx = Tone.context;
     this.dest = this.actx.createMediaStreamDestination();
 
-    this.audioPlayerElement = audioPlayerElement;
     this.recorder = new Tone.Recorder();
     this.waveform = new Tone.Waveform();
     this.player = new Tone.Player().toDestination();
@@ -58,11 +54,7 @@ export class Audio {
   }
 
   /**
-   * function of the Audio class called when recording has stopped
-   * - awaiting recorder stop:
-   * - creates a URL with the recorded data
-   * - populate the HTML audio element (html element has useful onend event for later)
-   * - adds the audio to the recording buffer
+   * awaiting recorder stop:
    */
   async stopRecord() {
     const recording = await this.recorder.stop();
@@ -81,6 +73,10 @@ export class Audio {
     this.player.load(url);
   }
 
+  /**
+   * @param {*} node 
+   * @returns {} bufferURL
+   */
   async fetchAudioFile(node) {
     console.log('getting audio')
     const reslut = await fetch(`/audio/${node.id}.wav`)
@@ -88,11 +84,10 @@ export class Audio {
     const bufferURL = URL.createObjectURL(blob);
     return bufferURL
   }
+
   async trigNodeSound(node) {
     let bufferURL = await this.fetchAudioFile(node)
-    console.log(bufferURL);
     await this.nodePlayer.load(bufferURL)
-    console.log(this.nodePlayer)
     this.nodePlayer.start()
   }
 }

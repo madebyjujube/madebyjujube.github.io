@@ -29,13 +29,10 @@ export function initSocket() {
     addNewNodeToDatabase(database, node);
     populateGraph(graph, database);
   });
-  // socket.on("audio-files", (obj) => {
-  //   console.log(obj)
-  // })
 
-  socket.on("chat message", (msg) => {
-    console.log(msg);
-  });
+  // socket.on("chat message", (msg) => {
+  //   console.log(msg);
+  // });
 
   return socket;
 }

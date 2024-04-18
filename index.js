@@ -22,8 +22,8 @@ let database = readDb(databasePath);
  * readDb(databasePath)
  * reads graph database
  */
-
 app.use(express.static("dist"));
+app.use(express.static("src/assets"));
 app.use('/audio', express.static('audio'))
 app.use('/src/assets/images', express.static('/src/assets/images'))
 app.use(express.json());
@@ -89,10 +89,6 @@ io.on("connection", (socket) => {
     database = readDb(databasePath);
     io.emit("database", database);
   });
-  // socket.on("audio-req", () => {
-  //   data = readAudio();
-  //   io.emit("database", database);
-  // });
 
   // NOTE: Renamed incoming variable to match the type of data the client sends.
   socket.on("uploaded-node", (nodeName) => {
@@ -100,11 +96,12 @@ io.on("connection", (socket) => {
 
     // NOTE: Reused existing findTarget function
     const target = findTargetId(database);
-
+    const value = findValue();
     const nodeObj = {
       id: nodeName,
       source: nodeName,
       target,
+      value,
     };
 
     writeDb(nodeObj);
@@ -133,7 +130,9 @@ function findTargetId(database) {
   let newTargetId = database.nodes[newTargetIndex].id;
   return newTargetId;
 }
-
+function findValue() {
+  return Math.random() * 10;
+}
 // START SERVER
 server.listen(process.env.PORT || 5555, () => {
   console.log(`listening on port 5555`);

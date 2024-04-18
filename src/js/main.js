@@ -8,7 +8,6 @@ import { Audio } from "./audio.js";
  * HTMLElement that plays back recordings.
  */
 //
-export const audioPlayerElement = document.querySelector("#buffer");
 export const inputID = document.getElementById("username");
 export const editBtn = document.getElementById("editbtn");
 export const uploadBtn = document.getElementById("uploadBtn");
@@ -30,9 +29,7 @@ function main() {
   configFont(document);
   initUi();
   initWaveform();
-  // initAudioFolder();
   
   // ready for db
   socket.emit("database-req");
-  // socket.emit("audio-req");
 }

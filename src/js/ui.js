@@ -11,7 +11,6 @@
 import * as Tone from "tone";
 import {
   audio,
-  audioPlayerElement,
   inputID,
   editBtn,
   uploadBtn,
@@ -92,7 +91,6 @@ async function uploadBtnCallback(e) {
   nodeNameElement.value = "";
 
   console.log("audio sent to server! thank you :3");
-  console.log("input cleared");
   nodeNameElement.disabled = true;
 }
 function disposeRecBuffer() {
@@ -205,7 +203,6 @@ function enableUploadButtonIf() {
 // PLAY RECORDED AUDIO + UI
 function cueBtnClick() {
   if (audio.player.state !== "started") {
-    audioPlayerElement.play();
     audio.player.start();
     audio.player.connect(audio.waveform);
     cueBtn.classList.add("playing");

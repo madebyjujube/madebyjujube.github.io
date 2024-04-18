@@ -39,13 +39,17 @@ export function initGraph() {
   const colorPri = style.getPropertyValue("--c-pri");
   const colorGraph = style.getPropertyValue("--c-graph");
 
-  window.addEventListener("resize", resizeGraph);
+  window.addEventListener("resize", () => {
+    resizeGraph(graph)
+  });
 
   const graphCont = document.getElementById("GRAPH");
 
   graphCont.style.left = 100 + "px";
   graph(graphCont)
     .backgroundColor(colorGraph)
+    .linkDirectionalParticleColor("black")
+    .linkDirectionalParticleWidth(2)
     .linkWidth(0.4)
     .nodeThreeObject((node) => {
       const sprite = new SpriteText(node.id);
@@ -58,18 +62,16 @@ export function initGraph() {
     .nodeLabel("id")
     .onNodeClick(async (node) => {
       await audio.trigNodeSound(node)
-      // graph.emitParticle(node);
-      // trigAudioGraph(graph, node);
+      generateParticle(graph, node)
     });
-
-  graph.d3Force("charge").strength(-30);
-  graph.d3Force("link").distance(80);
-  graph
+    
+    graph.d3Force("charge").strength(-30);
+    graph.d3Force("link").distance(80);
+    graph
     .d3Force("center")
     .x((w) => w.width / 2)
     .y((h) => h.height / 2);
-
-  resizeGraph(graph);
+    
 
   return graph;
 }
@@ -121,14 +123,23 @@ function resizeGraph(graph) {
   graph.width(ww - navw).height(wh - navh);
 }
 
-// function generateParticles(graph, node) {
-//   Graph.onNodeClick((node) => {
-//     // trigAudioGraph(node)
-//     graph.emitParticle(node);
-//   });
-// }
 
-function trigAudioGraph(graph, node) {
+function generateParticle(graph, node) {
+  const links = graph.graphData().links;
+  const nodeSiblings = links.filter(
+    (link) => 
+    link.source.id === node.id || 
+    link.target.id === node.id,
+  );
+  const source = nodeSiblings[0];
+  const target = nodeSiblings[1];
+
+  graph.emitParticle(source);
+  graph.emitParticle(target);
+}
+
+
+// function panAudio(graph, node) {
 
   // audio panning:
   // const coord = {
@@ -137,11 +148,6 @@ function trigAudioGraph(graph, node) {
   //   y: node.y,
   //   z: node.z,
   // };
-  // const links = graph.graphData().links;
-  // const nodeSiblings = links.filter(
-  //   (link) => link.source.id === node.id || link.target.id === node.id,
-  // );
-  // console.log(nodeSiblings);
-  // generateParticles(nodeSiblings[0].source, nodeSiblings[0].target);
+  
   // console.log(coord);
-}
+// }
