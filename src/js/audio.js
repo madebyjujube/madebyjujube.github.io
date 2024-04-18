@@ -83,7 +83,7 @@ export class Audio {
 
   async fetchAudioFile(node) {
     console.log('getting audio')
-    const reslut = await fetch(`/uploaded-audio/${node.id}.wav`)
+    const reslut = await fetch(`/audio/${node.id}.wav`)
     const blob = await reslut.blob()
     const bufferURL = URL.createObjectURL(blob);
     return bufferURL

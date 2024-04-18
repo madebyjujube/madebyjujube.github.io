@@ -24,7 +24,8 @@ let database = readDb(databasePath);
  */
 
 app.use(express.static("dist"));
-app.use('/uploaded-audio', express.static('uploaded_audio'))
+app.use('/audio', express.static('audio'))
+app.use('/src/assets/images', express.static('/src/assets/images'))
 app.use(express.json());
 
 // ===============
@@ -111,7 +112,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("upload_audio", async (data) => {
-    fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer);
+    fs.writeFile(`./audio/${data.name}.wav`, data.buffer);
   });
 
   // CHAT-APP
