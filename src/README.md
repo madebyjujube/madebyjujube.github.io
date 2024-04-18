@@ -1,7 +1,7 @@
 Project Description: 
 
-A web based user interface allowing visitors to record an audio snippet using their voice (5 seconds max). 
-The audio will be recorded into a buffer, which they should then rename matching the vowel or onomatopoeia they just recorded. 
+A web user interface that allows visitors to record audio snippets, (5 seconds max). 
+the audio will be recorded into a buffer, which they should then rename however they like. 
 The file will then be pushed to a server, making it available to other visitors.
 
 Audio files will live in the server, and be displayed on the front-end using a 3D force directed graph. 
