@@ -63,7 +63,7 @@ export function initUi() {
     enableUploadButtonIf();
     disposeRecBuffer();
   });
-  audioPlayerElement.onended = audioPlayerOnEndedCallback;
+  audio.player.onstop = audioPlayerOnEndedCallback;
 }
 
 function audioPlayerOnEndedCallback() {
@@ -157,7 +157,7 @@ async function stopRecord() {
 
 function removeRecordingStyle() {
   recBtn.classList.remove("recording");
-  recBtn.style.backgroundImage = "url(/src/assets/images/Ellipse.png)";
+  recBtn.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKJSURBVHgB1VqNmYIwDI1OwAhsIBscG5wbyAa6gWzijXA3Ad4E6gTqBLhBrpWgoQSOnwLlfZdPLC0mzUtKm1uABSCApz7WSlZKfCUBZG0e63YjOSu5KDkusu/TQCutZK8kUYId5aQkwszoccAUT3soLslhcENqFE/JEzsla60IMvqQ0YGSUEmM9V7bg22QQifhx3KlvQ7P9Ig+0nOv1ryhHrQRZl0rHoIlkGeuglfX0AdEGfOhOxgI5M3UCqUE5e25tf53fcEb7YygQDTTXWued0VFzG3aDE6nUp7p4RlGpI0YYLhvFNrU6OIZ+pz+G7BvbfHAEBgR13XknBss27QFZSc+sZ7U6cCpA44Bi6t3bN40Zz8Ex0CLnewFWtKbBcqEqPSCka4icBRGLCR5o0mf0XN+U1Ba5RnJW0KR73qX9ABHQbqdWdNaGxCwhl9wHz/sOtAGrFjDEdzHjV372gCfNThLHwZOoRXMJYBzUCC/1oMFPtsyLJ5/7oPrvISZQxvw4v1cKMS/FwyAGRgAxaRz0wbwqA7AfRSOK7UBd9bgg/sI2fXF9MAnuI8Pdn0u5dUZvMzxdcvPbyQubiVNVO5bMDtwLb5nO4jKfYvwnh2CYzC2lG/6sA5OewGL50MHqYPpBZeOVba1s886xjjXgy02gAfKdcq0iuWT6mvTQfM93KXBkcG505h0EpTX0q5aY8TD1AWOGLpAMGLoEtMWyyWmGPoAs2pNKngjBEugRSoRJisCG6hwax4bEXYvs+5QrhkPE3MCpbgkdF/PZoDlQrdP3syVriqYxzAkSJGvGkO6SErGj5euyZAI5Up7U0n6Km7lHIj4GkK2p87/5cZnXR7wPpi90+e3jYPkP2UbPJU9GZp5AAAAAElFTkSuQmCC)";
   cueBtn.removeAttribute("disabled");
 }
 function setRecordingStyle() {

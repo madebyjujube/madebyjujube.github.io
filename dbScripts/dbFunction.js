@@ -4,6 +4,10 @@ function readDb(dbName = './datasets/ono.json') {
     const data = fs.readFileSync(dbName, 'utf8')
     return JSON.parse(data)
 }
+// function readAudio(path = './audio/') {
+//     const data = fs.readFileSync(path, 'utf8')
+//     return 
+// }
 
 // Credits to Sabine: provided this function that appends to the JSON file :-)
 function writeDb(obj, dbName = './datasets/testdb.json') {

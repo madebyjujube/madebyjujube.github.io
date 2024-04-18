@@ -19,12 +19,12 @@ export class Audio {
 
     this.actx = Tone.context;
     this.dest = this.actx.createMediaStreamDestination();
-    
+
     this.audioPlayerElement = audioPlayerElement;
     this.recorder = new Tone.Recorder();
     this.waveform = new Tone.Waveform();
     this.player = new Tone.Player().toDestination();
-    this.nodePlayer = new Tone.Players().toDestination();
+    this.nodePlayer = new Tone.Player().toDestination();
 
     this.mic = new Tone.UserMedia();
     this.mic.open();
@@ -69,24 +69,30 @@ export class Audio {
     if (this.currentObjectURL) {
       URL.revokeObjectURL(this.currentObjectURL);
     }
-  
+
     const bufferURL = URL.createObjectURL(recording);
-    this.player.load(bufferURL); // Load audio data first
+    this.setPlayerURL(bufferURL);
     this.currentObjectURL = bufferURL;
-  
+
     this.addToBuffer(recording);
   }
-  
+
   setPlayerURL(url) {
     this.player.load(url);
   }
 
-  resetMic() {
-    this.mic.disconnect();
-    this.mic.connect(this.dest);
+  async fetchAudioFile(node) {
+    console.log('getting audio')
+    const reslut = await fetch(`/audio/${node.id}.wav`)
+    const blob = await reslut.blob()
+    const bufferURL = URL.createObjectURL(blob);
+    return bufferURL
   }
-  trigNodeSound(node) {
-    // this.nodePlayer.add(node)
-    // this.nodePlayse.player(node).start()
+  async trigNodeSound(node) {
+    let bufferURL = await this.fetchAudioFile(node)
+    console.log(bufferURL);
+    await this.nodePlayer.load(bufferURL)
+    console.log(this.nodePlayer)
+    this.nodePlayer.start()
   }
 }

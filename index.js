@@ -24,6 +24,8 @@ let database = readDb(databasePath);
  */
 
 app.use(express.static("dist"));
+app.use('/audio', express.static('audio'))
+app.use('/src/assets/images', express.static('/src/assets/images'))
 app.use(express.json());
 
 // ===============
@@ -87,6 +89,10 @@ io.on("connection", (socket) => {
     database = readDb(databasePath);
     io.emit("database", database);
   });
+  // socket.on("audio-req", () => {
+  //   data = readAudio();
+  //   io.emit("database", database);
+  // });
 
   // NOTE: Renamed incoming variable to match the type of data the client sends.
   socket.on("uploaded-node", (nodeName) => {
@@ -106,7 +112,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("upload_audio", async (data) => {
-    fs.writeFile(`./uploaded_audio/${data.name}.wav`, data.buffer);
+    fs.writeFile(`./audio/${data.name}.wav`, data.buffer);
   });
 
   // CHAT-APP
