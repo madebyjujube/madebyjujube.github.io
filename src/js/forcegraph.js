@@ -48,8 +48,9 @@ export function initGraph() {
   graphCont.style.left = 100 + "px";
   graph(graphCont)
     .backgroundColor(colorGraph)
-    .linkDirectionalParticleColor("black")
+    .linkDirectionalParticleColor(() => "90F")
     .linkDirectionalParticleWidth(2)
+    .linkColor(() => colorPri )
     .linkWidth(0.4)
     .nodeThreeObject((node) => {
       const sprite = new SpriteText(node.id);
@@ -65,14 +66,14 @@ export function initGraph() {
       generateParticle(graph, node)
     });
     
-    graph.d3Force("charge").strength(-30);
+    graph.d3Force("charge").strength(-100);
     graph.d3Force("link").distance(80);
     graph
     .d3Force("center")
     .x((w) => w.width / 2)
     .y((h) => h.height / 2);
     
-
+    resizeGraph(graph);
   return graph;
 }
 
