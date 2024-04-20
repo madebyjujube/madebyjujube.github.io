@@ -1,12 +1,12 @@
 # read me 😇
 
-[Description](#description)
-[How](#how-it-works)
-[Artist Statement](#artist-statement)
-[Process](#process)
-[Acknowledgements](#acknowledgements)
-[Sources](#sources)
-[Essay](#art-≠-property)
+- [Description](#description)
+- [How](#how-it-works)
+- [Artist Statement](#artist-statement)
+- [Process](#process)
+- [Acknowledgements](#acknowledgements)
+- [Sources](#sources)
+- [Essay](#art-≠-property)
 
 ![Intangible logo](https://github.com/madebyjujube/madebyjujube.github.io/blob/main/src/assets/images/intangible.svg)
 
