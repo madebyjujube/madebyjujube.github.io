@@ -1,5 +1,5 @@
 # read me 😇
-
+- [Deployed version](https://madebyjujube-github-io.onrender.com/)
 - [Description](#description)
 - [How](#how-it-works)
 - [Artist Statement](#artist-statement)
@@ -41,41 +41,41 @@ See also [sources](#sources) for list of libraries and tutorials used.
 Additionally, you can find the [essay](#essay) I wrote as a part of the research phase of this project. 
 # sources
 ## front-end Libraries:
--  3d-force-graph (version 1.73.2)
+- 3d-force-graph (version 1.73.2)
 https://github.com/vasturiano/3d-force-graph
 
--  custom text-node three object:
+- custom text-node three object:
 https://github.com/vasturiano/three-spritetext
 
--  Audio:
+- Audio:
 https://tonejs.github.io/
 
--  Waveform visualizer
+- Waveform visualizer
 https://p5js.org/
 
 
 ## Back-end Libraries:
--  Environment:
+- Environment:
 https://nodejs.org/en
 
--  Node framework:
+- Node framework:
 https://expressjs.com/
 
--  bundler:
+- bundler:
 https://vitejs.dev/guide/why.html
 
--  real-time communication:
+- real-time communication:
 https://socket.io/
 
 
 ## Useful Tutorials:
--  JSON push / pull requests: 
+- JSON push / pull requests: 
 https://github.com/jamezmca/json-db
 
--  Tone recorder
+- Tone recorder
 https://www.youtube.com/watch?v=VHCv3waFkRo&ab_channel=jake
 
--  General Javascript Hero:
+- General Javascript Hero:
 https://www.youtube.com/@ColorCodeio
 
 
