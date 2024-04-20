@@ -1,4 +1,5 @@
 # read me 😇
+
 [Description](#description)
 [How](#how-it-works)
 [Artist Statement](#artist-statement)
@@ -7,8 +8,9 @@
 [Sources](#sources)
 [Essay](#art-≠-property)
 
-## Description:
 ![Intangible logo](https://github.com/madebyjujube/madebyjujube.github.io/blob/main/src/assets/images/intangible.svg)
+
+## Description:
 Welcome to my project "Intangible", a website with a user interface that allows visitors to create personalized audio archives visualized through a 3D graph. This design is an unusual / experimental approach to UI/UX. The aim of this project is in a constant reemergence as the possiblities are so expansive, essentially, it is redefined by its user through their intention and interaction. 
 
 ## How it works:
