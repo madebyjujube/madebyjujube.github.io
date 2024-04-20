@@ -1,4 +1,4 @@
-art ≠ property 
+# art ≠ property 
 Music, one of the fundamental carrier of culture, transcends words. It speaks the language of emotions, using pitch and rhythm to evoke feelings in a way that spoken language (with its reliance on meaning) does not compare. However, speech too carries emotional weight through its inflections, this goes to show the universality of music's foundation – the expression of feeling. This fluidity allows to expand the definition of music to encompass any sound that carries emotional resonance, blurring the lines between musical speech and artistic expression.
 
 Human beings are wired to imitate. As infants, we learn to speak by mirroring the sounds we hear, progressing from mimicking individual sounds to forming sentences. This process of imitation, integration, and then personal expression underpins all learning. For music follows the same formula. We are drawn to certain sounds and rhythms, we internalize them, and ultimately use them as building blocks for our own musical expression.
