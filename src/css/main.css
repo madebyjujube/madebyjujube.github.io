@@ -1,5 +1,5 @@
 :root {
-    --c-graph: #FDF;
+    --c-graph: #FFD7FF;
     --c-bg: #FDF;
     --c-pri: #90F;
     --c-sec: #FFC;
@@ -28,15 +28,21 @@ main {
     left: 0;
     width: 100vw;
     height: 100vh;
-    /* z-index: -1; */
 }
 
 /* ====================== */
 /* ====== ABSOLUTE ====== */
 /* ====================== */
-#buffer {
-    display: none;
-}
+/* #instructions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--c-bg);
+    opacity: 0.8;
+    z-index: 100;
+} */
 #ilogo {
     position: absolute;
     bottom: 0px;
@@ -45,12 +51,6 @@ main {
 }
 #GRAPH {
     position: absolute;
-    left: 50px;
-    top: 100px; 
-}
-#GRAPH-WRAPPER {
-    width: 50vw;
-    height: 50vh;
 }
 
 /* ====================== */
@@ -60,7 +60,6 @@ main {
 #UI-wrapper {
     position: absolute;
     left: var(--ui-height);
-    height: var(--ui-height);
     margin-left: -10px;
     width: calc(100vw - (var(--ui-height) * 2) + 20px);
     justify-content: space-between;
@@ -232,3 +231,30 @@ button:active {
 
 
 /* MEDIA QUERIES */
+@media screen and (max-width: 1300px) {
+    #ilogo {
+        top: 0;
+        left: 0;
+        width: 100vw;
+        padding-right: var(--ui-height);
+    }
+    #UI-wrapper {
+        --ui-el-h: 60px;
+        --ui-el-w: 80px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    #UI-wrapper * {
+        font-size: 1.5rem;
+        flex: start;
+    }
+    input {
+        width: 10rem;
+    }
+    /* #GRAPH {
+        left: 50px;
+        top: 100px; 
+    } */
+    
+}

@@ -17,10 +17,11 @@ export class Audio {
     this.actx = Tone.context;
     this.dest = this.actx.createMediaStreamDestination();
 
+    this.panner = new Tone.Panner().toDestination();
     this.recorder = new Tone.Recorder();
     this.waveform = new Tone.Waveform();
     this.player = new Tone.Player().toDestination();
-    this.nodePlayer = new Tone.Player().toDestination();
+    this.nodePlayer = new Tone.Player().connect(this.panner).toDestination();
 
     this.mic = new Tone.UserMedia();
     this.mic.open();
@@ -42,6 +43,16 @@ export class Audio {
       mic,
     };
   }
+
+  // // PANNER IMPLEMENTATION iN PROGRESS (see onNodeClick)
+  // panNode() {
+  //   window.addEventListener("mousemove", (e) => {
+  //     let mousex = e.clientX;
+  //     let normalx = (mousex / window.innerWidth) * 2 - 1;
+  //     let x = Math.min(Math.max(normalx, -1), 1)
+  //     this.panner.pan.rampTo(x, 0.5);
+  //   });
+  // }
 
   //   MIC INIT
   initMic() {
@@ -78,7 +89,6 @@ export class Audio {
    * @returns {} bufferURL
    */
   async fetchAudioFile(node) {
-    console.log('getting audio')
     const reslut = await fetch(`/audio/${node.id}.wav`)
     const blob = await reslut.blob()
     const bufferURL = URL.createObjectURL(blob);

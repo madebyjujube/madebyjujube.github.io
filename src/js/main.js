@@ -2,12 +2,13 @@ import { configFont } from "./adobefonts.js";
 import { initSocket } from "./socket.js";
 import { initUi } from "./ui.js";
 import { initWaveform } from "./waveform.js";
-import { initGraph, initDatabase } from "./forcegraph.js";
+import { initGraph, initDatabase, resizeGraph } from "./forcegraph.js";
 import { Audio } from "./audio.js";
 /**
  * HTMLElement that plays back recordings.
  */
 //
+export const instructions = document.getElementById("instructions");
 export const inputID = document.getElementById("username");
 export const editBtn = document.getElementById("editbtn");
 export const uploadBtn = document.getElementById("uploadBtn");
@@ -25,7 +26,7 @@ export const graph = initGraph(database);
 main();
 
 function main() {
-  console.log("main.js");
+  console.log("hello, fellow dev");
   configFont(document);
   initUi();
   initWaveform();

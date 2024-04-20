@@ -11,6 +11,11 @@ const sketch = (p5) => {
     const uiH = root.getPropertyValue("--ui-el-h").slice(0, -2);
 
     let canvas = p5.createCanvas(95, uiH);
+    // if (window.innerWidth < 1300) {
+    //   p5.resizeCanvas(120, 60);
+    // } else {
+    //   p5.resizeCanvas(95, 40);
+    // }
     canvas.parent("p5js");
 
     p5.background(0);
@@ -29,9 +34,15 @@ const sketch = (p5) => {
     }
     p5.endShape();
   };
-};
+  p5.windowResized = () => {
+    if (window.innerWidth < 1300) {
+      p5.resizeCanvas(120, 60);
+    } else {
+      p5.resizeCanvas(95, 40);
+    }
+  };
+}
 
 export function initWaveform() {
   const P5 = new p5(sketch);
 }
-

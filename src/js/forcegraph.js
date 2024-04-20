@@ -15,7 +15,6 @@
 import SpriteText from "three-spritetext";
 import ForceGraph3D from "3d-force-graph";
 import { graph, socket, audio } from "./main.js";
-// import { Audio } from "./audio.js"
 
 export function initDatabase() {
   const defaultDb = {
@@ -39,13 +38,13 @@ export function initGraph() {
   const colorPri = style.getPropertyValue("--c-pri");
   const colorGraph = style.getPropertyValue("--c-graph");
 
+  const graphCont = document.getElementById("GRAPH");
+  
   window.addEventListener("resize", () => {
-    resizeGraph(graph)
+    resizeGraph(graph, graphCont)
   });
 
-  const graphCont = document.getElementById("GRAPH");
-
-  graphCont.style.left = 100 + "px";
+  
   graph(graphCont)
     .backgroundColor(colorGraph)
     .linkDirectionalParticleColor(() => "90F")
@@ -56,15 +55,16 @@ export function initGraph() {
       const sprite = new SpriteText(node.id);
       sprite.material.depthWrite = false;
       sprite.color = colorPri;
-      sprite.fontFace = "Helvetica";
+      sprite.fontFace = "ab-kokikaku";
       sprite.textHeight = 12;
       return sprite;
     })
     .nodeLabel("id")
     .onNodeClick(async (node) => {
+      // audio.panNode()
       await audio.trigNodeSound(node)
       generateParticle(graph, node)
-    });
+    })
     
     graph.d3Force("charge").strength(-100);
     graph.d3Force("link").distance(80);
@@ -73,7 +73,7 @@ export function initGraph() {
     .x((w) => w.width / 2)
     .y((h) => h.height / 2);
     
-    resizeGraph(graph);
+    resizeGraph(graph, graphCont);
   return graph;
 }
 
@@ -116,12 +116,19 @@ export function addNewNodeToDatabase(database, newNode) {
   return database;
 }
 
-function resizeGraph(graph) {
-  const navw = 200;
-  const navh = 200;
+export function resizeGraph(graph, graphCont) {
   const ww = window.innerWidth;
   const wh = window.innerHeight;
-  graph.width(ww - navw).height(wh - navh);
+  const navh = 200;
+  const navw = 200;
+  graphCont.style.top = 100 + "px";
+  if (window.innerWidth < 1300) {
+    graphCont.style.left = 0 + "px";
+    graph.width(ww).height(wh - navh);
+  } else {
+    graphCont.style.left = 100 + "px";
+    graph.width(ww - navw).height(wh - navh);
+  }
 }
 
 
