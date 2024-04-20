@@ -22,3 +22,9 @@ What I need help with:
 - 
 - 
 
+
+add: 
+    - download audio feature
+    - login to: database-name
+    - mk custom databases for people. 
+    - 
