@@ -6,7 +6,7 @@
 - [Process](#process)
 - [Acknowledgements](#acknowledgements)
 - [Sources](#sources)
-- [Essay](#art-≠-property)
+- [Essay](#essay)
 
 ![Intangible logo](https://github.com/madebyjujube/madebyjujube.github.io/blob/main/src/assets/images/intangible.svg)
 
@@ -38,7 +38,7 @@ Major thanks to Ox (aka oxgr) for all the time spent sharing ideas, discussing J
 **And thanks to YOU for reading!**
 
 See also [sources](#sources) for list of libraries and tutorials used. 
-Additionally, you can find the [essay](#art-≠-property) I wrote as a part of the research phase of this project. 
+Additionally, you can find the [essay](#essay) I wrote as a part of the research phase of this project. 
 # sources
 ## front-end Libraries:
 ### 3d-force-graph (version 1.73.2)
@@ -79,7 +79,7 @@ https://www.youtube.com/watch?v=VHCv3waFkRo&ab_channel=jake
 https://www.youtube.com/@ColorCodeio
 
 
-*essay*:
+### *essay*:
 # art ≠ property 
 Music, one of the fundamental carrier of culture, transcends words. It speaks the language of emotions, using pitch and rhythm to evoke feelings in a way that spoken language (with its reliance on meaning) does not compare. However, speech too carries emotional weight through its inflections, this goes to show the universality of music's foundation – the expression of feeling. This fluidity allows to expand the definition of music to encompass any sound that carries emotional resonance, blurring the lines between musical speech and artistic expression.
 
