@@ -11,6 +11,9 @@ As it stands, I would like to keep the goal simple: a different way to archive a
 
 The name Intangible relates to a quality of sound as a medium – being intangible; abstract. Unlike images, sound is abstract in nature, thus it cannot be categorized in the same way. This way of mapping sounds visually and interacting with them provides a context for them to exist. Ideally, I would like to create personalized entry points into various databases of sounds. The login would serve as an access point to a specific bank of sound nodes. Whether it be a personal space for recording sound memos, or an archival space for a community at large.
 
+read also: 
+/essay.md
+
 *Process:*
 This project not only has a future ahead and coult benefit individuals and communities, it served me personally as a great opportunity to learn about the technologies used to build it. I entered this project with bare knowledge of JavaScript and no experience at all with back-end programming. 
 Through research on internet culture, I found lots of ways I could link my sound-art background to a web project. Initially, I leaned more towards creating an informational website with a specific narrative through data. However, I personally found it not only difficult, but also boring to work with data. Sharing an opinion is easy, but any attempt to locate and display accurate data is challenging. I found the process to be a discrouaging rabbit hole of research and disappointment. For this reason, while keeping my initial rationale, I decided to create something playful, and an interface that would allow people to interact and contribute.
