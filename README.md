@@ -1,5 +1,7 @@
 # read me 😇
-- [Deployed version](https://madebyjujube-github-io.onrender.com/)
+***[Deployed version](https://madebyjujube-github-io.onrender.com/)***
+
+## *Index*
 - [Description](#description)
 - [How](#how-it-works)
 - [Artist Statement](#artist-statement)
