@@ -16,8 +16,8 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "vite --host",
-		"build": "npm run build",
-		"serve": "npm run dev",
+		"build": "npm build",
+		"serve": "vite preview",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
