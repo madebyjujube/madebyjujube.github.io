@@ -62,7 +62,7 @@ export function initUi() {
     enableUploadButtonIf();
     disposeRecBuffer();
   });
-  audio.player.onstop = audioPlayerOnEndedCallback;
+  audio.recPlayer.onstop = audioPlayerOnEndedCallback;
 }
 
 function audioPlayerOnEndedCallback() {
@@ -202,12 +202,12 @@ function enableUploadButtonIf() {
 
 // PLAY RECORDED AUDIO + UI
 function cueBtnClick() {
-  if (audio.player.state !== "started") {
-    audio.player.start();
-    audio.player.connect(audio.waveform);
+  if (audio.recPlayer.state !== "started") {
+    audio.recPlayer.start();
+    audio.recPlayer.connect(audio.waveform);
     cueBtn.classList.add("playing");
   } else {
-    audio.player.stop();
+    audio.recPlayer.stop();
     cueBtn.classList.remove("playing");
   }
 }

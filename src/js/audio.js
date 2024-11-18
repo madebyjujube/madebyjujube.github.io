@@ -12,16 +12,17 @@ export class Audio {
   recordingBuffer = [];
 
   constructor() {
-    Tone.Master.volume.value = 0;
-
     this.actx = Tone.context;
     this.dest = this.actx.createMediaStreamDestination();
 
     this.panner = new Tone.Panner().toDestination();
     this.recorder = new Tone.Recorder();
     this.waveform = new Tone.Waveform();
-    this.player = new Tone.Player().toDestination();
-    this.nodePlayer = new Tone.Player().connect(this.panner).toDestination();
+    this.recPlayer = new Tone.Player().toDestination();
+    this.nodePlayer = new Tone.Players(
+      
+    )
+    .connect(this.panner).toDestination();
 
     this.mic = new Tone.UserMedia();
     this.mic.open();
@@ -81,7 +82,7 @@ export class Audio {
   }
 
   setPlayerURL(url) {
-    this.player.load(url);
+    this.recPlayer.load(url);
   }
 
   /**
@@ -97,7 +98,12 @@ export class Audio {
 
   async trigNodeSound(node) {
     let bufferURL = await this.fetchAudioFile(node)
-    await this.nodePlayer.load(bufferURL)
-    this.nodePlayer.start()
+    // await this.nodePlayer.load(bufferURL)
+    console.log(this.nodePlayer)
+    await this.nodePlayer.add(node.id)
+    console.log(this.nodePlayer.player(node.id))
+    await this.nodePlayer.player(node.id).load(bufferURL)
+    this.nodePlayer.player(node.id).start()
+    
   }
 }
