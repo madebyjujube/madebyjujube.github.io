@@ -9,6 +9,7 @@
  */
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) -
 import * as Tone from "tone";
+import { initSocket } from "./socket.js";  
 import {
   audio,
   inputID,
@@ -18,7 +19,7 @@ import {
   nodeNameElement,
   recBtn,
   cueBtn,
-  socket,
+  updateMainSocket
 } from "./main.js";
 
 // state
@@ -28,11 +29,16 @@ const REC_MAX_TIME = REC_MAX_TIME_SECS * 1000; // Max time allowed to record in 
 
 let recTimer, countInterval;
 let recTimeCounter = 5;
+let localSocket = null;
 
-// actually useless?
+// actually useless? WORKING ON IT
 let userData = {
   username: "",
 };
+
+function disposeRecBuffer() {
+  audio.recordingBuffer = [];
+}
 
 export function initUi() {
   // states
@@ -77,26 +83,6 @@ function audioPlayerOnEndedCallback() {
  * - upload audio file
  * - send file name to database
  */
-async function uploadBtnCallback(e) {
-  // if (state == false) return
-  e.preventDefault();
-
-  // NOTE: Renamed the `filename` to `nodeName` and `nodeName` to `nodeNameElement`
-  const nodeName = nodeNameElement.value;
-  const buffer = audio.recordingBuffer;
-
-  socket.emit("upload_audio", { buffer, name: nodeNameElement.value });
-  socket.emit("uploaded-node", nodeName);
-  console.log("sending", nodeName);
-  nodeNameElement.value = "";
-
-  console.log("audio sent to server! thank you :3");
-  nodeNameElement.disabled = true;
-}
-function disposeRecBuffer() {
-  audio.recordingBuffer = [];
-}
-
 function loginBtnClick(e) {
   let isFormValid = inputID.checkValidity();
   if (!isFormValid) {
@@ -107,9 +93,37 @@ function loginBtnClick(e) {
     recBtn.removeAttribute("disabled");
     loginBtn.style.display = "none";
     editBtn.style.display = "flex";
-    userData.username = inputID.value;
+    userData.username = inputID.value.trim();
+    
+    // Initialize socket with username - this triggers database loading
+    localSocket = initSocket(userData.username);
+    updateMainSocket(localSocket);
   }
 }
+async function uploadBtnCallback(e) {
+  e.preventDefault();
+
+  const nodeName = nodeNameElement.value.trim();
+  if (!nodeName) return;
+  
+  const buffer = audio.recordingBuffer;
+  const username = userData.username || 'default';
+
+  if (!localSocket) {
+    console.error("Socket not initialized - please login first");
+    return;
+  } // *_*
+
+  // Use username-aware upload
+  localSocket.emit("upload_audio", { buffer, name: nodeName, username });
+  localSocket.emit("uploaded-node", { nodeName, username });
+  
+  console.log("sending", nodeName, "for user", username);
+  nodeNameElement.value = "";
+  console.log("audio sent to server! thank you :3");
+  nodeNameElement.disabled = true;
+}
+
 function editBtnClick(e) {
   e.preventDefault();
   inputID.removeAttribute("disabled");

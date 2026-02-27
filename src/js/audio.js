@@ -89,10 +89,11 @@ export class Audio {
    * @returns {} bufferURL
    */
   async fetchAudioFile(node) {
-    const reslut = await fetch(`/audio/${node.id}.wav`)
-    const blob = await reslut.blob()
+    const username = document.getElementById("username")?.value || 'default';
+    const result = await fetch(`/audio/${username}/${node.id}.wav`);
+    const blob = await result.blob();
     const bufferURL = URL.createObjectURL(blob);
-    return bufferURL
+    return bufferURL;
   }
 
   async trigNodeSound(node) {
