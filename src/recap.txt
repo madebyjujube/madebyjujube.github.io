@@ -43,3 +43,16 @@ UI
 SERVER
 - create DB on user login
 - 
+
+
+New Architecture for the Audio folders: 
+/audio/
+  ├── {username}/
+  │   ├── sound1.wav
+  │   └── sound2.wav
+  └── {username2}/
+      └── sound3.wav
+
+/datasets/
+  ├── {username}.json     (each user gets their own graph database)
+  └── {username2}.json
