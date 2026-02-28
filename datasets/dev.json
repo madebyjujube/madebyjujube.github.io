@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    {
+      "id": "meow"
+    },
+    {
+      "id": "woof"
+    }
+  ],
+  "links": [
+    {
+      "source": "woof",
+      "target": "meow",
+      "value": 1
+    }
+  ]
+}

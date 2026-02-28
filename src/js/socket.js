@@ -4,12 +4,17 @@ import {
   populateGraph,
   updateDatabase,
 } from "./forcegraph.js";
-import { graph, database } from "./main.js";
 
 let socket = null;
 let currentUsername = null;
+let globalGraph = null;
+let globalDatabase = null;
 
-export function initSocket(username = null) {
+export function initSocket(username = "home", graph, database) {
+  // Store references
+  globalGraph = graph;
+  globalDatabase = database;
+  
   const EXPRESS_PORT = 5555;
   const ROOT_URL =
     window.location.hostname === "localhost"
@@ -21,27 +26,22 @@ export function initSocket(username = null) {
       : window.location.origin;
   
   socket = io(ROOT_URL);
-  
   currentUsername = username;
 
   socket.on("connect", () => {
-    console.log("Connected to server");
-    
-    // If we have a username, join that database
-    if (currentUsername) {
-      socket.emit("join-database", currentUsername);
-    }
+    console.log("Connected to server, joining as:", currentUsername);
+    socket.emit("join-database", currentUsername);
   });
 
   socket.on("database", (newDatabase) => {
-    console.log("Received database:", newDatabase);
-    updateDatabase(database, newDatabase);
-    populateGraph(graph, database);
+    // console.log("Received database for", currentUsername, ":", newDatabase);
+    updateDatabase(globalDatabase, newDatabase);
+    populateGraph(globalGraph, globalDatabase);
   });
 
   socket.on("new-node", (node) => {
-    addNewNodeToDatabase(database, node);
-    populateGraph(graph, database);
+    addNewNodeToDatabase(globalDatabase, node);
+    populateGraph(globalGraph, globalDatabase);
   });
 
   socket.on("error", (errorMsg) => {
@@ -51,20 +51,10 @@ export function initSocket(username = null) {
   return socket;
 }
 
-// Helper to re-initialize with username after login
 export function joinDatabase(username) {
   if (!socket) return;
-  
   currentUsername = username;
   socket.emit("join-database", username);
-}
-
-// Helper to upload audio with username context
-export function uploadAudioWithUsername(buffer, name, username) {
-  if (!socket) return;
-  
-  socket.emit("upload_audio", { buffer, name, username });
-  socket.emit("uploaded-node", { nodeName: name, username });
 }
 
 export function getSocket() {

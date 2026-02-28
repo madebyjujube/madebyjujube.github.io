@@ -56,3 +56,13 @@ New Architecture for the Audio folders:
 /datasets/
   ├── {username}.json     (each user gets their own graph database)
   └── {username2}.json
+
+
+Updated flow:
+| Action              | Result                                                         |
+| ------------------- | -------------------------------------------------------------- |
+| Arrive on site      | Auto-loads "home" database, UI enabled                         |
+| Click node          | Plays from `/audio/home/`                                      |
+| Type "home" → Login | Reloads same database (refresh)                                |
+| Type "juju" → Login | Creates empty `/datasets/juju.json`, new folder `/audio/juju/` |
+| Record in "juju"    | Saves to `/audio/juju/`, adds to personal graph                |

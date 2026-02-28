@@ -3,13 +3,10 @@
  * - manipulates UI-elements styles: (login, rec, cue, input, upload)
  * - creates countdown-timer: recording max duration
  * - sets Tone.js: recorder & player
- *
- *
- *
  */
 // want to add audio FX : PANNING(X-COORD) - PLAYBACK-SPEED(VELOCITY) - VOLUME(Z-COORD) -
 import * as Tone from "tone";
-import { initSocket } from "./socket.js";  
+import { initSocket, joinDatabase, getSocket } from "./socket.js";
 import {
   audio,
   inputID,
@@ -18,36 +15,35 @@ import {
   loginBtn,
   nodeNameElement,
   recBtn,
-  cueBtn,
-  updateMainSocket
+  cueBtn
 } from "./main.js";
 
 // state
-//
 const REC_MAX_TIME_SECS = 5;
-const REC_MAX_TIME = REC_MAX_TIME_SECS * 1000; // Max time allowed to record in ms
-
+const REC_MAX_TIME = REC_MAX_TIME_SECS * 1000;
 let recTimer, countInterval;
 let recTimeCounter = 5;
-let localSocket = null;
-
-// actually useless? WORKING ON IT
 let userData = {
-  username: "",
+  username: "home",  // Start as home
 };
 
-function disposeRecBuffer() {
-  audio.recordingBuffer = [];
-}
+// function inputClick() {
+//   loginBtn.removeAttribute("disabled");
+// }
+
+// Module-level socket reference for callbacks
+let localSocket = null;
 
 export function initUi() {
-  // states
+  // Enable all UI immediately - user is already in "home" space
   recBtn.disabled = !Tone.UserMedia.supported;
-  cueBtn.disabled = true;
-  loginBtn.disabled = true;
+  cueBtn.disabled = true;  // Disabled until recording exists
+  loginBtn.disabled = false;  // Enabled - acts as "switch space"
   uploadBtn.disabled = true;
   nodeNameElement.disabled = true;
-  recBtn.disabled = true;
+  
+  // Pre-fill username with "home"
+  inputID.value = "home";
 
   // events
   window.addEventListener("click", audio.start, { once: true });
@@ -55,7 +51,7 @@ export function initUi() {
 
   loginBtn.addEventListener("click", loginBtnClick);
   editBtn.addEventListener("click", editBtnClick);
-  inputID.addEventListener("input", inputClick);
+  // inputID.addEventListener("input", inputClick); // REMOVED DISABLING AT INIT. 
   recBtn.addEventListener("click", (e) => {
     startStopRec(e);
     enableUploadButtonIf();
@@ -69,6 +65,9 @@ export function initUi() {
     disposeRecBuffer();
   });
   audio.player.onstop = audioPlayerOnEndedCallback;
+  
+  // Store reference to socket from main
+  // localSocket = socket;
 }
 
 function audioPlayerOnEndedCallback() {
@@ -83,45 +82,39 @@ function audioPlayerOnEndedCallback() {
  * - upload audio file
  * - send file name to database
  */
+
 function loginBtnClick(e) {
+    // validation 
   let isFormValid = inputID.checkValidity();
   if (!isFormValid) {
     inputID.reportValidity();
   } else {
     e.preventDefault();
+    
+    const newUsername = inputID.value.trim();
+    
+    // If "home", just refresh the current database
+    if (newUsername === "home") {
+      // console.log("Refreshing home database");
+      joinDatabase("home");
+      userData.username = "home";
+      // UI stays enabled, just refresh
+      return;
+    }
+    
+    // For new username: switch to personal space
     inputID.disabled = true;
     recBtn.removeAttribute("disabled");
     loginBtn.style.display = "none";
     editBtn.style.display = "flex";
-    userData.username = inputID.value.trim();
+    userData.username = newUsername;
     
-    // Initialize socket with username - this triggers database loading
-    localSocket = initSocket(userData.username);
-    updateMainSocket(localSocket);
+    // console.log("Switching to personal space:", newUsername);
+    
+    // Join new database (creates empty if new user)
+    joinDatabase(newUsername);
+    localSocket = socket;  // Update reference
   }
-}
-async function uploadBtnCallback(e) {
-  e.preventDefault();
-
-  const nodeName = nodeNameElement.value.trim();
-  if (!nodeName) return;
-  
-  const buffer = audio.recordingBuffer;
-  const username = userData.username || 'default';
-
-  if (!localSocket) {
-    console.error("Socket not initialized - please login first");
-    return;
-  } // *_*
-
-  // Use username-aware upload
-  localSocket.emit("upload_audio", { buffer, name: nodeName, username });
-  localSocket.emit("uploaded-node", { nodeName, username });
-  
-  console.log("sending", nodeName, "for user", username);
-  nodeNameElement.value = "";
-  console.log("audio sent to server! thank you :3");
-  nodeNameElement.disabled = true;
 }
 
 function editBtnClick(e) {
@@ -129,9 +122,32 @@ function editBtnClick(e) {
   inputID.removeAttribute("disabled");
   loginBtn.style.display = "flex";
   editBtn.style.display = "none";
+  
+  // Reset to home when editing
+  inputID.value = "home";
 }
-function inputClick() {
-  loginBtn.removeAttribute("disabled");
+
+async function uploadBtnCallback(e) {
+  e.preventDefault();
+
+  const nodeName = nodeNameElement.value.trim();
+  if (!nodeName) return;
+  
+  const buffer = audio.recordingBuffer;
+  const username = userData.username || 'home';
+  const currentSocket = getSocket();
+  if (!currentSocket) {
+    console.error("Socket not available");
+    return;
+  }
+  
+  currentSocket.emit("upload_audio", { buffer, name: nodeName, username });
+  currentSocket.emit("uploaded-node", { nodeName, username });
+  
+  console.log("sending", nodeName, "for user", username);
+  nodeNameElement.value = "";
+  console.log("audio sent to server! thank you :3");
+  nodeNameElement.disabled = true;
 }
 
 // RECORDER BELOW :)

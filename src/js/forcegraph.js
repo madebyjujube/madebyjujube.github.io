@@ -61,8 +61,19 @@ export function initGraph() {
     })
     .nodeLabel("id")
     .onNodeClick(async (node) => {
+                            // console.log("=== NODE CLICK DEBUG ===");
+                            // console.log("Node clicked:", node);
+                            // console.log("Node ID:", node.id);
+                            // console.log("Username:", document.getElementById("username")?.value);
+      
+      // try {
+      //   await audio.trigNodeSound(node);
+      //     console.log("Audio played successfully");
+      // } catch (err) {
+      //     console.error("Audio error:", err);
+      // }
       // audio.panNode()
-      await audio.trigNodeSound(node)
+      await audio.trigNodeSound(node) // BRING ME BACK 
       generateParticle(graph, node)
     })
     

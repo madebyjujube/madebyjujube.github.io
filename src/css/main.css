@@ -1,6 +1,6 @@
 :root {
-    --c-graph: #FFD7FF;
-    --c-bg: #FDF;
+    --c-graph: #FDF;
+    --c-bg: #FBF;
     --c-pri: #90F;
     --c-sec: #FFC;
     --c-acc: #0A0;
@@ -232,6 +232,9 @@ button:active {
 
 /* MEDIA QUERIES */
 @media screen and (max-width: 1300px) {
+    body{
+        /* background-color: #ECE; */
+    }
     #ilogo {
         top: 0;
         left: 0;
@@ -239,6 +242,7 @@ button:active {
         padding-right: var(--ui-height);
     }
     #UI-wrapper {
+        position: fixed;
         --ui-el-h: 60px;
         --ui-el-w: 80px;
         left: 0;
@@ -252,9 +256,4 @@ button:active {
     input {
         width: 10rem;
     }
-    /* #GRAPH {
-        left: 50px;
-        top: 100px; 
-    } */
-    
 }
