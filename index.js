@@ -1,85 +1,73 @@
 const fs = require('fs');
 const path = require('path');
-const fsp = require("fs/promises");
+const fsp = require('fs/promises');
 const express = require("express");
 const multer = require("multer");
 const { Server } = require("socket.io");
 const { createServer } = require("node:http");
-
-// MY-MODULES
-const { readDb, writeDb, updateJSONFile, HOME_DB } = require("./dbScripts/dbFunction.js");
+const { readDb, writeDb, HOME_DB } = require("./dbScripts/dbFunction.js");
 
 const app = express();
 const server = createServer(app);
-
-// RAILWAY: Use process.env.PORT (Railway assigns this dynamically)
 const PORT = process.env.PORT || 5555;
 
-// RAILWAY: CORS - allow all origins for Railway's dynamic domains
-const io = new Server(server, {
-  cors: { 
-    origin: "*",
-    methods: ["GET", "POST"]
-  },
-});
-
-// RAILWAY: Use environment variables (these are set in Railway dashboard)
+// Environment paths
 const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./audio";
 const DATASETS_PATH = process.env.DATASETS_PATH || "./datasets";
+process.env.HOME_DB = process.env.HOME_DB || path.join(DATASETS_PATH, "home.json");
 
+// Socket.io setup
+const io = new Server(server, {
+  cors: { origin: "*", methods: ["GET", "POST"] }
+});
 
-// ======= FIX ======= //
+const userSessions = new Map();
 
-// Simple sync seeding function
-function seedFiles() {
+// ============ SEEDING ============
+async function seedStarterFiles() {
+  const appAudio = '/app/audio';
+  const appDatasets = '/app/datasets';
+  
+  if (!fs.existsSync(appAudio) || !AUDIO_BASE_PATH.startsWith('/data')) {
+    console.log('No seeding needed');
+    return;
+  }
+  
+  console.log('Seeding starter files...');
+  
   try {
-    const appAudio = '/app/audio';
-    const dataAudio = AUDIO_BASE_PATH;
+    await fsp.mkdir(AUDIO_BASE_PATH, { recursive: true });
+    const entries = await fsp.readdir(appAudio, { withFileTypes: true });
     
-    if (fs.existsSync(appAudio) && dataAudio.startsWith('/data')) {
-      if (!fs.existsSync(dataAudio)) {
-        fs.mkdirSync(dataAudio, { recursive: true });
-      }
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
       
-      const dirs = fs.readdirSync(appAudio, { withFileTypes: true });
-      for (const dir of dirs) {
-        if (dir.isDirectory()) {
-          const srcDir = path.join(appAudio, dir.name);
-          const destDir = path.join(dataAudio, dir.name);
-          
-          if (!fs.existsSync(destDir)) {
-            fs.mkdirSync(destDir, { recursive: true });
-          }
-          
-          const files = fs.readdirSync(srcDir);
-          for (const file of files) {
-            const src = path.join(srcDir, file);
-            const dest = path.join(destDir, file);
-            if (!fs.existsSync(dest)) {
-              fs.copyFileSync(src, dest);
-              console.log(`Seeded: ${dir.name}/${file}`);
-            }
-          }
+      const srcDir = path.join(appAudio, entry.name);
+      const destDir = path.join(AUDIO_BASE_PATH, entry.name);
+      await fsp.mkdir(destDir, { recursive: true });
+      
+      const files = await fsp.readdir(srcDir);
+      for (const file of files) {
+        const src = path.join(srcDir, file);
+        const dest = path.join(destDir, file);
+        if (!fs.existsSync(dest)) {
+          await fsp.copyFile(src, dest);
+          console.log(`Seeded: ${entry.name}/${file}`);
         }
       }
     }
     
     // Seed datasets
-    const appDatasets = '/app/datasets';
-    if (fs.existsSync(appDatasets) && DATASETS_PATH.startsWith('/data')) {
-      if (!fs.existsSync(DATASETS_PATH)) {
-        fs.mkdirSync(DATASETS_PATH, { recursive: true });
-      }
-      
-      const files = fs.readdirSync(appDatasets);
+    if (fs.existsSync(appDatasets)) {
+      await fsp.mkdir(DATASETS_PATH, { recursive: true });
+      const files = await fsp.readdir(appDatasets);
       for (const file of files) {
-        if (file.endsWith('.json')) {
-          const src = path.join(appDatasets, file);
-          const dest = path.join(DATASETS_PATH, file);
-          if (!fs.existsSync(dest)) {
-            fs.copyFileSync(src, dest);
-            console.log(`Seeded dataset: ${file}`);
-          }
+        if (!file.endsWith('.json')) continue;
+        const src = path.join(appDatasets, file);
+        const dest = path.join(DATASETS_PATH, file);
+        if (!fs.existsSync(dest)) {
+          await fsp.copyFile(src, dest);
+          console.log(`Seeded dataset: ${file}`);
         }
       }
     }
@@ -87,43 +75,20 @@ function seedFiles() {
     console.log('Seeding complete');
   } catch (err) {
     console.error('Seeding error:', err);
-    // Don't throw - continue starting server
   }
 }
 
-// Run seeding
-seedFiles();
-
-// Ensure env vars are set for dbFunction.js
-process.env.HOME_DB = process.env.HOME_DB || path.join(DATASETS_PATH, "home.json");
-
-// Track user sessions
-const userSessions = new Map();
-
-/**
- * Helper: Get database path for username
- */
+// ============ HELPERS ============
 function getUserDbPath(username) {
-  if (username === "home") {
-    return process.env.HOME_DB;
-  }
-  return path.join(DATASETS_PATH, `${username}.json`);
+  return username === "home" ? process.env.HOME_DB : path.join(DATASETS_PATH, `${username}.json`);
 }
 
-/**
- * Helper: Get audio directory for username
- */
 function getUserAudioPath(username) {
   return path.join(AUDIO_BASE_PATH, username);
 }
 
-/**
- * Helper: Ensure user directories exist
- */
 async function ensureUserExists(username) {
   const audioPath = getUserAudioPath(username);
-  const dbPath = getUserDbPath(username);
-  
   try {
     await fsp.mkdir(audioPath, { recursive: true });
   } catch (err) {
@@ -131,143 +96,61 @@ async function ensureUserExists(username) {
   }
 }
 
-// ===============
-// MIDDLEWARE:
-// ===============
+// ============ MIDDLEWARE ============
 app.use(express.json());
 
-// ===============
-// API ROUTES FIRST (before static files)
-// ===============
-
-// HEALTHCHECK - Railway needs this at a reliable endpoint
+// ============ ROUTES ============
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    env: {
-      port: PORT,
-      audioPath: AUDIO_BASE_PATH,
-      datasetsPath: DATASETS_PATH,
-      homeDb: process.env.HOME_DB
-    }
-  });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Debug endpoint
-app.get('/debug-server', (req, res) => {
-  res.json({
-    cwd: process.cwd(),
-    __dirname: __dirname,
-    port: PORT,
-    nodeEnv: process.env.NODE_ENV,
-    audioBasePath: AUDIO_BASE_PATH,
-    audioBasePathResolved: path.resolve(AUDIO_BASE_PATH),
-    audioExists: fs.existsSync(AUDIO_BASE_PATH),
-    audioContents: fs.existsSync(AUDIO_BASE_PATH) ? fs.readdirSync(AUDIO_BASE_PATH, {recursive: true}) : 'N/A',
-    datasetsPath: DATASETS_PATH,
-    datasetsPathResolved: path.resolve(DATASETS_PATH),
-    datasetsExists: fs.existsSync(DATASETS_PATH),
-    datasetsContents: fs.existsSync(DATASETS_PATH) ? fs.readdirSync(DATASETS_PATH) : 'N/A',
-    homeDb: process.env.HOME_DB,
-    homeDbExists: fs.existsSync(process.env.HOME_DB),
-  });
-});
-
-// Get database for specific user
 app.get("/database/:username", async (req, res) => {
   const username = req.params.username;
   await ensureUserExists(username);
-  const dbPath = getUserDbPath(username);
-  const data = readDb(dbPath);
+  const data = readDb(getUserDbPath(username));
   res.send(data);
 });
 
-// ===============
-// STATIC FILES:
-// ===============
-
-// RAILWAY: Ensure /data directories exist (they should persist on Railway)
-async function ensureDataDirs() {
-  try {
-    await fsp.mkdir(AUDIO_BASE_PATH, { recursive: true });
-    await fsp.mkdir(DATASETS_PATH, { recursive: true });
-    console.log('Data directories ensured:', AUDIO_BASE_PATH, DATASETS_PATH);
-  } catch (err) {
-    console.error('Error creating data directories:', err);
-  }
-}
-ensureDataDirs();
-
-// Serve audio files from the persistent volume
+// Static files
 app.use('/audio', express.static(AUDIO_BASE_PATH));
+app.use(express.static(path.join(__dirname, 'dist')));
 
-// Serve built frontend files
-const distPath = path.join(__dirname, 'dist');
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
-  
-  // Catch-all: serve index.html for any non-API route (SPA support)
-  app.get('*', (req, res) => {
-    // Don't interfere with API routes
-    if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/debug') || req.path.startsWith('/audio')) {
-      return res.status(404).send('Not found');
-    }
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
-} else {
-  console.warn('Warning: dist folder not found at', distPath);
-  app.get('/', (req, res) => {
-    res.send('Server running - dist folder not built yet. Run npm run build.');
-  });
-}
+// SPA catch-all
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/audio')) {
+    return res.status(404).send('Not found');
+  }
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
-// ===============
-// MULTER: DYNAMIC STORAGE
-// ===============
+// ============ MULTER ============
 const storage = multer.diskStorage({
-  destination: async function (req, file, cb) {
+  destination: async (req, file, cb) => {
     const username = req.query.username || req.body.username || 'home';
     const userPath = getUserAudioPath(username);
-    
-    try {
-      await fsp.mkdir(userPath, { recursive: true });
-      cb(null, userPath);
-    } catch (err) {
-      cb(err);
-    }
+    await fsp.mkdir(userPath, { recursive: true });
+    cb(null, userPath);
   },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+  filename: (req, file, cb) => cb(null, file.originalname)
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// ================
-// SOCKET.IO EVENTS:
-// ================
+// ============ SOCKET.IO ============
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-  
   let currentUsername = null;
 
   socket.on("join-database", async (username) => {
-    if (!username || username.trim() === "") {
+    if (!username?.trim()) {
       socket.emit("error", "Invalid username");
       return;
     }
     
     currentUsername = username.trim();
     userSessions.set(socket.id, currentUsername);
-    
-    console.log(`User ${socket.id} joined as "${currentUsername}"`);
-    
     await ensureUserExists(currentUsername);
-    const dbPath = getUserDbPath(currentUsername);
-    const userDb = readDb(dbPath);
     
     socket.join(currentUsername);
-    socket.emit("database", userDb);
+    socket.emit("database", readDb(getUserDbPath(currentUsername)));
   });
 
   socket.on("uploaded-node", (data) => {
@@ -281,20 +164,16 @@ io.on("connection", (socket) => {
     
     const dbPath = getUserDbPath(username);
     let database = readDb(dbPath);
+    
+    const target = database.nodes.length > 0 
+      ? database.nodes[Math.floor(Math.random() * database.nodes.length)].id
+      : nodeName;
 
-    let target = null;
-    if (database.nodes.length > 0) {
-      target = database.nodes[Math.floor(Math.random() * database.nodes.length)].id;
-    } else {
-      target = nodeName;
-    }
-
-    const value = Math.random() * 10;
     const nodeObj = {
       id: nodeName,
       source: nodeName,
       target,
-      value,
+      value: Math.random() * 10
     };
 
     writeDb(nodeObj, dbPath);
@@ -316,15 +195,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
     userSessions.delete(socket.id);
   });
 });
 
-// START SERVER
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Audio path: ${AUDIO_BASE_PATH}`);
-  console.log(`Datasets path: ${DATASETS_PATH}`);
-  console.log(`HOME_DB: ${process.env.HOME_DB}`);
+// ============ START ============
+seedStarterFiles().then(() => {
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });

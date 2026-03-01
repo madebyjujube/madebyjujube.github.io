@@ -1,5 +1,5 @@
 import { configFont } from "./adobefonts.js";
-import { initSocket, joinDatabase } from "./socket.js";
+import { initSocket } from "./socket.js";
 import { initUi } from "./ui.js";
 import { initWaveform } from "./waveform.js";
 import { initGraph, initDatabase } from "./forcegraph.js";
@@ -17,7 +17,7 @@ export const cueBtn = document.getElementById("cuebtn");
 
 // Global state
 export const audio = new Audio();
-export let socket = null;  // Will be initialized immediately as "home"
+export let socket = null;  // Initialized in main()
 export let database = initDatabase();
 export const graph = initGraph(database);
 export let userData = {
@@ -30,7 +30,7 @@ function main() {
   console.log("hello, fellow dev");
   configFont(document);
   
-  // Initialize socket as "home" immediately - UI is enabled
+  // Initialize socket as "home" immediately
   socket = initSocket("home", graph, database);
   
   initUi();
