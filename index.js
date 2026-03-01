@@ -24,7 +24,7 @@ const io = new Server(server, {
   },
 });
 
-const PORT = process.env.PORT || 5555;
+const PORT = 5555;
 const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./audio";
 const DATASETS_PATH = process.env.DATASETS_PATH || "./datasets";
 
