@@ -88,11 +88,14 @@ async function ensureUserExists(username) {
 // ===============
 // MIDDLEWARE:
 // ===============
-app.use(express.static("dist"));
-app.use(express.static("src/assets"));
-app.use('/audio', express.static('audio'));
-app.use('/src/assets/images', express.static('/src/assets/images'));
+app.use(express.static(path.join(__dirname, 'dist')));
+app.use('/audio', express.static(path.join(__dirname, 'audio')));
 app.use(express.json());
+// app.use(express.static("dist"));
+// app.use(express.static("src/assets"));
+// app.use('/audio', express.static('audio'));
+// app.use('/src/assets/images', express.static('/src/assets/images'));
+// app.use(express.json());
 
 // ===============
 // MULTER: DYNAMIC STORAGE
@@ -220,8 +223,36 @@ io.on("connection", (socket) => {
 });
 
 const listenPort = process.env.PORT || PORT;
+
+// DEBUGGGGG
 console.log('Environment PORT:', process.env.PORT);
 console.log('Using port:', PORT);
+
+app.get('/debug-files', (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  
+  const checkDir = (dir) => {
+    try {
+      return fs.readdirSync(dir, { recursive: true });
+    } catch (e) {
+      return `Error: ${e.message}`;
+    }
+  };
+  
+  res.json({
+    cwd: process.cwd(),
+    dirname: __dirname,
+    distExists: fs.existsSync('dist'),
+    distContents: checkDir('dist'),
+    assetsExists: fs.existsSync('dist/assets'),
+    assetsContents: fs.existsSync('dist/assets') ? fs.readdirSync('dist/assets') : 'N/A'
+  });
+});
+
+// DEBUGGGGG END
+
+
 server.listen(listenPort, '0.0.0.0', () => {
   console.log(`Server running on port ${listenPort}`);
 });
