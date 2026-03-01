@@ -8,7 +8,7 @@ const dbPath = path.join(DATASETS_PATH, "home.json");
 const obj = {
   id: "test-node",
   source: "test-node",
-  target: "meowwww",
+  target: "meow",
   value: 5
 };
 

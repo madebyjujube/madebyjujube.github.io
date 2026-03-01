@@ -24,11 +24,11 @@ function readDb(dbPath) {
             // Create home with starter data (meow/woof)
             const homeDb = {
                 nodes: [
-                    { id: "meowwww" },
-                    { id: "wooooof" }
+                    { id: "meow" },
+                    { id: "woof" }
                 ],
                 links: [
-                    { source: "wooooof", target: "meowwww", value: 1 }
+                    { source: "woof", target: "meow", value: 1 }
                 ]
             };
             fs.writeFileSync(dbPath, JSON.stringify(homeDb, null, 2));
