@@ -1,7 +1,7 @@
 const { writeDb } = require('./dbFunction');
 const path = require('path');
 
-const DATASETS_PATH = process.env.DATASETS_PATH || "../datasets";
+const DATASETS_PATH = process.env.DATASETS_PATH || "../data/datasets";
 const dbPath = path.join(DATASETS_PATH, "home.json");
 
 // Example usage - modify as needed

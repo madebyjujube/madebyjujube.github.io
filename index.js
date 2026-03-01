@@ -24,8 +24,8 @@ const io = new Server(server, {
 });
 
 // RAILWAY: Use environment variables (these are set in Railway dashboard)
-const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./audio";
-const DATASETS_PATH = process.env.DATASETS_PATH || "./datasets";
+const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./data/audio";
+const DATASETS_PATH = process.env.DATASETS_PATH || "./data/datasets";
 
 // Ensure env vars are set for dbFunction.js
 process.env.HOME_DB = process.env.HOME_DB || path.join(DATASETS_PATH, "home.json");
@@ -133,7 +133,7 @@ async function ensureDataDirs() {
 ensureDataDirs();
 
 // Serve audio files from the persistent volume
-app.use('/audio', express.static(AUDIO_BASE_PATH));
+app.use('/data/audio', express.static(AUDIO_BASE_PATH));
 
 // Serve built frontend files
 const distPath = path.join(__dirname, 'dist');
@@ -143,7 +143,7 @@ if (fs.existsSync(distPath)) {
   // Catch-all: serve index.html for any non-API route (SPA support)
   app.get('*', (req, res) => {
     // Don't interfere with API routes
-    if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/debug') || req.path.startsWith('/audio')) {
+    if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/debug') || req.path.startsWith('/data/audio')) {
       return res.status(404).send('Not found');
     }
     res.sendFile(path.join(distPath, 'index.html'));
