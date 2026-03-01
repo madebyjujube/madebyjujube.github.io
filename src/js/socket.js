@@ -1,9 +1,4 @@
 import { io } from "socket.io-client";
-import {
-  addNewNodeToDatabase,
-  populateGraph,
-  updateDatabase,
-} from "./forcegraph.js";
 
 let socket = null;
 let currentUsername = null;
@@ -11,21 +6,29 @@ let globalGraph = null;
 let globalDatabase = null;
 
 export function initSocket(username = "home", graph, database) {
-  // Store references
   globalGraph = graph;
   globalDatabase = database;
   
-  const EXPRESS_PORT = 5555;
-  const ROOT_URL =
-    window.location.hostname === "localhost"
-      ? window.location.protocol +
-        "//" +
-        window.location.hostname +
-        ":" +
-        EXPRESS_PORT
-      : window.location.origin;
+  // RAILWAY FIX: Better URL detection
+  const isLocalhost = window.location.hostname === "localhost" || 
+                      window.location.hostname === "127.0.0.1";
   
-  socket = io(ROOT_URL);
+  let socketUrl;
+  if (isLocalhost) {
+    // Local development - connect to Express on 5555
+    socketUrl = `${window.location.protocol}//${window.location.hostname}:5555`;
+  } else {
+    // Production - same origin (Railway handles routing)
+    socketUrl = window.location.origin;
+  }
+  
+  console.log("Connecting to socket at:", socketUrl);
+  
+  socket = io(socketUrl, {
+    transports: ['websocket', 'polling'], // Fallback for compatibility
+    timeout: 10000
+  });
+  
   currentUsername = username;
 
   socket.on("connect", () => {
@@ -33,8 +36,11 @@ export function initSocket(username = "home", graph, database) {
     socket.emit("join-database", currentUsername);
   });
 
+  socket.on("connect_error", (err) => {
+    console.error("Socket connection error:", err.message);
+  });
+
   socket.on("database", (newDatabase) => {
-    // console.log("Received database for", currentUsername, ":", newDatabase);
     updateDatabase(globalDatabase, newDatabase);
     populateGraph(globalGraph, globalDatabase);
   });
@@ -63,4 +69,24 @@ export function getSocket() {
 
 export function getCurrentUsername() {
   return currentUsername;
+}
+
+// Import these or define them if needed
+function updateDatabase(db, newDb) {
+  db.nodes = newDb.nodes;
+  db.links = newDb.links;
+}
+
+function populateGraph(graph, db) {
+  if (graph && graph.graphData) {
+    graph.graphData(db);
+  }
+}
+
+function addNewNodeToDatabase(db, node) {
+  db.nodes.push({ id: node.id });
+  db.links.push({
+    source: node.source,
+    target: node.target,
+  });
 }
