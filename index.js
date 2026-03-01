@@ -88,15 +88,15 @@ async function ensureUserExists(username) {
 // ===============
 // MIDDLEWARE:
 // ===============
-app.use(express.static(path.join(__dirname, 'dist')));
-app.use('/audio', express.static(path.join(__dirname, 'audio')));
-app.use(express.json());
-// app.use(express.static("dist"));
-// app.use(express.static("src/assets"));
-// app.use('/audio', express.static('audio'));
-// app.use('/src/assets/images', express.static('/src/assets/images'));
-// app.use(express.json());
+// Ensure audio directory exists before serving
+const audioPath = path.join(__dirname, 'audio');
+if (!fs.existsSync(audioPath)) {
+  fs.mkdirSync(audioPath, { recursive: true });
+}
 
+app.use(express.static(path.join(__dirname, 'dist')));
+app.use('/audio', express.static(audioPath));
+app.use(express.json());
 // ===============
 // MULTER: DYNAMIC STORAGE
 // ===============
@@ -121,13 +121,6 @@ const upload = multer({ storage: storage });
 // ==============
 // HTTP ROUTES:
 // ==============
-
-// Temporary healthcheck endpoint (DEBUG: DELETE ME AFTER)
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
-
-
 // Get database for specific user
 app.get("/database/:username", async (req, res) => {
   const username = req.params.username;
@@ -225,30 +218,20 @@ io.on("connection", (socket) => {
 const listenPort = process.env.PORT || PORT;
 
 // DEBUGGGGG
-console.log('Environment PORT:', process.env.PORT);
-console.log('Using port:', PORT);
 
-app.get('/debug-files', (req, res) => {
-  const fs = require('fs');
-  const path = require('path');
-  
-  const checkDir = (dir) => {
-    try {
-      return fs.readdirSync(dir, { recursive: true });
-    } catch (e) {
-      return `Error: ${e.message}`;
-    }
-  };
+app.get('/debug-server', (req, res) => {
   
   res.json({
+    audioPathResolved: path.join(__dirname, 'audio'),
     cwd: process.cwd(),
-    dirname: __dirname,
-    distExists: fs.existsSync('dist'),
-    distContents: checkDir('dist'),
-    assetsExists: fs.existsSync('dist/assets'),
-    assetsContents: fs.existsSync('dist/assets') ? fs.readdirSync('dist/assets') : 'N/A'
+    audioExistsAtResolved: fs.existsSync(path.join(__dirname, 'audio')),
+    audioDirExists: fs.existsSync('./audio'),
+    audioDirContents: fs.existsSync('./audio') ? fs.readdirSync('./audio', {recursive: true}) : 'N/A',
+    datasetsDirExists: fs.existsSync('./datasets'),
+    datasetsDirContents: fs.existsSync('./datasets') ? fs.readdirSync('./datasets') : 'N/A',
   });
 });
+
 
 // DEBUGGGGG END
 
