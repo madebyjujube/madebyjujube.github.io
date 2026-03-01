@@ -215,8 +215,6 @@ io.on("connection", (socket) => {
   });
 });
 
-const listenPort = process.env.PORT || PORT;
-
 // DEBUGGGGG
 
 app.get('/debug-server', (req, res) => {
@@ -235,7 +233,9 @@ app.get('/debug-server', (req, res) => {
 
 // DEBUGGGGG END
 
+console.log('process.env.PORT:', process.env.PORT);
+console.log('PORT variable:', PORT);
 
-server.listen(listenPort, '0.0.0.0', () => {
-  console.log(`Server running on port ${listenPort}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
