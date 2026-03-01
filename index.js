@@ -1,6 +1,12 @@
+// DEBUG
+const fs = require('fs');
+console.log('Current directory:', __dirname);
+console.log('dist exists:', fs.existsSync('./dist'));
+console.log('dist contents:', fs.existsSync('./dist') ? fs.readdirSync('./dist') : 'N/A');
+// DEBUG END (remove after)
 const express = require("express");
 const multer = require("multer");
-const fs = require("fs/promises");
+const fsp = require("fs/promises");
 const path = require("path");
 const { Server } = require("socket.io");
 const { createServer } = require("node:http");
@@ -60,7 +66,7 @@ async function ensureUserExists(username) {
   
   try {
     // Create audio directory
-    await fs.mkdir(audioPath, { recursive: true });
+    await fsp.mkdir(audioPath, { recursive: true });
     
     // Special case: "home" needs starter audio files
     if (username === "home") {
@@ -97,7 +103,7 @@ const storage = multer.diskStorage({
     const userPath = getUserAudioPath(username);
     
     try {
-      await fs.mkdir(userPath, { recursive: true });
+      await fsp.mkdir(userPath, { recursive: true });
       cb(null, userPath);
     } catch (err) {
       cb(err);
@@ -195,8 +201,8 @@ io.on("connection", (socket) => {
     const username = userSessions.get(data.username) || data.username || 'home';
     const userAudioPath = getUserAudioPath(username);
     
-    await fs.mkdir(userAudioPath, { recursive: true });
-    await fs.writeFile(path.join(userAudioPath, `${data.name}.wav`), data.buffer);
+    await fsp.mkdir(userAudioPath, { recursive: true });
+    await fsp.writeFile(path.join(userAudioPath, `${data.name}.wav`), data.buffer);
     
     io.to(username).emit("audio-uploaded", { name: data.name, username });
   });
