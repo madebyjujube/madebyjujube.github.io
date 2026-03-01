@@ -90,14 +90,8 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--c-pri) !important;
-  /* transition: background-color 5000s ease-in-out 0s; */
   background-color: #ccc;
 }
-
-/* input:disabled:-webkit-autofill {
-    -webkit-text-fill-color: var(--c-pri) !important;
-    background-color: var(--c-pri) !important;
-} */
 
 #loginbtn {
     width: var(--ui-el-w);
@@ -155,9 +149,7 @@ select:-webkit-autofill:focus {
     width: 50px;
     height: var(--ui-el-h);
 }
-/* #nodename {
 
-} */
 input {
     font-size: 16px;
     border: 1px solid #ccc;
@@ -232,9 +224,6 @@ button:active {
 
 /* MEDIA QUERIES */
 @media screen and (max-width: 1300px) {
-    body{
-        /* background-color: #ECE; */
-    }
     #ilogo {
         top: 0;
         left: 0;

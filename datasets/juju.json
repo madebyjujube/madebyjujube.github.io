@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "pensée sur alex",
+      "source": "pensée sur alex",
+      "target": "pensée sur alex",
+      "value": 2.249107000063555
+    },
+    {
+      "id": "pleep ploop",
+      "source": "pleep ploop",
+      "target": "pensée sur alex",
+      "value": 8.305135269166842
+    }
+  ],
+  "links": [
+    {
+      "source": "pensée sur alex",
+      "target": "pensée sur alex",
+      "value": 2.249107000063555
+    },
+    {
+      "source": "pleep ploop",
+      "target": "pensée sur alex",
+      "value": 8.305135269166842
+    }
+  ]
+}

@@ -11,11 +11,19 @@ const { readDb, writeDb, updateJSONFile, HOME_DB } = require("./dbScripts/dbFunc
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: { 
+    origin: process.env.NODE_ENV === 'production' 
+      ? false  // Or your specific domain: "https://yourdomain.com"
+      : "*" 
+  },
 });
 
-const PORT = 5555;
-const AUDIO_BASE_PATH = "./audio";
+const PORT = process.env.PORT || 5555;
+const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./audio";
+const DATASETS_PATH = process.env.DATASETS_PATH || "./datasets";
+
+// Set env var for dbFunction.js
+process.env.HOME_DB = process.env.HOME_DB || path.join(DATASETS_PATH, "home.json");
 
 // Track user sessions
 const userSessions = new Map();
@@ -26,9 +34,13 @@ const userSessions = new Map();
  */
 function getUserDbPath(username) {
   if (username === "home") {
-    return HOME_DB;
+    return process.env.HOME_DB;
   }
-  return `./datasets/${username}.json`;
+  return path.join(DATASETS_PATH, `${username}.json`);
+}
+
+function getUserAudioPath(username) {
+  return path.join(AUDIO_BASE_PATH, username);
 }
 
 /**

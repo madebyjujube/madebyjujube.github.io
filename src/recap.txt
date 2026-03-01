@@ -66,3 +66,47 @@ Updated flow:
 | Type "home" → Login | Reloads same database (refresh)                                |
 | Type "juju" → Login | Creates empty `/datasets/juju.json`, new folder `/audio/juju/` |
 | Record in "juju"    | Saves to `/audio/juju/`, adds to personal graph                |
+
+
+NEXT STEPS TO DEPLOY ON RAILWAY: 
+1. Environment Variables (Set in Railway Dashboard)
+| Variable        | Value                      | Purpose                   |
+| --------------- | -------------------------- | ------------------------- |
+| `NODE_ENV`      | `production`               | Tightens CORS, optimizes  |
+| `AUDIO_PATH`    | `/data/audio`              | Persistent audio storage  |
+| `DATASETS_PATH` | `/data/datasets`           | Persistent JSON databases |
+| `HOME_DB`       | `/data/datasets/home.json` | Home database location    |
+| `PORT`          | `5555`                     | Or let Railway auto-set   |
+
+2. Volume Setup (One-Time)
+In Railway CLI:
+railway login
+railway link  # Select your project
+railway volume add -m /data
+
+THEN: 
+File Structure on Railway:
+/app/                    # Ephemeral (rebuilt each deploy)
+  ├── dist/              # Vite build output
+  ├── index.js           # Your server
+  ├── package.json
+  └── ...
+  
+/data/                   # Persistent volume
+  ├── audio/
+  │   ├── home/
+  │   ├── dev/
+  │   └── archived/
+  └── datasets/
+      ├── home.json
+      ├── dev.json
+      └── ...
+
+
+Deploy Checklist
+- Commit changes (env vars in index.js)
+- Push to GitHub
+- Create Railway project → "New Project" → "Deploy from GitHub repo"
+- Add volume: railway volume add -m /data
+- Set env vars in Railway dashboard (see table above)
+- Deploy

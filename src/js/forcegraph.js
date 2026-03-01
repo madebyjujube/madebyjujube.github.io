@@ -14,7 +14,7 @@
 // init , UI , events
 import SpriteText from "three-spritetext";
 import ForceGraph3D from "3d-force-graph";
-import { graph, socket, audio } from "./main.js";
+import { audio } from "./main.js";
 
 export function initDatabase() {
   const defaultDb = {
@@ -38,6 +38,7 @@ export function initGraph() {
   const colorPri = style.getPropertyValue("--c-pri");
   const colorGraph = style.getPropertyValue("--c-graph");
 
+  // # HTML ELEMENT #
   const graphCont = document.getElementById("GRAPH");
   
   window.addEventListener("resize", () => {
@@ -60,23 +61,13 @@ export function initGraph() {
       return sprite;
     })
     .nodeLabel("id")
+    // SOUND onClick
     .onNodeClick(async (node) => {
-                            // console.log("=== NODE CLICK DEBUG ===");
-                            // console.log("Node clicked:", node);
-                            // console.log("Node ID:", node.id);
-                            // console.log("Username:", document.getElementById("username")?.value);
-      
-      // try {
-      //   await audio.trigNodeSound(node);
-      //     console.log("Audio played successfully");
-      // } catch (err) {
-      //     console.error("Audio error:", err);
-      // }
-      // audio.panNode()
-      await audio.trigNodeSound(node) // BRING ME BACK 
+      await audio.trigNodeSound(node) 
       generateParticle(graph, node)
     })
     
+    // PARAMETERS
     graph.d3Force("charge").strength(-100);
     graph.d3Force("link").distance(80);
     graph
