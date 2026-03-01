@@ -12,22 +12,22 @@ const { readDb, writeDb, updateJSONFile, HOME_DB } = require("./dbScripts/dbFunc
 const app = express();
 const server = createServer(app);
 
-// RAILWAY FIX: Use process.env.PORT, fallback to 5555 for local dev only
+// RAILWAY: Use process.env.PORT (Railway assigns this dynamically)
 const PORT = process.env.PORT || 5555;
 
-// RAILWAY FIX: Better CORS for production - allow all origins in production 
-// (you can restrict this to your specific domain later)
+// RAILWAY: CORS - allow all origins for Railway's dynamic domains
 const io = new Server(server, {
   cors: { 
-    origin: "*", // Allow all origins for now - Railway domains are dynamic
+    origin: "*",
     methods: ["GET", "POST"]
   },
 });
 
+// RAILWAY: Use environment variables (these are set in Railway dashboard)
 const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./audio";
 const DATASETS_PATH = process.env.DATASETS_PATH || "./datasets";
 
-// Set env var for dbFunction.js
+// Ensure env vars are set for dbFunction.js
 process.env.HOME_DB = process.env.HOME_DB || path.join(DATASETS_PATH, "home.json");
 
 // Track user sessions
@@ -69,26 +69,41 @@ async function ensureUserExists(username) {
 // ===============
 app.use(express.json());
 
+// ===============
 // API ROUTES FIRST (before static files)
 // ===============
 
-// HEALTHCHECK - Railway needs this!
+// HEALTHCHECK - Railway needs this at a reliable endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    env: {
+      port: PORT,
+      audioPath: AUDIO_BASE_PATH,
+      datasetsPath: DATASETS_PATH,
+      homeDb: process.env.HOME_DB
+    }
+  });
 });
 
 // Debug endpoint
 app.get('/debug-server', (req, res) => {
   res.json({
-    audioPathResolved: path.join(__dirname, 'audio'),
     cwd: process.cwd(),
+    __dirname: __dirname,
     port: PORT,
     nodeEnv: process.env.NODE_ENV,
-    audioExistsAtResolved: fs.existsSync(path.join(__dirname, 'audio')),
-    audioDirExists: fs.existsSync('./audio'),
-    audioDirContents: fs.existsSync('./audio') ? fs.readdirSync('./audio', {recursive: true}) : 'N/A',
-    datasetsDirExists: fs.existsSync('./datasets'),
-    datasetsDirContents: fs.existsSync('./datasets') ? fs.readdirSync('./datasets') : 'N/A',
+    audioBasePath: AUDIO_BASE_PATH,
+    audioBasePathResolved: path.resolve(AUDIO_BASE_PATH),
+    audioExists: fs.existsSync(AUDIO_BASE_PATH),
+    audioContents: fs.existsSync(AUDIO_BASE_PATH) ? fs.readdirSync(AUDIO_BASE_PATH, {recursive: true}) : 'N/A',
+    datasetsPath: DATASETS_PATH,
+    datasetsPathResolved: path.resolve(DATASETS_PATH),
+    datasetsExists: fs.existsSync(DATASETS_PATH),
+    datasetsContents: fs.existsSync(DATASETS_PATH) ? fs.readdirSync(DATASETS_PATH) : 'N/A',
+    homeDb: process.env.HOME_DB,
+    homeDbExists: fs.existsSync(process.env.HOME_DB),
   });
 });
 
@@ -104,14 +119,21 @@ app.get("/database/:username", async (req, res) => {
 // ===============
 // STATIC FILES:
 // ===============
-// Ensure audio directory exists
-const audioPath = path.join(__dirname, 'audio');
-if (!fs.existsSync(audioPath)) {
-  fs.mkdirSync(audioPath, { recursive: true });
-}
 
-// Serve audio files
-app.use('/audio', express.static(audioPath));
+// RAILWAY: Ensure /data directories exist (they should persist on Railway)
+async function ensureDataDirs() {
+  try {
+    await fsp.mkdir(AUDIO_BASE_PATH, { recursive: true });
+    await fsp.mkdir(DATASETS_PATH, { recursive: true });
+    console.log('Data directories ensured:', AUDIO_BASE_PATH, DATASETS_PATH);
+  } catch (err) {
+    console.error('Error creating data directories:', err);
+  }
+}
+ensureDataDirs();
+
+// Serve audio files from the persistent volume
+app.use('/audio', express.static(AUDIO_BASE_PATH));
 
 // Serve built frontend files
 const distPath = path.join(__dirname, 'dist');
@@ -121,16 +143,15 @@ if (fs.existsSync(distPath)) {
   // Catch-all: serve index.html for any non-API route (SPA support)
   app.get('*', (req, res) => {
     // Don't interfere with API routes
-    if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/debug')) {
+    if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/debug') || req.path.startsWith('/audio')) {
       return res.status(404).send('Not found');
     }
     res.sendFile(path.join(distPath, 'index.html'));
   });
 } else {
-  console.warn('Warning: dist folder not found. Run npm run build first.');
-  // Fallback for development
+  console.warn('Warning: dist folder not found at', distPath);
   app.get('/', (req, res) => {
-    res.send('Server running - dist folder not built yet');
+    res.send('Server running - dist folder not built yet. Run npm run build.');
   });
 }
 
@@ -217,10 +238,14 @@ io.on("connection", (socket) => {
     const username = userSessions.get(data.username) || data.username || 'home';
     const userAudioPath = getUserAudioPath(username);
     
-    await fsp.mkdir(userAudioPath, { recursive: true });
-    await fsp.writeFile(path.join(userAudioPath, `${data.name}.wav`), data.buffer);
-    
-    io.to(username).emit("audio-uploaded", { name: data.name, username });
+    try {
+      await fsp.mkdir(userAudioPath, { recursive: true });
+      await fsp.writeFile(path.join(userAudioPath, `${data.name}.wav`), data.buffer);
+      io.to(username).emit("audio-uploaded", { name: data.name, username });
+    } catch (err) {
+      console.error('Error saving audio:', err);
+      socket.emit('error', 'Failed to save audio');
+    }
   });
 
   socket.on("disconnect", () => {
@@ -232,5 +257,7 @@ io.on("connection", (socket) => {
 // START SERVER
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Audio path: ${AUDIO_BASE_PATH}`);
+  console.log(`Datasets path: ${DATASETS_PATH}`);
+  console.log(`HOME_DB: ${process.env.HOME_DB}`);
 });
