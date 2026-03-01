@@ -30,83 +30,69 @@ const DATASETS_PATH = process.env.DATASETS_PATH || "./datasets";
 
 // ======= FIX ======= //
 
-// Copy starter files from /app to /data on startup
-async function seedStarterFiles() {
-  // Only run if we're in Railway (app is at /app, data at /data)
-  const appAudioPath = '/app/audio';
-  const appDatasetsPath = '/app/datasets';
-  
-  console.log('Checking for starter files to seed...');
-  console.log('App audio path:', appAudioPath);
-  console.log('Data audio path:', AUDIO_BASE_PATH);
-  
-  // Seed audio files
-  if (fs.existsSync(appAudioPath) && AUDIO_BASE_PATH.startsWith('/data')) {
-    try {
-      await fsp.mkdir(AUDIO_BASE_PATH, { recursive: true });
-      const entries = await fsp.readdir(appAudioPath, { withFileTypes: true });
+// Simple sync seeding function
+function seedFiles() {
+  try {
+    const appAudio = '/app/audio';
+    const dataAudio = AUDIO_BASE_PATH;
+    
+    if (fs.existsSync(appAudio) && dataAudio.startsWith('/data')) {
+      if (!fs.existsSync(dataAudio)) {
+        fs.mkdirSync(dataAudio, { recursive: true });
+      }
       
-      for (const entry of entries) {
-        if (entry.isDirectory()) {
-          const srcDir = path.join(appAudioPath, entry.name);
-          const destDir = path.join(AUDIO_BASE_PATH, entry.name);
-          await fsp.mkdir(destDir, { recursive: true });
+      const dirs = fs.readdirSync(appAudio, { withFileTypes: true });
+      for (const dir of dirs) {
+        if (dir.isDirectory()) {
+          const srcDir = path.join(appAudio, dir.name);
+          const destDir = path.join(dataAudio, dir.name);
           
-          const files = await fsp.readdir(srcDir);
+          if (!fs.existsSync(destDir)) {
+            fs.mkdirSync(destDir, { recursive: true });
+          }
+          
+          const files = fs.readdirSync(srcDir);
           for (const file of files) {
-            const srcFile = path.join(srcDir, file);
-            const destFile = path.join(destDir, file);
-            
-            // Only copy if file doesn't exist in /data (preserve user uploads)
-            if (!fs.existsSync(destFile)) {
-              await fsp.copyFile(srcFile, destFile);
-              console.log(`Seeded: ${entry.name}/${file}`);
+            const src = path.join(srcDir, file);
+            const dest = path.join(destDir, file);
+            if (!fs.existsSync(dest)) {
+              fs.copyFileSync(src, dest);
+              console.log(`Seeded: ${dir.name}/${file}`);
             }
           }
         }
       }
-      console.log('Audio seeding complete');
-    } catch (err) {
-      console.error('Error seeding audio:', err);
     }
-  }
-  
-  // Seed datasets (home.json, etc.)
-  if (fs.existsSync(appDatasetsPath) && DATASETS_PATH.startsWith('/data')) {
-    try {
-      await fsp.mkdir(DATASETS_PATH, { recursive: true });
-      const files = await fsp.readdir(appDatasetsPath);
+    
+    // Seed datasets
+    const appDatasets = '/app/datasets';
+    if (fs.existsSync(appDatasets) && DATASETS_PATH.startsWith('/data')) {
+      if (!fs.existsSync(DATASETS_PATH)) {
+        fs.mkdirSync(DATASETS_PATH, { recursive: true });
+      }
       
+      const files = fs.readdirSync(appDatasets);
       for (const file of files) {
         if (file.endsWith('.json')) {
-          const srcFile = path.join(appDatasetsPath, file);
-          const destFile = path.join(DATASETS_PATH, file);
-          
-          if (!fs.existsSync(destFile)) {
-            await fsp.copyFile(srcFile, destFile);
+          const src = path.join(appDatasets, file);
+          const dest = path.join(DATASETS_PATH, file);
+          if (!fs.existsSync(dest)) {
+            fs.copyFileSync(src, dest);
             console.log(`Seeded dataset: ${file}`);
           }
         }
       }
-      console.log('Dataset seeding complete');
-    } catch (err) {
-      console.error('Error seeding datasets:', err);
     }
+    
+    console.log('Seeding complete');
+  } catch (err) {
+    console.error('Seeding error:', err);
+    // Don't throw - continue starting server
   }
 }
 
-// Run seeding before starting server
-seedStarterFiles().then(() => {
-  server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}).catch(err => {
-  console.error('Seeding failed:', err);
-  // Start server anyway
-  server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-});
+// Run seeding
+seedFiles();
 
 // Ensure env vars are set for dbFunction.js
 process.env.HOME_DB = process.env.HOME_DB || path.join(DATASETS_PATH, "home.json");
