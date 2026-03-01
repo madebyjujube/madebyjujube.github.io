@@ -28,12 +28,12 @@ async function seedStarterFiles() {
   const appAudio = '/app/audio';
   const appDatasets = '/app/datasets';
   
-  if (!fs.existsSync(appAudio) || !AUDIO_BASE_PATH.startsWith('/data')) {
-    console.log('No seeding needed');
+  if (!fs.existsSync(appAudio)) {
+    console.log('No /app/audio found, skipping seed');
     return;
   }
   
-  console.log('Seeding starter files...');
+  console.log('Seeding from /app/audio to', AUDIO_BASE_PATH);
   
   try {
     await fsp.mkdir(AUDIO_BASE_PATH, { recursive: true });
