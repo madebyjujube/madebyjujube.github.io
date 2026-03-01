@@ -46,14 +46,14 @@ SERVER
 
 
 New Architecture for the Audio folders: 
-/data/audio/
+/audio/
   ├── {username}/
   │   ├── sound1.wav
   │   └── sound2.wav
   └── {username2}/
       └── sound3.wav
 
-/data/datasets/
+/datasets/
   ├── {username}.json     (each user gets their own graph database)
   └── {username2}.json
 
@@ -62,9 +62,9 @@ Updated flow:
 | Action              | Result                                                         |
 | ------------------- | -------------------------------------------------------------- |
 | Arrive on site      | Auto-loads "home" database, UI enabled                         |
-| Click node          | Plays from `/data/audio/home/`                                      |
+| Click node          | Plays from `/audio/home/`                                      |
 | Type "home" → Login | Reloads same database (refresh)                                |
-| Type "juju" → Login | Creates empty `/data/datasets/juju.json`, new folder `/data/audio/juju/` |
+| Type "juju" → Login | Creates empty `/datasets/juju.json`, new folder `/audio/juju/` |
 | Record in "juju"    | Saves to `/audio/juju/`, adds to personal graph                |
 
 
@@ -73,9 +73,9 @@ NEXT STEPS TO DEPLOY ON RAILWAY:
 | Variable        | Value                      | Purpose                   |
 | --------------- | -------------------------- | ------------------------- |
 | `NODE_ENV`      | `production`               | Tightens CORS, optimizes  |
-| `AUDIO_PATH`    | `/data/audio`              | Persistent audio storage  |
-| `DATASETS_PATH` | `/data/datasets`           | Persistent JSON databases |
-| `HOME_DB`       | `/data/datasets/home.json` | Home database location    |
+| `AUDIO_PATH`    | `/audio`              | Persistent audio storage  |
+| `DATASETS_PATH` | `/datasets`           | Persistent JSON databases |
+| `HOME_DB`       | `/datasets/home.json` | Home database location    |
 | `PORT`          | `5555`                     | Or let Railway auto-set   |
 
 2. Volume Setup (One-Time)

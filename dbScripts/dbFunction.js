@@ -5,7 +5,7 @@ const path = require('path');
 const EMPTY_DB = { nodes: [], links: [] };
 
 // "Home" database path (public space)
-const HOME_DB = process.env.HOME_DB || "./data/datasets/home.json";
+const HOME_DB = process.env.HOME_DB || "./datasets/home.json";
 
 /**
  * Read database from file

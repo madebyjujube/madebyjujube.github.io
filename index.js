@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const fsp = require("fs/promises");
 const express = require("express");
 const multer = require("multer");
-const fsp = require("fs/promises");
 const { Server } = require("socket.io");
 const { createServer } = require("node:http");
 
@@ -24,8 +24,89 @@ const io = new Server(server, {
 });
 
 // RAILWAY: Use environment variables (these are set in Railway dashboard)
-const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./data/audio";
-const DATASETS_PATH = process.env.DATASETS_PATH || "./data/datasets";
+const AUDIO_BASE_PATH = process.env.AUDIO_PATH || "./audio";
+const DATASETS_PATH = process.env.DATASETS_PATH || "./datasets";
+
+
+// ======= FIX ======= //
+
+// Copy starter files from /app to /data on startup
+async function seedStarterFiles() {
+  // Only run if we're in Railway (app is at /app, data at /data)
+  const appAudioPath = '/app/audio';
+  const appDatasetsPath = '/app/datasets';
+  
+  console.log('Checking for starter files to seed...');
+  console.log('App audio path:', appAudioPath);
+  console.log('Data audio path:', AUDIO_BASE_PATH);
+  
+  // Seed audio files
+  if (fs.existsSync(appAudioPath) && AUDIO_BASE_PATH.startsWith('/data')) {
+    try {
+      await fsp.mkdir(AUDIO_BASE_PATH, { recursive: true });
+      const entries = await fsp.readdir(appAudioPath, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          const srcDir = path.join(appAudioPath, entry.name);
+          const destDir = path.join(AUDIO_BASE_PATH, entry.name);
+          await fsp.mkdir(destDir, { recursive: true });
+          
+          const files = await fsp.readdir(srcDir);
+          for (const file of files) {
+            const srcFile = path.join(srcDir, file);
+            const destFile = path.join(destDir, file);
+            
+            // Only copy if file doesn't exist in /data (preserve user uploads)
+            if (!fs.existsSync(destFile)) {
+              await fsp.copyFile(srcFile, destFile);
+              console.log(`Seeded: ${entry.name}/${file}`);
+            }
+          }
+        }
+      }
+      console.log('Audio seeding complete');
+    } catch (err) {
+      console.error('Error seeding audio:', err);
+    }
+  }
+  
+  // Seed datasets (home.json, etc.)
+  if (fs.existsSync(appDatasetsPath) && DATASETS_PATH.startsWith('/data')) {
+    try {
+      await fsp.mkdir(DATASETS_PATH, { recursive: true });
+      const files = await fsp.readdir(appDatasetsPath);
+      
+      for (const file of files) {
+        if (file.endsWith('.json')) {
+          const srcFile = path.join(appDatasetsPath, file);
+          const destFile = path.join(DATASETS_PATH, file);
+          
+          if (!fs.existsSync(destFile)) {
+            await fsp.copyFile(srcFile, destFile);
+            console.log(`Seeded dataset: ${file}`);
+          }
+        }
+      }
+      console.log('Dataset seeding complete');
+    } catch (err) {
+      console.error('Error seeding datasets:', err);
+    }
+  }
+}
+
+// Run seeding before starting server
+seedStarterFiles().then(() => {
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}).catch(err => {
+  console.error('Seeding failed:', err);
+  // Start server anyway
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+});
 
 // Ensure env vars are set for dbFunction.js
 process.env.HOME_DB = process.env.HOME_DB || path.join(DATASETS_PATH, "home.json");
@@ -133,7 +214,7 @@ async function ensureDataDirs() {
 ensureDataDirs();
 
 // Serve audio files from the persistent volume
-app.use('/data/audio', express.static(AUDIO_BASE_PATH));
+app.use('/audio', express.static(AUDIO_BASE_PATH));
 
 // Serve built frontend files
 const distPath = path.join(__dirname, 'dist');
@@ -143,7 +224,7 @@ if (fs.existsSync(distPath)) {
   // Catch-all: serve index.html for any non-API route (SPA support)
   app.get('*', (req, res) => {
     // Don't interfere with API routes
-    if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/debug') || req.path.startsWith('/data/audio')) {
+    if (req.path.startsWith('/database') || req.path.startsWith('/health') || req.path.startsWith('/debug') || req.path.startsWith('/audio')) {
       return res.status(404).send('Not found');
     }
     res.sendFile(path.join(distPath, 'index.html'));
