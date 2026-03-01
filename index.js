@@ -119,6 +119,12 @@ const upload = multer({ storage: storage });
 // HTTP ROUTES:
 // ==============
 
+// Temporary healthcheck endpoint (DEBUG: DELETE ME AFTER)
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+
 // Get database for specific user
 app.get("/database/:username", async (req, res) => {
   const username = req.params.username;
@@ -214,6 +220,8 @@ io.on("connection", (socket) => {
 });
 
 const listenPort = process.env.PORT || PORT;
+console.log('Environment PORT:', process.env.PORT);
+console.log('Using port:', PORT);
 server.listen(listenPort, '0.0.0.0', () => {
   console.log(`Server running on port ${listenPort}`);
 });
