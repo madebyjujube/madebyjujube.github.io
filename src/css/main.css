@@ -2,11 +2,14 @@
     --c-graph: #FDF;
     --c-bg: #FBF;
     --c-pri: #90F;
+    --c-dis: #A6F;
     --c-sec: #FFC;
     --c-acc: #0A0;
-    --ui-height: 100px;
+    --font-s: 16px;
+    --ui-pad: 100px;
+    --ui-height: 60px;
     --ui-el-h: 40px;
-    --ui-el-w: 60px;
+    --ui-el-w: 80px;
 }
 * {
     margin: 0;
@@ -15,19 +18,22 @@
     font-family: "ab-kokikaku", sans-serif;
     font-weight: 400;
     font-style: normal;
+    font-size: var(--font-s);
+    color: #000;
 }
+
 body {
     height: 100vh;
+    width: 100vw;
     background-color: var(--c-bg);
     color: var(--c-pri);
     overflow: hidden;
 }
+/* contains everything / nested in body */
 main {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 /* ====================== */
@@ -44,40 +50,43 @@ main {
     z-index: 100;
 } */
 #ilogo {
-    position: absolute;
-    bottom: 0px;
-    left: 100px;
+    position: fixed;
+    bottom: 0;
+    padding-left: 100px;
     height:100px;
+    width: 100vw;
 }
 #GRAPH {
     position: absolute;
 }
 
 /* ====================== */
-/* ====== GUI OOA ======= */
+/* ======== UI ========== */
 /* ====================== */
 /* WRAPPERS */
 #UI-wrapper {
-    position: absolute;
-    left: var(--ui-height);
-    margin-left: -10px;
-    width: calc(100vw - (var(--ui-height) * 2) + 20px);
+    position: fixed;
+    height: var(--ui-height);
+    margin-left: calc(var(--ui-pad) - 10px);
+    width: calc(100vw - (var(--ui-pad) * 2) + 20px);
     justify-content: space-between;
 }
 #form-wrapper {
-    height: var(--ui-height);
-    padding: 10px;
+    /* background-color: #AFA; */
+    height: 100%;
+    padding: 0 10px;
     gap:5px;
 }
 #audio-warpper {
-    height: var(--ui-height);
-    padding: 10px;
+    /* background-color: #FFA; */
+    height: 100%;
+    padding: 0 10px;
     gap:5px;
 }
 
 /* ELEMENTS */
 #username:disabled {
-    color: var(--c-pri) !important;
+    color: var(--c-dis) !important;
 }
 
 input:-webkit-autofill,
@@ -94,15 +103,14 @@ select:-webkit-autofill:focus {
 }
 
 #loginbtn {
-    width: var(--ui-el-w);
+    width: var(--ui-el-h);
 }
 #editbtn {
-    width: var(--ui-el-w);
+    /* width: var(--ui-el-w); */
     display: none;
 }
 #recbtn {
     color: white;
-    font-size: 10px;
     width: var(--ui-el-h);
     height: var(--ui-el-h);
     background-image: url('../assets/images/Ellipse.png');
@@ -146,16 +154,19 @@ select:-webkit-autofill:focus {
     display: block;
     border-radius: 10px;
     background-color: black;
-    width: 50px;
+    width: var(--ui-el-w);
     height: var(--ui-el-h);
 }
 
 input {
-    font-size: 16px;
     border: 1px solid #ccc;
     padding-left:10px;
     height: var(--ui-el-h);
     border-radius: 10px;
+}
+input:disabled {
+    background-color: #ddd;
+    opacity: 1;
 }
 input:hover:not([disabled]) {
     background-color: #f0f0f0;
@@ -178,6 +189,7 @@ button {
     border-radius: 10px;
 }
 button:disabled, input:disabled {
+    color: var(--c-dis);
     outline: 1px solid #ccc;
     outline-offset: -2px;
     background-color: #ddd;
@@ -224,25 +236,45 @@ button:active {
 
 /* MEDIA QUERIES */
 @media screen and (max-width: 1300px) {
+    :root {
+        --ui-height: 60px;
+        --ui-el-h: 45px;
+        --ui-el-w: 80px;
+        --font-s: 10px;
+    }
     #ilogo {
-        top: 0;
-        left: 0;
+        /* display: none; */
+        z-index: 100;
+        pointer-events: none;
+        bottom: 0;
+        padding-left: 0;
         width: 100vw;
-        padding-right: var(--ui-height);
     }
     #UI-wrapper {
+        width: 100vw;
+        flex-direction: column;
         position: fixed;
-        --ui-el-h: 60px;
-        --ui-el-w: 80px;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        height: calc(var(--ui-height)*2);
+        margin-left: 0;
     }
     #UI-wrapper * {
-        font-size: 1.5rem;
+        font-size: 1.5em;
+    }
+    #form-wrapper, #audio-warpper {
         flex: start;
+        width: 100vw;
+    }
+    #audio-warpper {
+        margin-top: -10px;
+    }
+    #form-wrapper button {
+        width: var(--ui-el-h);
+    } 
+    #uploadBtn {
+        min-width: var(--ui-el-h);
     }
     input {
-        width: 10rem;
+        width: 100%;
+        padding: 0 auto;
     }
 }

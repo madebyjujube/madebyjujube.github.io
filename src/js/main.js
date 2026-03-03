@@ -6,6 +6,7 @@ import { initGraph, initDatabase } from "./forcegraph.js";
 import { Audio } from "./audio.js";
 
 // DOM Elements
+export const root = document.documentElement;
 export const instructions = document.getElementById("instructions");
 export const inputID = document.getElementById("username");
 export const editBtn = document.getElementById("editbtn");

@@ -14,7 +14,7 @@
 // init , UI , events
 import SpriteText from "three-spritetext";
 import ForceGraph3D from "3d-force-graph";
-import { audio } from "./main.js";
+import { audio, root } from "./main.js";
 
 export function initDatabase() {
   const defaultDb = {
@@ -33,7 +33,6 @@ export function initDatabase() {
 export function initGraph() {
   const graph = ForceGraph3D();
 
-  const root = document.documentElement;
   const style = getComputedStyle(root);
   const colorPri = style.getPropertyValue("--c-pri");
   const colorGraph = style.getPropertyValue("--c-graph");
@@ -119,17 +118,29 @@ export function addNewNodeToDatabase(database, newNode) {
 }
 
 export function resizeGraph(graph, graphCont) {
+  
+  const style = getComputedStyle(root);
+  const uiHeight = parseInt(style.getPropertyValue("--ui-height"), 10);
+  const uiPad = parseInt(style.getPropertyValue("--ui-pad"), 10);
+
   const ww = window.innerWidth;
   const wh = window.innerHeight;
-  const navh = 200;
-  const navw = 200;
-  graphCont.style.top = 100 + "px";
-  if (window.innerWidth < 1300) {
-    graphCont.style.left = 0 + "px";
-    graph.width(ww).height(wh - navh);
+
+  graphCont.style.top = uiHeight;
+
+  if (window.innerWidth < 1300) { // mobile breakpoint
+
+    const top = uiPad + uiHeight;
+    graphCont.style.top = uiHeight * 2 + "px";
+    graphCont.style.left = 0;
+    graph.width(ww).height(wh - uiHeight * 2);
+    
   } else {
-    graphCont.style.left = 100 + "px";
-    graph.width(ww - navw).height(wh - navh);
+    
+    graphCont.style.top = uiHeight + "px";
+    graphCont.style.left = uiPad + "px";
+    graph.width(ww - uiPad * 2).height(wh - uiHeight - uiPad);
+
   }
 }
 

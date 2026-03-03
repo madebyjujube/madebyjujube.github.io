@@ -44,16 +44,6 @@ export class Audio {
     };
   }
 
-  // // PANNER IMPLEMENTATION iN PROGRESS (see onNodeClick)
-  // panNode() {
-  //   window.addEventListener("mousemove", (e) => {
-  //     let mousex = e.clientX;
-  //     let normalx = (mousex / window.innerWidth) * 2 - 1;
-  //     let x = Math.min(Math.max(normalx, -1), 1)
-  //     this.panner.pan.rampTo(x, 0.5);
-  //   });
-  // }
-
   //   MIC INIT
   initMic() {
     return mic;

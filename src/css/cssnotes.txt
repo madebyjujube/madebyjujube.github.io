@@ -1,0 +1,4 @@
+
+make the UI height bigger
+
+make the font bigger on MOBILE and smaller screens

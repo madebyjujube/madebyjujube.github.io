@@ -6,18 +6,19 @@ import p5 from "p5";
 import { audio } from "./main.js";
 
 const sketch = (p5) => {
-  p5.setup = () => {
+  const getUiHeight = () => {
     const root = getComputedStyle(document.documentElement);
-    const uiH = root.getPropertyValue("--ui-el-h").slice(0, -2);
+    return parseFloat(root.getPropertyValue("--ui-el-h"));
+  };
 
-    let canvas = p5.createCanvas(95, uiH);
-    // if (window.innerWidth < 1300) {
-    //   p5.resizeCanvas(120, 60);
-    // } else {
-    //   p5.resizeCanvas(95, 40);
-    // }
+  // Function to get canvas width based on screen size
+  const getCanvasWidth = () => {
+    return window.innerWidth < 1300 ? 120 : 95;
+  };
+
+  p5.setup = () => {
+    let canvas = p5.createCanvas(getCanvasWidth(), getUiHeight());
     canvas.parent("p5js");
-
     p5.background(0);
   };
 
@@ -35,11 +36,7 @@ const sketch = (p5) => {
     p5.endShape();
   };
   p5.windowResized = () => {
-    if (window.innerWidth < 1300) {
-      p5.resizeCanvas(120, 60);
-    } else {
-      p5.resizeCanvas(95, 40);
-    }
+    p5.resizeCanvas(getCanvasWidth(), getUiHeight());
   };
 }
 
