@@ -80,7 +80,9 @@ export class Audio {
    */
   async fetchAudioFile(node) {
     const username = document.getElementById("username")?.value || 'default';
-    const result = await fetch(`/audio/${username}/${node.id}.wav`);
+    // Encode the node.id to handle special characters
+    const encodedNodeId = encodeURIComponent(node.id);
+    const result = await fetch(`/audio/${username}/${encodedNodeId}.wav`);
     const blob = await result.blob();
     const bufferURL = URL.createObjectURL(blob);
     return bufferURL;

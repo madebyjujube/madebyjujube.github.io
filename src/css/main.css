@@ -52,7 +52,7 @@ main {
 #ilogo {
     position: fixed;
     bottom: 0;
-    padding-left: 100px;
+    padding-left: 10px;
     height:100px;
     width: 100vw;
 }

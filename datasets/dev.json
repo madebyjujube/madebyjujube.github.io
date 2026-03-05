@@ -5,6 +5,66 @@
     },
     {
       "id": "woof"
+    },
+    {
+      "id": ".",
+      "source": ".",
+      "target": "..,.-.,mmh",
+      "value": 1.0886656244226767
+    },
+    {
+      "id": "{}",
+      "source": "{}",
+      "target": "meow",
+      "value": 3.6444779453501397
+    },
+    {
+      "id": "m-i-a-w",
+      "source": "m-i-a-w",
+      "target": "meow",
+      "value": 5.659885210334249
+    },
+    {
+      "id": "t-[{}{S-««~`",
+      "source": "t-[{}{S-««~`",
+      "target": "m-i-a-w",
+      "value": 5.0158523533514145
+    },
+    {
+      "id": "---",
+      "source": "---",
+      "target": "m-i-a-w",
+      "value": 6.4599751413995055
+    },
+    {
+      "id": "mi-,mi..-",
+      "source": "mi-,mi..-",
+      "target": "{}",
+      "value": 8.572740656828483
+    },
+    {
+      "id": "gnn..-.,,..,.",
+      "source": "gnn..-.,,..,.",
+      "target": "t-[{}{S-««~`",
+      "value": 5.464915639946108
+    },
+    {
+      "id": "..,.-.,mmh",
+      "source": "..,.-.,mmh",
+      "target": "woof",
+      "value": 0.8876258207584387
+    },
+    {
+      "id": "zz.zz",
+      "source": "zz.zz",
+      "target": "gnn..-.,,..,.",
+      "value": 9.902757583140897
+    },
+    {
+      "id": "vu,vu,",
+      "source": "vu,vu,",
+      "target": "meow",
+      "value": 2.396168479064351
     }
   ],
   "links": [
@@ -12,6 +72,66 @@
       "source": "woof",
       "target": "meow",
       "value": 1
+    },
+    {
+      "source": ".",
+      "target": "woof",
+      "value": 9.779651235645284
+    },
+    {
+      "source": "{}",
+      "target": "meow",
+      "value": 3.6444779453501397
+    },
+    {
+      "source": "m-i-a-w",
+      "target": "meow",
+      "value": 5.659885210334249
+    },
+    {
+      "source": "t-[{}{S-««~`",
+      "target": "m-i-a-w",
+      "value": 5.0158523533514145
+    },
+    {
+      "source": "---",
+      "target": ".",
+      "value": 7.033244698897681
+    },
+    {
+      "source": "mi-,mi..-",
+      "target": "{}",
+      "value": 8.572740656828483
+    },
+    {
+      "source": "---",
+      "target": "m-i-a-w",
+      "value": 6.4599751413995055
+    },
+    {
+      "source": "gnn..-.,,..,.",
+      "target": "t-[{}{S-««~`",
+      "value": 5.464915639946108
+    },
+    {
+      "source": "..,.-.,mmh",
+      "target": "woof",
+      "value": 0.8876258207584387
+    },
+    {
+      "source": "zz.zz",
+      "target": "gnn..-.,,..,.",
+      "value": 9.902757583140897
+    },
+    {
+      "source": "vu,vu,",
+      "target": "meow",
+      "value": 2.396168479064351
+    },
+    {
+      "source": ".",
+      "target": "..,.-.,mmh",
+      "value": 1.0886656244226767
     }
   ]
 }

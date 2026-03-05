@@ -65,12 +65,41 @@ function editBtnClick(e) {
   editBtn.style.display = "none";
   inputID.value = "home";
 }
+function showNameError(message) {
+  nodeNameElement.classList.add('input-error');
+  nodeNameElement.placeholder = message;
+  nodeNameElement.value = "";
+  
+  // Remove error style after 3 seconds
+  setTimeout(() => {
+    nodeNameElement.classList.remove('input-error');
+    nodeNameElement.placeholder = "enter node name"; // your original placeholder
+  }, 3000);
+}
+// Replace slashes and other filesystem/URL problematic characters
+function sanitizeNodeName(name) {
+  return name
+    .replace(/[\/\\]/g, '-')  // Replace / and \ with -
+    .replace(/["|?*,]/g, '') // Remove other illegal chars
+    .trim();
+}
 
 async function uploadBtnCallback(e) {
   e.preventDefault();
 
-  const nodeName = nodeNameElement.value.trim();
+  let nodeName = nodeNameElement.value.trim();
   if (!nodeName) return;
+  
+  // Sanitize the name
+  nodeName = sanitizeNodeName(nodeName);
+  if (!nodeName) {
+    showNameError("Invalid name - try again");
+    return; // Upload blocked
+  }
+  // Optional: Alert user if name was changed
+  if (nodeName !== nodeNameElement.value.trim()) {
+    console.log(`Name sanitized to: ${nodeName}`);
+  }
   
   const buffer = audio.recordingBuffer;
   const username = userData.username || 'home';
